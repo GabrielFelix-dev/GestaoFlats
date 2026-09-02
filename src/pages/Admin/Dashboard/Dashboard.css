@@ -1,0 +1,140 @@
+.dashboard-page {
+  padding: 1.5rem;
+}
+
+.dashboard-welcome,
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard-welcome h2,
+.section-heading h2 {
+  margin-top: 0.2rem;
+  color: var(--color-primary);
+}
+
+.dashboard-welcome > div > p:last-child {
+  margin-top: 0.4rem;
+  color: var(--color-text-soft);
+}
+
+.page-eyebrow {
+  color: var(--color-blue-medium);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.kpi-value {
+  display: block;
+  color: var(--color-primary);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.kpi-detail {
+  margin-top: 0.65rem;
+  color: var(--color-text-soft);
+  font-size: 0.85rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.finance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.finance-summary div {
+  padding: 0.9rem;
+  border-radius: 10px;
+  background: #f4f7fa;
+}
+
+.finance-summary span,
+.occupancy-box span {
+  display: block;
+  color: var(--color-text-soft);
+  font-size: 0.82rem;
+}
+
+.finance-summary strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--color-text);
+}
+
+.finance-summary .finance-balance {
+  background: rgba(22, 60, 121, 0.08);
+}
+
+.occupancy-box strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: 2rem;
+}
+
+.occupancy-box span {
+  margin-top: 0.3rem;
+}
+
+.occupancy-track {
+  height: 10px;
+  margin-top: 1rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8edf2;
+}
+
+.occupancy-fill {
+  width: 33%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+}
+
+.dashboard-section {
+  margin-top: 1.5rem;
+}
+
+.section-heading {
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-page {
+    padding: 1rem;
+  }
+
+  .dashboard-kpis,
+  .finance-summary {
+    grid-template-columns: 1fr;
+  }
+}
