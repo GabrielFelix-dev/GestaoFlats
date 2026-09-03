@@ -72,6 +72,23 @@
   gap: 1rem;
 }
 
+.page-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.page-placeholder h2 {
+  color: var(--color-primary);
+  font-size: 1.4rem;
+}
+
+.page-placeholder p {
+  margin-top: 0.5rem;
+  color: var(--color-text-soft);
+}
+
 @media (max-width: 640px) {
   .dashboard-page {
     padding: 1rem;

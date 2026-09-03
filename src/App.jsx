@@ -11,21 +11,20 @@ import Home from "./pages/Home/Home";
 import "./App.css";
 
 const sidebarItems = [
-  { label: "Home", value: "Home" },
-  { label: "Dashboard", value: "Dashboard" },
-  { label: "Hóspedes", value: "Hóspedes" },
-  { label: "Acomodações", value: "Acomodações" },
-  { label: "Hospedagens", value: "Hospedagens" },
-  { label: "Disponibilidade", value: "Disponibilidade" },
-  { label: "Check-in / Check-out", value: "Check-in / Check-out" },
-  { label: "Histórico", value: "Histórico" },
+  { label: "Dashboard", value: "dashboard" },
+  { label: "Hóspedes", value: "hospedes" },
+  { label: "Acomodações", value: "acomodacoes" },
+  { label: "Hospedagens", value: "hospedagens" },
+  { label: "Disponibilidade", value: "disponibilidade" },
+  { label: "Check-in / Check-out", value: "checkin-checkout" },
+  { label: "Histórico", value: "historico" },
   {
     label: "Financeiro",
-    value: "Financeiro",
+    value: "financeiro",
     children: [
-      { label: "Receitas", value: "Receitas" },
-      { label: "Despesas", value: "Despesas" },
-      { label: "Resumo financeiro", value: "Resumo financeiro" },
+      { label: "Receitas", value: "receitas" },
+      { label: "Despesas", value: "despesas" },
+      { label: "Resumo financeiro", value: "resumo-financeiro" },
     ],
   },
 ];
@@ -92,7 +91,7 @@ const statusOptions = [
 ];
 
 export default function App() {
-  const [activeItem, setActiveItem] = useState("Home");
+  const [activeItem, setActiveItem] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -103,13 +102,13 @@ export default function App() {
     function handleLogin() {
       localStorage.setItem("gestao-flats:auth", "true");
       setIsAuthenticated(true);
-      setActiveItem("Dashboard");
+      setActiveItem("dashboard");
     }
 
     function handleLogout() {
       localStorage.removeItem("gestao-flats:auth");
       setIsAuthenticated(false);
-      setActiveItem("Home");
+      setActiveItem("dashboard");
     }
 
     window.addEventListener("gestao-flats:login", handleLogin);
@@ -147,9 +146,7 @@ export default function App() {
       userName="Maria Souza"
       userRole="Administrador"
     >
-      {activeItem === "Home" ? (
-        <Home />
-      ) : (
+      {activeItem === "dashboard" ? (
         <div className="dashboard-page">
           <div className="page-header">
             <div>
@@ -251,6 +248,13 @@ export default function App() {
               />
             </div>
           </Modal>
+        </div>
+      ) : (
+        <div className="page-placeholder">
+          <Card>
+            <h2>{activeItem}</h2>
+            <p>Esta página ainda está em desenvolvimento.</p>
+          </Card>
         </div>
       )}
     </Layout>
