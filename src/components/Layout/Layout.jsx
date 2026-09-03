@@ -12,11 +12,7 @@ export default function Layout({
   setSidebarOpen,
   userName,
   userRole,
-  onLogout,
-  onViewProfile,
-  onChangeAccount,
-  userEmail,
-  onAccountSave,
+  isAuthenticated = false,
 }) {
   return (
     <div className="app-shell">
@@ -24,15 +20,11 @@ export default function Layout({
         title={title}
         userName={userName}
         userRole={userRole}
+        isAuthenticated={isAuthenticated}
         onToggleSidebar={
           setSidebarOpen ? () => setSidebarOpen((open) => !open) : undefined
         }
         isSidebarOpen={sidebarOpen}
-        onLogout={onLogout}
-        onViewProfile={onViewProfile}
-        onChangeAccount={onChangeAccount}
-        userEmail={userEmail}
-        onAccountSave={onAccountSave}
       />
 
       <div className="content-shell">

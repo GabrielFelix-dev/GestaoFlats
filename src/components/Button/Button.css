@@ -15,7 +15,7 @@
 }
 
 .btn:focus-visible {
-  outline: 3px solid rgba(95, 126, 168, 0.35);
+  outline: 3px solid rgba(87, 118, 175, 0.35);
   outline-offset: 2px;
 }
 
@@ -68,8 +68,8 @@
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: rgba(22, 60, 121, 0.04);
-  border-color: var(--color-blue-medium);
+  background: rgba(0, 35, 102, 0.04);
+  border-color: var(--color-secondary);
 }
 
 .btn-danger {
@@ -88,5 +88,5 @@
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: rgba(22, 60, 121, 0.05);
+  background: rgba(0, 35, 102, 0.05);
 }

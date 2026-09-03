@@ -16,5 +16,10 @@
 @media (max-width: 768px) {
   .content-shell {
     display: block;
+    position: relative;
+  }
+
+  .main-content {
+    margin-left: 0;
   }
 }
