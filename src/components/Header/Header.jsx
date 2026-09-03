@@ -29,13 +29,15 @@ export default function Header({
 
         <div className="topbar-brand">
           <img src={gestaoFlatsLogo} alt="Gestão Flats" className="topbar-brand-image" />
-          {showTitle && (
-            <div>
-              <h1>{title || "Dashboard"}</h1>
-            </div>
-          )}
+          <span className="topbar-brand-text">GestãoFlats</span>
         </div>
       </div>
+
+      {showTitle && (
+        <div className="topbar-page-title">
+          <h1>{title || "Dashboard"}</h1>
+        </div>
+      )}
 
       <div className="topbar-right">
         {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
@@ -43,7 +45,7 @@ export default function Header({
           <>
             <div className="user-badge" aria-label={`Usuário ${userName}`}>
               <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
-              <div>
+              <div className="user-badge-text">
                 <strong>{userName}</strong>
                 <small>{userRole}</small>
               </div>

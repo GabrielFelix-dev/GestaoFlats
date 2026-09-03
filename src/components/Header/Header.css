@@ -7,6 +7,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1rem 1.5rem;
   min-height: 72px;
+  flex-wrap: wrap;
 }
 
 .topbar-left,
@@ -36,11 +37,29 @@
   object-fit: contain;
 }
 
+.topbar-brand-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.topbar-page-title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
 .topbar h1 {
   font-size: 1.35rem;
   color: #ffffff;
   margin: 0;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .topbar-subtitle {
@@ -82,6 +101,12 @@
   font-weight: 700;
 }
 
+.user-badge-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .user-badge strong,
 .user-badge small {
   display: block;
@@ -90,6 +115,10 @@
 .user-badge strong {
   color: #ffffff;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12rem;
 }
 
 .user-badge small {
@@ -114,22 +143,45 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .topbar {
-    padding: 0.75rem 0.85rem;
+    flex-direction: column;
+    align-items: stretch;
     gap: 0.5rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .topbar-left,
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .topbar-page-title {
+    width: 100%;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .topbar h1 {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    white-space: normal;
   }
+}
 
-  .topbar-subtitle {
-    display: none;
+@media (max-width: 640px) {
+  .topbar-brand-text {
+    font-size: 0.95rem;
   }
 
   .topbar-brand-image {
-    height: 34px;
+    height: 36px;
+  }
+
+  .sidebar-toggle {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1.05rem;
   }
 
   .user-badge small {
