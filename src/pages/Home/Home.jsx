@@ -15,7 +15,12 @@ export default function Home() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    window.dispatchEvent(new Event("gestao-flats:login"));
+
+    if (isLogin) {
+      window.dispatchEvent(new Event("gestao-flats:login"));
+    } else {
+      setIsLogin(true);
+    }
   }
 
   return (
