@@ -29,14 +29,13 @@ export default function Header({
 
         <div className="topbar-brand">
           <img src={gestaoFlatsLogo} alt="Gestão Flats" className="topbar-brand-image" />
+          {showTitle && (
+            <div className="topbar-page-title">
+              <h1>{title || "Dashboard"}</h1>
+            </div>
+          )}
         </div>
       </div>
-
-      {showTitle && (
-        <div className="topbar-page-title">
-          <h1>{title || "Dashboard"}</h1>
-        </div>
-      )}
 
       <div className="topbar-right">
         {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
