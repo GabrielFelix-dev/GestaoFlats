@@ -10,6 +10,7 @@ import Receitas from "./pages/Admin/Financeiro/Receitas";
 import ResumoFinanceiro from "./pages/Admin/Financeiro/ResumoFinanceiro";
 import Hospedagens from "./pages/Admin/Hospedagens/Hospedagens";
 import Hospedes from "./pages/Admin/Hospedes/Hospedes";
+import Login from "./pages/Login/Login";
 import { adminNavItems } from "./pages/navigation";
 
 function AdminPage({ pageName, activeItem, onNavigate, children }) {
@@ -46,7 +47,12 @@ function PageInDevelopment({ pageName, onNavigate, activeItem }) {
 }
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
+
+  if (!isAuthenticated) {
+    return <Login onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   if (activeItem === "dashboard") {
     return <Dashboard onNavigate={setActiveItem} />;
@@ -70,9 +76,11 @@ export default function App() {
   if (PageComponent) {
     return (
       <AdminPage
-        pageName={adminNavItems
-          .flatMap((item) => [item, ...(item.children || [])])
-          .find((item) => item.value === activeItem)?.label}
+        pageName={
+          adminNavItems
+            .flatMap((item) => [item, ...(item.children || [])])
+            .find((item) => item.value === activeItem)?.label
+        }
         activeItem={activeItem}
         onNavigate={setActiveItem}
       >
