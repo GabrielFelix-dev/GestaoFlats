@@ -1,5 +1,5 @@
 export const adminNavItems = [
-  { label: "Dashboard", value: "dashboard" },
+  { label: "Overview", value: "dashboard" },
   { label: "Hóspedes", value: "hospedes" },
   { label: "Acomodações", value: "acomodacoes" },
   { label: "Hospedagens", value: "hospedagens" },
