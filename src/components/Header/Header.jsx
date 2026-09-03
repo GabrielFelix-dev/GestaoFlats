@@ -11,6 +11,7 @@ export default function Header({
   isAuthenticated = false,
   showToggle = true,
   showTitle = true,
+  onLogout,
 }) {
   return (
     <header className="topbar">
@@ -39,13 +40,23 @@ export default function Header({
       <div className="topbar-right">
         {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
         {isAuthenticated && (
-          <div className="user-badge" aria-label={`Usuário ${userName}`}>
-            <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
-            <div>
-              <strong>{userName}</strong>
-              <small>{userRole}</small>
+          <>
+            <div className="user-badge" aria-label={`Usuário ${userName}`}>
+              <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
+              <div>
+                <strong>{userName}</strong>
+                <small>{userRole}</small>
+              </div>
             </div>
-          </div>
+            <button
+              type="button"
+              className="logout-button"
+              onClick={onLogout}
+              aria-label="Sair da conta"
+            >
+              Sair
+            </button>
+          </>
         )}
       </div>
     </header>

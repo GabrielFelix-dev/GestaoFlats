@@ -15,6 +15,7 @@ export default function Layout({
   isAuthenticated = false,
   showSidebar = true,
   headerProps = {},
+  onLogout,
 }) {
   return (
     <div className="app-shell">
@@ -27,6 +28,7 @@ export default function Layout({
           setSidebarOpen ? () => setSidebarOpen((open) => !open) : undefined
         }
         isSidebarOpen={sidebarOpen}
+        onLogout={onLogout}
         {...headerProps}
       />
 

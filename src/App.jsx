@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import Button from "./components/Button/Button";
 import Card from "./components/Card/Card";
-import Header from "./components/Header/Header";
-import Input from "./components/Input/Input";
 import Layout from "./components/Layout/Layout";
-import Modal from "./components/Modal/Modal";
-import Select from "./components/Select/Select";
-import Table from "./components/Table/Table";
 import Home from "./pages/Home/Home";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard";
+import Hospedes from "./pages/Admin/Hospedes/Hospedes";
 import "./App.css";
 
 const sidebarItems = [
@@ -29,71 +25,47 @@ const sidebarItems = [
   },
 ];
 
-const stats = [
-  {
-    title: "Hospedagens ativas",
-    value: "42",
-    subtitle: "+8% em relação ao mês",
-  },
-  { title: "Ocupação", value: "86%", subtitle: "Média semanal" },
-  {
-    title: "Receitas",
-    value: "R$ 18.400",
-    subtitle: "Acumulado neste período",
-  },
-  { title: "Check-ins hoje", value: "11", subtitle: "3 pendentes" },
-];
+const pageLabels = {
+  dashboard: "Dashboard",
+  hospedes: "Hóspedes",
+  acomodacoes: "Acomodações",
+  hospedagens: "Hospedagens",
+  disponibilidade: "Disponibilidade",
+  "checkin-checkout": "Check-in / Check-out",
+  historico: "Histórico",
+  financeiro: "Financeiro",
+  receitas: "Receitas",
+  despesas: "Despesas",
+  "resumo-financeiro": "Resumo financeiro",
+};
 
-const guestColumns = [
-  { key: "nome", label: "Nome" },
-  { key: "quarto", label: "Acomodação" },
-  { key: "status", label: "Status" },
-  { key: "entrada", label: "Check-in" },
-  { key: "saida", label: "Check-out" },
-];
+function PageInDevelopment({ pageName }) {
+  return (
+    <div className="page-placeholder">
+      <Card>
+        <h2>{pageName}</h2>
+        <p>Esta página ainda está em desenvolvimento.</p>
+      </Card>
+    </div>
+  );
+}
 
-const guestData = [
-  {
-    nome: "Ana Beatriz",
-    quarto: "Flat 02",
-    status: "Ativa",
-    entrada: "05/09",
-    saida: "12/09",
-  },
-  {
-    nome: "Lucas Mendes",
-    quarto: "Quarto 14",
-    status: "Confirmada",
-    entrada: "07/09",
-    saida: "15/09",
-  },
-  {
-    nome: "Marina Costa",
-    quarto: "Studio 01",
-    status: "Em andamento",
-    entrada: "04/09",
-    saida: "10/09",
-  },
-  {
-    nome: "Pedro Nobre",
-    quarto: "Flat 05",
-    status: "Pendente",
-    entrada: "11/09",
-    saida: "18/09",
-  },
-];
-
-const statusOptions = [
-  { value: "all", label: "Todos os status" },
-  { value: "ativa", label: "Ativa" },
-  { value: "confirmada", label: "Confirmada" },
-  { value: "pendente", label: "Pendente" },
-];
+function AdminRouter({ activeItem, props }) {
+  switch (activeItem) {
+    case "dashboard":
+      return <Dashboard {...props} />;
+    case "hospedes":
+      return <Hospedes {...props} />;
+    default:
+      return (
+        <PageInDevelopment pageName={pageLabels[activeItem] || activeItem} />
+      );
+  }
+}
 
 export default function App() {
   const [activeItem, setActiveItem] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("gestao-flats:auth") === "true";
   });
@@ -119,6 +91,10 @@ export default function App() {
     };
   }, []);
 
+  const handleLogout = () => {
+    window.dispatchEvent(new Event("gestao-flats:logout"));
+  };
+
   if (!isAuthenticated) {
     return (
       <Layout
@@ -134,129 +110,14 @@ export default function App() {
     );
   }
 
-  return (
-    <Layout
-      title={activeItem}
-      activeItem={activeItem}
-      navItems={sidebarItems}
-      onNavigate={setActiveItem}
-      sidebarOpen={sidebarOpen}
-      setSidebarOpen={setSidebarOpen}
-      isAuthenticated={isAuthenticated}
-      userName="Maria Souza"
-      userRole="Administrador"
-    >
-      {activeItem === "dashboard" ? (
-        <div className="dashboard-page">
-          <div className="page-header">
-            <div>
-              <p className="eyebrow">Visão geral</p>
-              <h1>Gestão de hospedagens</h1>
-            </div>
+  const adminProps = {
+    onNavigate: setActiveItem,
+    onLogout: handleLogout,
+    onViewProfile: () => undefined,
+    onChangeAccount: () => undefined,
+    onAccountSave: () => undefined,
+    account: { name: "Maria Souza", email: "admin@gestaoflats.com" },
+  };
 
-            <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-              + Novo hóspede
-            </Button>
-          </div>
-
-          <div className="stats-grid">
-            {stats.map((item) => (
-              <Card key={item.title} title={item.title} subtitle={item.subtitle}>
-                <div className="stat-value">{item.value}</div>
-              </Card>
-            ))}
-          </div>
-
-          <div className="content-grid">
-            <Card title="Filtro rápido" subtitle="Buscar hóspedes e registros">
-              <div className="filter-grid">
-                <Input label="Nome" name="nome" placeholder="Digite o nome" />
-                <Select
-                  label="Status"
-                  name="status"
-                  options={statusOptions}
-                  value="all"
-                />
-                <Button variant="secondary" type="button">
-                  Filtrar
-                </Button>
-              </div>
-            </Card>
-
-            <Card title="Resumo rápido" subtitle="Indicadores do período">
-              <ul className="summary-list">
-                <li>
-                  <span>Taxa de ocupação</span>
-                  <strong>86%</strong>
-                </li>
-                <li>
-                  <span>Reservas confirmadas</span>
-                  <strong>18</strong>
-                </li>
-                <li>
-                  <span>Check-out pendentes</span>
-                  <strong>04</strong>
-                </li>
-              </ul>
-            </Card>
-          </div>
-
-          <Card title="Últimos hóspedes" subtitle="Acompanhamento geral">
-            <Table
-              columns={guestColumns}
-              data={guestData}
-              emptyMessage="Nenhum hóspede encontrado."
-            />
-          </Card>
-
-          <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            title="Cadastrar hóspede"
-            footer={
-              <>
-                <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
-                  Cancelar
-                </Button>
-                <Button variant="primary" onClick={() => setIsModalOpen(false)}>
-                  Salvar
-                </Button>
-              </>
-            }
-          >
-            <div className="modal-form">
-              <Input
-                label="Nome completo"
-                name="nomeCompleto"
-                placeholder="Digite o nome"
-              />
-              <Input
-                label="E-mail"
-                type="email"
-                name="email"
-                placeholder="nome@email.com"
-              />
-              <Select
-                label="Tipo de hospedagem"
-                name="tipoHospedagem"
-                placeholder="Selecione"
-                options={[
-                  { value: "flat", label: "Flat" },
-                  { value: "quarto", label: "Quarto" },
-                  { value: "studio", label: "Studio" },
-                ]}
-              />
-            </div>
-          </Modal>
-        </div>
-      ) : (
-        <div className="page-placeholder">
-          <Card>
-            <h2>{activeItem}</h2>
-            <p>Esta página ainda está em desenvolvimento.</p>
-          </Card>
-        </div>
-      )}
-    </Layout>
-  );
+  return <AdminRouter activeItem={activeItem} props={adminProps} />;
 }

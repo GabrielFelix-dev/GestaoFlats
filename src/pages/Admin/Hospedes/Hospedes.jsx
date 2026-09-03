@@ -149,6 +149,7 @@ export default function Hospedes({
       onNavigate={onNavigate}
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
+      isAuthenticated
       userName={account?.name || "Administrador"}
       userRole="Administrador"
       onLogout={onLogout}
