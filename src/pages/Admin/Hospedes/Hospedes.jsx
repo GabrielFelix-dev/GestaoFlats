@@ -30,7 +30,7 @@ const columns = [
   { key: "status", label: "Status" },
 ];
 
-export default function Hospedes({ onNavigate }) {
+export default function Hospedes({ onNavigate, onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [guests, setGuests] = useState(initialGuests);
   const [search, setSearch] = useState("");
@@ -121,6 +121,7 @@ export default function Hospedes({ onNavigate }) {
       setSidebarOpen={setSidebarOpen}
       userName="Administrador"
       userRole="Administrador"
+      onLogout={onLogout}
     >
       <div className="guests-page">
         <section className="guests-heading">

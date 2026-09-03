@@ -10,8 +10,7 @@
 }
 
 .topbar-left,
-.topbar-right,
-.user-badge {
+.topbar-right {
   display: flex;
   align-items: center;
 }
@@ -53,12 +52,27 @@
   font-size: 1.2rem;
 }
 
+.user-menu {
+  position: relative;
+}
+
 .user-badge {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
   padding: 0.55rem 0.8rem;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background: rgba(22, 60, 121, 0.03);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.user-badge:hover,
+.user-badge[aria-expanded="true"] {
+  border-color: var(--color-blue-medium);
+  background: rgba(22, 60, 121, 0.08);
 }
 
 .avatar {
@@ -82,12 +96,63 @@
   color: var(--color-text-soft);
 }
 
+.user-menu-chevron {
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 30;
+  min-width: 170px;
+  padding: 0.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-white);
+  box-shadow: 0 10px 24px rgba(22, 60, 121, 0.16);
+}
+
+.account-menu button {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 0.7rem 0.75rem;
+  text-align: left;
+}
+
+.account-menu button:hover:not(:disabled) {
+  background: var(--color-background);
+}
+
+.account-menu button:disabled {
+  color: var(--color-text-soft);
+  cursor: not-allowed;
+}
+
+.account-menu .logout-action {
+  color: #b42318;
+}
+
 @media (max-width: 640px) {
   .topbar {
     padding: 0.9rem 1rem;
   }
 
-  .topbar-right {
+  .user-details {
+    display: none;
+  }
+
+  .user-badge {
+    padding: 0.35rem;
+  }
+
+  .user-menu-chevron {
     display: none;
   }
 }

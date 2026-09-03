@@ -27,7 +27,7 @@ const columns = [
   { key: "horario", label: "Horário" },
 ];
 
-export default function Dashboard({ onNavigate }) {
+export default function Dashboard({ onNavigate, onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
@@ -40,6 +40,7 @@ export default function Dashboard({ onNavigate }) {
       setSidebarOpen={setSidebarOpen}
       userName="Administrador"
       userRole="Administrador"
+      onLogout={onLogout}
     >
       <div className="dashboard-page">
         <section className="dashboard-welcome">

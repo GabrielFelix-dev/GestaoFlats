@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./Header.css";
 
 export default function Header({
@@ -7,7 +8,10 @@ export default function Header({
   subtitle,
   onToggleSidebar,
   isSidebarOpen,
+  onLogout,
 }) {
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
   return (
     <header className="topbar">
       <div className="topbar-left">
@@ -30,12 +34,42 @@ export default function Header({
 
       <div className="topbar-right">
         {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
-        <div className="user-badge" aria-label={`Usuário ${userName}`}>
-          <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
-          <div>
-            <strong>{userName}</strong>
-            <small>{userRole}</small>
-          </div>
+        <div className="user-menu">
+          <button
+            type="button"
+            className="user-badge"
+            aria-label={`Abrir opções da conta de ${userName}`}
+            aria-expanded={isUserMenuOpen}
+            onClick={() => setIsUserMenuOpen((open) => !open)}
+          >
+            <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
+            <span className="user-details">
+              <strong>{userName}</strong>
+              <small>{userRole}</small>
+            </span>
+            <span className="user-menu-chevron" aria-hidden="true">
+              {isUserMenuOpen ? "⌃" : "⌄"}
+            </span>
+          </button>
+
+          {isUserMenuOpen && (
+            <div className="account-menu" role="menu">
+              <button type="button" role="menuitem" disabled>
+                Ver perfil
+              </button>
+              <button type="button" role="menuitem" disabled>
+                Alterar conta
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="logout-action"
+                onClick={onLogout}
+              >
+                Sair
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

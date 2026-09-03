@@ -26,18 +26,20 @@ function AdminPage({ pageName, activeItem, onNavigate, children }) {
       setSidebarOpen={setSidebarOpen}
       userName="Administrador"
       userRole="Administrador"
+      onLogout={onLogout}
     >
       {children}
     </Layout>
   );
 }
 
-function PageInDevelopment({ pageName, onNavigate, activeItem }) {
+function PageInDevelopment({ pageName, onNavigate, activeItem, onLogout }) {
   return (
     <AdminPage
       pageName={pageName}
       activeItem={activeItem}
       onNavigate={onNavigate}
+      onLogout={onLogout}
     >
       <Card title={pageName} subtitle="Módulo administrativo">
         <p>Esta página ainda está em desenvolvimento.</p>
@@ -49,17 +51,18 @@ function PageInDevelopment({ pageName, onNavigate, activeItem }) {
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
+  const handleLogout = () => setIsAuthenticated(false);
 
   if (!isAuthenticated) {
     return <Login onLogin={() => setIsAuthenticated(true)} />;
   }
 
   if (activeItem === "dashboard") {
-    return <Dashboard onNavigate={setActiveItem} />;
+    return <Dashboard onNavigate={setActiveItem} onLogout={handleLogout} />;
   }
 
   if (activeItem === "hospedes") {
-    return <Hospedes onNavigate={setActiveItem} />;
+    return <Hospedes onNavigate={setActiveItem} onLogout={handleLogout} />;
   }
 
   const implementedPages = {
@@ -83,6 +86,7 @@ export default function App() {
         }
         activeItem={activeItem}
         onNavigate={setActiveItem}
+        onLogout={handleLogout}
       >
         <PageComponent />
       </AdminPage>
@@ -98,6 +102,7 @@ export default function App() {
       pageName={page?.label || "Página"}
       activeItem={activeItem}
       onNavigate={setActiveItem}
+      onLogout={handleLogout}
     />
   );
 }

@@ -12,6 +12,7 @@ export default function Layout({
   setSidebarOpen,
   userName,
   userRole,
+  onLogout,
 }) {
   return (
     <div className="app-shell">
@@ -23,6 +24,7 @@ export default function Layout({
           setSidebarOpen ? () => setSidebarOpen((open) => !open) : undefined
         }
         isSidebarOpen={sidebarOpen}
+        onLogout={onLogout}
       />
 
       <div className="content-shell">
