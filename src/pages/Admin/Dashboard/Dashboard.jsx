@@ -5,19 +5,43 @@ import Table from "../../../components/Table/Table";
 import { adminNavItems } from "../../navigation";
 import "./Dashboard.css";
 
-
-
 const indicadores = [
-  { title: "Hospedagens ativas", value: 8, detail: "Em andamento neste momento" },
-  { title: "Acomodações disponíveis", value: 12, detail: "De 18 acomodações cadastradas" },
+  {
+    title: "Hospedagens ativas",
+    value: 8,
+    detail: "Em andamento neste momento",
+  },
+  {
+    title: "Acomodações disponíveis",
+    value: 12,
+    detail: "De 18 acomodações cadastradas",
+  },
   { title: "Check-ins hoje", value: 3, detail: "Entradas previstas para hoje" },
   { title: "Check-outs hoje", value: 2, detail: "Saídas previstas para hoje" },
 ];
 
 const proximasMovimentacoes = [
-  { id: 1, hospede: "Mariana Alves", acomodacao: "Flat 101", tipo: "Check-in", horario: "14:00" },
-  { id: 2, hospede: "Carlos Lima", acomodacao: "Flat 204", tipo: "Check-out", horario: "11:00" },
-  { id: 3, hospede: "João Pereira", acomodacao: "Quarto 03", tipo: "Check-in", horario: "15:30" },
+  {
+    id: 1,
+    hospede: "Mariana Alves",
+    acomodacao: "Flat 101",
+    tipo: "Check-in",
+    horario: "14:00",
+  },
+  {
+    id: 2,
+    hospede: "Carlos Lima",
+    acomodacao: "Flat 204",
+    tipo: "Check-out",
+    horario: "11:00",
+  },
+  {
+    id: 3,
+    hospede: "João Pereira",
+    acomodacao: "Quarto 03",
+    tipo: "Check-in",
+    horario: "15:30",
+  },
 ];
 
 const columns = [
@@ -27,7 +51,14 @@ const columns = [
   { key: "horario", label: "Horário" },
 ];
 
-export default function Dashboard({ onNavigate, onLogout }) {
+export default function Dashboard({
+  onNavigate,
+  onLogout,
+  onViewProfile,
+  onChangeAccount,
+  onAccountSave,
+  account,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
@@ -38,16 +69,22 @@ export default function Dashboard({ onNavigate, onLogout }) {
       onNavigate={onNavigate}
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
-      userName="Administrador"
+      userName={account?.name || "Administrador"}
       userRole="Administrador"
       onLogout={onLogout}
+      onViewProfile={onViewProfile}
+      onChangeAccount={onChangeAccount}
+      userEmail={account?.email}
+      onAccountSave={onAccountSave}
     >
       <div className="dashboard-page">
         <section className="dashboard-welcome">
           <div>
             <p className="page-eyebrow">Visão geral</p>
             <h2>Resumo da operação</h2>
-            <p>Acompanhe os principais números e movimentações da hospedagem.</p>
+            <p>
+              Acompanhe os principais números e movimentações da hospedagem.
+            </p>
           </div>
         </section>
 

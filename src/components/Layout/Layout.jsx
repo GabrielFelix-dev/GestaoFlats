@@ -13,6 +13,10 @@ export default function Layout({
   userName,
   userRole,
   onLogout,
+  onViewProfile,
+  onChangeAccount,
+  userEmail,
+  onAccountSave,
 }) {
   return (
     <div className="app-shell">
@@ -25,6 +29,10 @@ export default function Layout({
         }
         isSidebarOpen={sidebarOpen}
         onLogout={onLogout}
+        onViewProfile={onViewProfile}
+        onChangeAccount={onChangeAccount}
+        userEmail={userEmail}
+        onAccountSave={onAccountSave}
       />
 
       <div className="content-shell">

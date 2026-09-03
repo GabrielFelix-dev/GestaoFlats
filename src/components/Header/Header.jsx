@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AccountModal from "../AccountModal/AccountModal";
 import "./Header.css";
 
 export default function Header({
@@ -9,8 +10,25 @@ export default function Header({
   onToggleSidebar,
   isSidebarOpen,
   onLogout,
+  onViewProfile,
+  onChangeAccount,
+  userEmail,
+  onAccountSave,
 }) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [account, setAccount] = useState({ name: userName, email: userEmail });
+
+  function handleChangeAccount() {
+    setIsUserMenuOpen(false);
+    setIsAccountModalOpen(true);
+    onChangeAccount?.();
+  }
+
+  function handleSaveAccount(updatedAccount) {
+    setAccount((current) => ({ ...current, ...updatedAccount }));
+    onAccountSave?.(updatedAccount);
+  }
 
   return (
     <header className="topbar">
@@ -42,9 +60,11 @@ export default function Header({
             aria-expanded={isUserMenuOpen}
             onClick={() => setIsUserMenuOpen((open) => !open)}
           >
-            <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
+            <span className="avatar">
+              {(account.name || userName).charAt(0).toUpperCase()}
+            </span>
             <span className="user-details">
-              <strong>{userName}</strong>
+              <strong>{account.name || userName}</strong>
               <small>{userRole}</small>
             </span>
             <span className="user-menu-chevron" aria-hidden="true">
@@ -54,10 +74,21 @@ export default function Header({
 
           {isUserMenuOpen && (
             <div className="account-menu" role="menu">
-              <button type="button" role="menuitem" disabled>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setIsUserMenuOpen(false);
+                  onViewProfile?.();
+                }}
+              >
                 Ver perfil
               </button>
-              <button type="button" role="menuitem" disabled>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={handleChangeAccount}
+              >
                 Alterar conta
               </button>
               <button
@@ -72,6 +103,13 @@ export default function Header({
           )}
         </div>
       </div>
+
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        account={account}
+        onSave={handleSaveAccount}
+      />
     </header>
   );
 }

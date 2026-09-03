@@ -1,0 +1,16 @@
+.account-modal-divider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.account-modal-divider span {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.account-modal-divider small {
+  color: var(--color-text-soft);
+}

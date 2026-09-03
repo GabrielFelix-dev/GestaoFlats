@@ -9,9 +9,30 @@ import { adminNavItems } from "../../navigation";
 import "./Hospedes.css";
 
 const initialGuests = [
-  { id: 1, nome: "Mariana Alves", cpf: "123.456.789-00", telefone: "(85) 99999-1001", email: "mariana@email.com", status: "Ativo" },
-  { id: 2, nome: "Carlos Lima", cpf: "987.654.321-00", telefone: "(85) 99999-1002", email: "carlos@email.com", status: "Ativo" },
-  { id: 3, nome: "João Pereira", cpf: "456.789.123-00", telefone: "(85) 99999-1003", email: "joao@email.com", status: "Inativo" },
+  {
+    id: 1,
+    nome: "Mariana Alves",
+    cpf: "123.456.789-00",
+    telefone: "(85) 99999-1001",
+    email: "mariana@email.com",
+    status: "Ativo",
+  },
+  {
+    id: 2,
+    nome: "Carlos Lima",
+    cpf: "987.654.321-00",
+    telefone: "(85) 99999-1002",
+    email: "carlos@email.com",
+    status: "Ativo",
+  },
+  {
+    id: 3,
+    nome: "João Pereira",
+    cpf: "456.789.123-00",
+    telefone: "(85) 99999-1003",
+    email: "joao@email.com",
+    status: "Inativo",
+  },
 ];
 
 const emptyForm = {
@@ -30,7 +51,14 @@ const columns = [
   { key: "status", label: "Status" },
 ];
 
-export default function Hospedes({ onNavigate, onLogout }) {
+export default function Hospedes({
+  onNavigate,
+  onLogout,
+  onViewProfile,
+  onChangeAccount,
+  onAccountSave,
+  account,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [guests, setGuests] = useState(initialGuests);
   const [search, setSearch] = useState("");
@@ -84,7 +112,12 @@ export default function Hospedes({ onNavigate, onLogout }) {
   }
 
   function saveGuest() {
-    if (!form.nome.trim() || !form.cpf.trim() || !form.telefone.trim() || !form.email.trim()) {
+    if (
+      !form.nome.trim() ||
+      !form.cpf.trim() ||
+      !form.telefone.trim() ||
+      !form.email.trim()
+    ) {
       return;
     }
 
@@ -95,10 +128,7 @@ export default function Hospedes({ onNavigate, onLogout }) {
         ),
       );
     } else {
-      setGuests((current) => [
-        ...current,
-        { id: Date.now(), ...form },
-      ]);
+      setGuests((current) => [...current, { id: Date.now(), ...form }]);
     }
 
     closeModal();
@@ -119,9 +149,13 @@ export default function Hospedes({ onNavigate, onLogout }) {
       onNavigate={onNavigate}
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
-      userName="Administrador"
+      userName={account?.name || "Administrador"}
       userRole="Administrador"
       onLogout={onLogout}
+      onViewProfile={onViewProfile}
+      onChangeAccount={onChangeAccount}
+      userEmail={account?.email}
+      onAccountSave={onAccountSave}
     >
       <div className="guests-page">
         <section className="guests-heading">
@@ -167,10 +201,18 @@ export default function Hospedes({ onNavigate, onLogout }) {
             emptyMessage="Nenhum hóspede encontrado."
             actions={(guest) => (
               <div className="guest-actions">
-                <Button size="sm" variant="outline" onClick={() => openEditModal(guest)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => openEditModal(guest)}
+                >
                   Editar
                 </Button>
-                <Button size="sm" variant="danger" onClick={() => deleteGuest(guest.id)}>
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={() => deleteGuest(guest.id)}
+                >
                   Excluir
                 </Button>
               </div>
