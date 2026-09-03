@@ -5,6 +5,7 @@ import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
 import Table from "../../../components/Table/Table";
 import { despesas as initialDespesas } from "../../../data/despesas";
+import "./Financeiro.css";
 
 const actionButtonStyle = {
   background: "transparent",
@@ -75,7 +76,7 @@ export default function Despesas() {
   return (
     <div className="despesas-page">
       <Card title="Filtro de Despesas" subtitle="Gerencie as saídas financeiras e contas">
-        <div className="filter-grid" style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-grid">
           <Input
             label="Buscar por descrição"
             name="busca"

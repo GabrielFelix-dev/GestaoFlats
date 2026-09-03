@@ -1,0 +1,26 @@
+.nova-hospedagem-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.nova-hospedagem-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.nova-hospedagem-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .nova-hospedagem-actions {
+    flex-direction: column;
+  }
+
+  .nova-hospedagem-actions .btn {
+    width: 100%;
+  }
+}

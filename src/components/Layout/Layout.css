@@ -14,6 +14,13 @@
   flex: 1;
   min-width: 0;
   background: transparent;
+  padding: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 768px) {

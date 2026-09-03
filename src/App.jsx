@@ -4,6 +4,15 @@ import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home/Home";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 import Hospedes from "./pages/Admin/Hospedes/Hospedes";
+import Hospedagens from "./pages/Admin/Hospedagens/Hospedagens";
+import NovaHospedagem from "./pages/Admin/Hospedagens/NovaHospedagem";
+import DetalhesHospedagem from "./pages/Admin/Hospedagens/DetalhesHospedagem";
+import CheckinCheckout from "./pages/Admin/CheckinCheckout/CheckinCheckout";
+import Disponibilidade from "./pages/Admin/Disponibilidade/Disponibilidade";
+import Financeiro from "./pages/Admin/Financeiro/Financeiro";
+import Receitas from "./pages/Admin/Financeiro/Receitas";
+import Despesas from "./pages/Admin/Financeiro/Despesas";
+import ResumoFinanceiro from "./pages/Admin/Financeiro/ResumoFinanceiro";
 import "./App.css";
 
 const sidebarItems = [
@@ -18,9 +27,9 @@ const sidebarItems = [
     label: "Financeiro",
     value: "financeiro",
     children: [
+      { label: "Resumo", value: "resumo-financeiro" },
       { label: "Receitas", value: "receitas" },
       { label: "Despesas", value: "despesas" },
-      { label: "Resumo financeiro", value: "resumo-financeiro" },
     ],
   },
 ];
@@ -30,6 +39,8 @@ const pageLabels = {
   hospedes: "Hóspedes",
   acomodacoes: "Acomodações",
   hospedagens: "Hospedagens",
+  "nova-hospedagem": "Nova Hospedagem",
+  "detalhes-hospedagem": "Detalhes da Hospedagem",
   disponibilidade: "Disponibilidade",
   "checkin-checkout": "Check-in / Check-out",
   historico: "Histórico",
@@ -50,15 +61,105 @@ function PageInDevelopment({ pageName }) {
   );
 }
 
-function AdminRouter({ activeItem, props }) {
+function AdminPage({
+  pageName,
+  activeItem,
+  children,
+  onNavigate,
+  onLogout,
+  sidebarOpen,
+  setSidebarOpen,
+}) {
+  return (
+    <Layout
+      title={pageName}
+      navItems={sidebarItems}
+      activeItem={activeItem}
+      onNavigate={onNavigate}
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+      isAuthenticated
+      userName="Maria Souza"
+      userRole="Administrador"
+      onLogout={onLogout}
+    >
+      {children}
+    </Layout>
+  );
+}
+
+function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
+  const pageName = pageLabels[activeItem] || activeItem;
+  const layoutProps = {
+    ...props,
+    sidebarOpen,
+    setSidebarOpen,
+  };
+
   switch (activeItem) {
     case "dashboard":
       return <Dashboard {...props} />;
     case "hospedes":
       return <Hospedes {...props} />;
+    case "hospedagens":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Hospedagens />
+        </AdminPage>
+      );
+    case "nova-hospedagem":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <NovaHospedagem />
+        </AdminPage>
+      );
+    case "detalhes-hospedagem":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <DetalhesHospedagem />
+        </AdminPage>
+      );
+    case "checkin-checkout":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <CheckinCheckout />
+        </AdminPage>
+      );
+    case "disponibilidade":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Disponibilidade />
+        </AdminPage>
+      );
+    case "financeiro":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Financeiro />
+        </AdminPage>
+      );
+    case "receitas":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Receitas />
+        </AdminPage>
+      );
+    case "despesas":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Despesas />
+        </AdminPage>
+      );
+    case "resumo-financeiro":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <ResumoFinanceiro />
+        </AdminPage>
+      );
     default:
       return (
-        <PageInDevelopment pageName={pageLabels[activeItem] || activeItem} />
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <PageInDevelopment pageName={pageName} />
+        </AdminPage>
       );
   }
 }
@@ -119,5 +220,12 @@ export default function App() {
     account: { name: "Maria Souza", email: "admin@gestaoflats.com" },
   };
 
-  return <AdminRouter activeItem={activeItem} props={adminProps} />;
+  return (
+    <AdminRouter
+      activeItem={activeItem}
+      props={adminProps}
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+    />
+  );
 }
