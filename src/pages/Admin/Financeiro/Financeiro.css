@@ -82,6 +82,29 @@
   color: var(--color-primary);
 }
 
+.detalhes-hospedagem-info p {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .receitas-page .filter-grid,
+  .despesas-page .filter-grid,
+  .hospedagens-page .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .financeiro-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+  }
+
+  .financeiro-tabs button {
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 640px) {
   .nova-hospedagem-actions {
     flex-direction: column;

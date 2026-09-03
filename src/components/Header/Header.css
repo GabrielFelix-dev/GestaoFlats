@@ -116,10 +116,38 @@
 
 @media (max-width: 640px) {
   .topbar {
-    padding: 0.9rem 1rem;
+    padding: 0.75rem 0.85rem;
+    gap: 0.5rem;
   }
 
-  .topbar-right {
+  .topbar h1 {
+    font-size: 1rem;
+  }
+
+  .topbar-subtitle {
     display: none;
+  }
+
+  .topbar-brand-image {
+    height: 34px;
+  }
+
+  .user-badge small {
+    display: none;
+  }
+
+  .user-badge {
+    padding: 0.4rem 0.55rem;
+  }
+
+  .avatar {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 0.85rem;
+  }
+
+  .logout-button {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.78rem;
   }
 }

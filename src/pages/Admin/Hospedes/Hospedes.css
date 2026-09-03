@@ -53,6 +53,12 @@
   display: flex;
   gap: 0.5rem;
   white-space: nowrap;
+  flex-wrap: wrap;
+}
+
+.data-table td {
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .guest-form-grid {
