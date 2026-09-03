@@ -14,9 +14,7 @@
   justify-content: center;
   padding: 1rem 2rem 2rem;
   overflow: hidden;
-}
-
-.home-banner {
+}.home-banner {
   width: min(100%, 1180px);
   background: linear-gradient(160deg, #eafef8 0%, #f5fbfc 100%);
   color: #002366;
@@ -217,10 +215,21 @@
 }
 
 @media (max-width: 960px) {
+  .home-page {
+    position: relative;
+    inset: auto;
+    height: auto;
+    min-height: calc(100vh - 72px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   .home-scene {
     flex-direction: column;
     height: auto;
-    min-height: calc(100vh - 72px);
+    min-height: auto;
+    padding: 1.5rem 1rem;
+    overflow: visible;
   }
 
   .home-form-card {
@@ -243,10 +252,12 @@
   }
 
   .home-banner-image {
-    width: 100%;
-    max-width: 320px;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
     align-self: center;
-    margin-right: 0;
+    margin: 0 auto;
   }
 
   .home-banner-body {
@@ -263,8 +274,11 @@
 }
 
 @media (max-width: 640px) {
+  .home-page {
+    min-height: calc(100vh - 72px);
+  }
+
   .home-scene {
-    min-height: auto;
     padding: 1rem;
   }
 
@@ -274,9 +288,10 @@
   }
 
   .home-banner-image {
-    max-width: 90%;
-    max-height: 220px;
-    margin: 0 auto;
+    width: 160px;
+    height: 160px;
+    max-width: 160px;
+    max-height: 160px;
   }
 
   .home-banner-body {
