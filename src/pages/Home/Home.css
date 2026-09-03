@@ -7,7 +7,7 @@
 }
 
 .home-scene {
-  position: relative;
+  position: static;
   height: calc(100vh - 72px);
   display: flex;
   align-items: center;
@@ -93,10 +93,11 @@
 
 .home-form-card {
   position: absolute;
-  right: 14rem;
-  top: calc(50% - 0.5rem);
+  right: 3.5rem;
+  top: 50%;
   transform: translateY(-50%);
   width: 380px;
+  max-width: calc(100% - 7rem);
   background: #5776af;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -201,7 +202,12 @@
 
 @media (max-width: 1180px) {
   .home-banner {
-    padding: 3rem 16rem 3rem 2.5rem;
+    padding: 3rem 18rem 3rem 2.5rem;
+  }
+
+  .home-form-card {
+    right: 2.5rem;
+    width: 360px;
   }
 
   .home-banner-image {
@@ -211,6 +217,17 @@
 
   .home-banner-body {
     max-width: 420px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .home-form-card {
+    width: 420px;
+    right: 4rem;
+  }
+
+  .home-banner {
+    padding: 3.5rem 24rem 3.5rem 4rem;
   }
 }
 
