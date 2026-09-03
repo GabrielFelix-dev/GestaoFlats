@@ -8,7 +8,9 @@ export default function Sidebar({
   onToggle,
 }) {
   return (
-    <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`.trim()}>
+    <aside
+      className={`sidebar ${collapsed ? "sidebar-collapsed" : "sidebar-open"}`.trim()}
+    >
       <div className="sidebar-header">
         <div className="brand">
           <span className="brand-mark">GF</span>
