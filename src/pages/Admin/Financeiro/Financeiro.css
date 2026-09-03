@@ -95,13 +95,15 @@
   }
 
   .financeiro-tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 0.25rem;
+    flex-wrap: wrap;
+    width: 100%;
   }
 
-  .financeiro-tabs button {
-    white-space: nowrap;
+  .financeiro-tabs .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    justify-content: center;
   }
 }
 

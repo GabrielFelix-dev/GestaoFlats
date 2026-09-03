@@ -29,7 +29,6 @@ export default function Header({
 
         <div className="topbar-brand">
           <img src={gestaoFlatsLogo} alt="Gestão Flats" className="topbar-brand-image" />
-          <span className="topbar-brand-text">GestãoFlats</span>
         </div>
       </div>
 
