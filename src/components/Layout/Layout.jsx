@@ -13,6 +13,8 @@ export default function Layout({
   userName,
   userRole,
   isAuthenticated = false,
+  showSidebar = true,
+  headerProps = {},
 }) {
   return (
     <div className="app-shell">
@@ -25,18 +27,21 @@ export default function Layout({
           setSidebarOpen ? () => setSidebarOpen((open) => !open) : undefined
         }
         isSidebarOpen={sidebarOpen}
+        {...headerProps}
       />
 
       <div className="content-shell">
-        <Sidebar
-          items={navItems}
-          activeItem={activeItem}
-          onNavigate={onNavigate}
-          collapsed={!sidebarOpen}
-          onToggle={
-            setSidebarOpen ? () => setSidebarOpen((open) => !open) : undefined
-          }
-        />
+        {showSidebar && (
+          <Sidebar
+            items={navItems}
+            activeItem={activeItem}
+            onNavigate={onNavigate}
+            collapsed={!sidebarOpen}
+            onToggle={
+              setSidebarOpen ? () => setSidebarOpen((open) => !open) : undefined
+            }
+          />
+        )}
 
         <main className="main-content">{children}</main>
       </div>

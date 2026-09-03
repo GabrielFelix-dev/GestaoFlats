@@ -6,13 +6,18 @@
   --color-blue-soft: #9bc8da;
   --color-border: #d3d6d8;
   --color-background: #eafef8;
+  --color-background-soft: #f4faf9;
+  --color-surface: #ffffff;
+  --color-surface-tint: rgba(87, 118, 175, 0.06);
   --color-white: #ffffff;
   --color-text: #002366;
   --color-text-soft: #4a5a72;
   --color-error: #d9534f;
   --shadow-soft: 0 2px 8px rgba(0, 35, 102, 0.08);
+  --shadow-medium: 0 8px 22px rgba(0, 35, 102, 0.1);
   --radius-sm: 8px;
   --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-pill: 999px;
 }
 

@@ -9,11 +9,13 @@ export default function Header({
   onToggleSidebar,
   isSidebarOpen,
   isAuthenticated = false,
+  showToggle = true,
+  showTitle = true,
 }) {
   return (
     <header className="topbar">
       <div className="topbar-left">
-        {onToggleSidebar && (
+        {showToggle && onToggleSidebar && (
           <button
             type="button"
             className="sidebar-toggle"
@@ -26,9 +28,11 @@ export default function Header({
 
         <div className="topbar-brand">
           <img src={gestaoFlatsLogo} alt="Gestão Flats" className="topbar-brand-image" />
-          <div>
-            <h1>{title || "Dashboard"}</h1>
-          </div>
+          {showTitle && (
+            <div>
+              <h1>{title || "Dashboard"}</h1>
+            </div>
+          )}
         </div>
       </div>
 

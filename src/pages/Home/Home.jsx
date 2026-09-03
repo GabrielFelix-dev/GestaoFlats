@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
-import prediosImg from "../../assets/predios.png";
+import homeLogoImg from "../../assets/predios.png";
 import "./Home.css";
 
 export default function Home() {
@@ -22,7 +22,12 @@ export default function Home() {
     <main className="home-page">
       <section className="home-scene">
         <div className="home-banner">
-          <img src={prediosImg} alt="Prédios" className="home-banner-image" />
+          <div
+            className="home-banner-image"
+            style={{ backgroundImage: `url(${homeLogoImg})` }}
+            role="img"
+            aria-label="Prédios"
+          />
           <div className="home-banner-body">
             <h3 className="home-banner-title">
               Gestão inteligente para mais controle, organização e resultados reais.

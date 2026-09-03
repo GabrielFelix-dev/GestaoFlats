@@ -2,8 +2,9 @@
   width: 100%;
   overflow-x: auto;
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--color-white);
+  box-shadow: var(--shadow-soft);
 }
 
 .data-table {
@@ -21,7 +22,11 @@
 }
 
 .data-table th {
-  background: #f4f7fa;
+  background: linear-gradient(
+    180deg,
+    rgba(234, 254, 248, 0.85),
+    rgba(234, 254, 248, 0.4)
+  );
   color: var(--color-primary);
   font-size: 0.8rem;
   font-weight: 700;
@@ -30,7 +35,11 @@
 }
 
 .data-table tbody tr:hover {
-  background: rgba(95, 126, 168, 0.03);
+  background: rgba(95, 126, 168, 0.06);
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .table-empty {

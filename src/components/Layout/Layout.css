@@ -1,6 +1,8 @@
 .app-shell {
   min-height: 100vh;
-  background: var(--color-background);
+  background:
+    radial-gradient(circle at top left, rgba(87, 118, 175, 0.1), transparent 28rem),
+    var(--color-background);
 }
 
 .content-shell {
@@ -11,6 +13,7 @@
 .main-content {
   flex: 1;
   min-width: 0;
+  background: transparent;
 }
 
 @media (max-width: 768px) {

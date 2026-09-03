@@ -103,11 +103,13 @@ export default function App() {
     function handleLogin() {
       localStorage.setItem("gestao-flats:auth", "true");
       setIsAuthenticated(true);
+      setActiveItem("Dashboard");
     }
 
     function handleLogout() {
       localStorage.removeItem("gestao-flats:auth");
       setIsAuthenticated(false);
+      setActiveItem("Home");
     }
 
     window.addEventListener("gestao-flats:login", handleLogin);
@@ -117,6 +119,21 @@ export default function App() {
       window.removeEventListener("gestao-flats:logout", handleLogout);
     };
   }, []);
+
+  if (!isAuthenticated) {
+    return (
+      <Layout
+        title="Home"
+        showSidebar={false}
+        isAuthenticated={false}
+        sidebarOpen={false}
+        setSidebarOpen={setSidebarOpen}
+        headerProps={{ showToggle: false, showTitle: false }}
+      >
+        <Home />
+      </Layout>
+    );
+  }
 
   return (
     <Layout

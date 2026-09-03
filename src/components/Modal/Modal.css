@@ -13,8 +13,8 @@
   width: min(100%, 560px);
   background: var(--color-white);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(22, 60, 121, 0.18);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 45px rgba(0, 35, 102, 0.22);
   overflow: hidden;
 }
 
@@ -25,6 +25,11 @@
   gap: 1rem;
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(
+    180deg,
+    rgba(234, 254, 248, 0.6),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 .modal-header h2 {
