@@ -93,11 +93,11 @@
 
 .home-form-card {
   position: absolute;
-  right: 3.5rem;
+  right: 6.5rem;
   top: 50%;
   transform: translateY(-50%);
   width: 380px;
-  max-width: calc(100% - 7rem);
+  max-width: calc(100% - 13rem);
   background: #5776af;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -206,8 +206,9 @@
   }
 
   .home-form-card {
-    right: 2.5rem;
+    right: 5rem;
     width: 360px;
+    max-width: calc(100% - 10rem);
   }
 
   .home-banner-image {
@@ -223,7 +224,8 @@
 @media (min-width: 1400px) {
   .home-form-card {
     width: 420px;
-    right: 4rem;
+    right: 7rem;
+    max-width: calc(100% - 14rem);
   }
 
   .home-banner {
