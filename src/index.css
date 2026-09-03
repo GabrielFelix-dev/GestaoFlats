@@ -5,7 +5,7 @@
   --color-blue-light: #7ea2c5;
   --color-blue-soft: #9bc8da;
   --color-border: #d3d6d8;
-  --color-background: #eafef8;
+  --color-background: #d5f6f9;
   --color-background-soft: #f4faf9;
   --color-surface: #ffffff;
   --color-surface-tint: rgba(87, 118, 175, 0.06);
@@ -27,6 +27,10 @@
 
 html {
   font-size: 16px;
+}
+
+body:has(.home-page) {
+  overflow: hidden;
 }
 
 body {
