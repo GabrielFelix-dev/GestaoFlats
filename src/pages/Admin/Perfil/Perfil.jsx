@@ -44,6 +44,7 @@ export default function Perfil({
       onNavigate={onNavigate}
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
+      isAuthenticated
       userName={displayName}
       userRole="Administrador"
       onLogout={onLogout}

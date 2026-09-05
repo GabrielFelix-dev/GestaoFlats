@@ -1,6 +1,5 @@
-import { useState } from "react";
-import AccountModal from "../AccountModal/AccountModal";
 import "./Header.css";
+import gestaoFlatsLogo from "../../assets/gestãoflats-nome.png";
 
 export default function Header({
   title,
@@ -9,31 +8,15 @@ export default function Header({
   subtitle,
   onToggleSidebar,
   isSidebarOpen,
+  isAuthenticated = false,
+  showToggle = true,
+  showTitle = true,
   onLogout,
-  onViewProfile,
-  onChangeAccount,
-  userEmail,
-  onAccountSave,
 }) {
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
-  const [account, setAccount] = useState({ name: userName, email: userEmail });
-
-  function handleChangeAccount() {
-    setIsUserMenuOpen(false);
-    setIsAccountModalOpen(true);
-    onChangeAccount?.();
-  }
-
-  function handleSaveAccount(updatedAccount) {
-    setAccount((current) => ({ ...current, ...updatedAccount }));
-    onAccountSave?.(updatedAccount);
-  }
-
   return (
     <header className="topbar">
       <div className="topbar-left">
-        {onToggleSidebar && (
+        {showToggle && onToggleSidebar && (
           <button
             type="button"
             className="sidebar-toggle"
@@ -44,72 +27,38 @@ export default function Header({
           </button>
         )}
 
-        <div>
-          <p className="topbar-label">Gestão Flats</p>
-          <h1>{title || "Dashboard"}</h1>
-        </div>
-      </div>
-
-      <div className="topbar-right">
-        {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
-        <div className="user-menu">
-          <button
-            type="button"
-            className="user-badge"
-            aria-label={`Abrir opções da conta de ${userName}`}
-            aria-expanded={isUserMenuOpen}
-            onClick={() => setIsUserMenuOpen((open) => !open)}
-          >
-            <span className="avatar">
-              {(account.name || userName).charAt(0).toUpperCase()}
-            </span>
-            <span className="user-details">
-              <strong>{account.name || userName}</strong>
-              <small>{userRole}</small>
-            </span>
-            <span className="user-menu-chevron" aria-hidden="true">
-              {isUserMenuOpen ? "⌃" : "⌄"}
-            </span>
-          </button>
-
-          {isUserMenuOpen && (
-            <div className="account-menu" role="menu">
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => {
-                  setIsUserMenuOpen(false);
-                  onViewProfile?.();
-                }}
-              >
-                Ver perfil
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                onClick={handleChangeAccount}
-              >
-                Alterar conta
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="logout-action"
-                onClick={onLogout}
-              >
-                Sair
-              </button>
+        <div className="topbar-brand">
+          <img src={gestaoFlatsLogo} alt="Gestão Flats" className="topbar-brand-image" />
+          {showTitle && (
+            <div className="topbar-page-title">
+              <h1>{title || "Dashboard"}</h1>
             </div>
           )}
         </div>
       </div>
 
-      <AccountModal
-        isOpen={isAccountModalOpen}
-        onClose={() => setIsAccountModalOpen(false)}
-        account={account}
-        onSave={handleSaveAccount}
-      />
+      <div className="topbar-right">
+        {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
+        {isAuthenticated && (
+          <>
+            <div className="user-badge" aria-label={`Usuário ${userName}`}>
+              <span className="avatar">{userName.charAt(0).toUpperCase()}</span>
+              <div className="user-badge-text">
+                <strong>{userName}</strong>
+                <small>{userRole}</small>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="logout-button"
+              onClick={onLogout}
+              aria-label="Sair da conta"
+            >
+              Sair
+            </button>
+          </>
+        )}
+      </div>
     </header>
   );
 }

@@ -1,182 +1,245 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "./components/Card/Card";
 import Layout from "./components/Layout/Layout";
-import CheckinCheckout from "./pages/Admin/CheckinCheckout/CheckinCheckout";
+import Home from "./pages/Home/Home";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
+import Hospedes from "./pages/Admin/Hospedes/Hospedes";
+import Hospedagens from "./pages/Admin/Hospedagens/Hospedagens";
+import NovaHospedagem from "./pages/Admin/Hospedagens/NovaHospedagem";
+import DetalhesHospedagem from "./pages/Admin/Hospedagens/DetalhesHospedagem";
+import CheckinCheckout from "./pages/Admin/CheckinCheckout/CheckinCheckout";
 import Disponibilidade from "./pages/Admin/Disponibilidade/Disponibilidade";
-import Despesas from "./pages/Admin/Financeiro/Despesas";
+import Acomodacoes from "./pages/Admin/Acomodacoes/Acomodacoes";
+import Historico from "./pages/Admin/Historico/Historico";
 import Financeiro from "./pages/Admin/Financeiro/Financeiro";
 import Receitas from "./pages/Admin/Financeiro/Receitas";
+import Despesas from "./pages/Admin/Financeiro/Despesas";
 import ResumoFinanceiro from "./pages/Admin/Financeiro/ResumoFinanceiro";
-import Hospedagens from "./pages/Admin/Hospedagens/Hospedagens";
-import Hospedes from "./pages/Admin/Hospedes/Hospedes";
-import Login from "./pages/Login/Login";
-import Perfil from "./pages/Admin/Perfil/Perfil";
-import { adminNavItems } from "./pages/navigation";
+import "./App.css";
+
+const sidebarItems = [
+  { label: "Dashboard", value: "dashboard" },
+  { label: "Hóspedes", value: "hospedes" },
+  { label: "Acomodações", value: "acomodacoes" },
+  { label: "Hospedagens", value: "hospedagens" },
+  { label: "Disponibilidade", value: "disponibilidade" },
+  { label: "Check-in / Check-out", value: "checkin-checkout" },
+  { label: "Histórico", value: "historico" },
+  {
+    label: "Financeiro",
+    value: "financeiro",
+    children: [
+      { label: "Resumo", value: "resumo-financeiro" },
+      { label: "Receitas", value: "receitas" },
+      { label: "Despesas", value: "despesas" },
+    ],
+  },
+];
+
+const pageLabels = {
+  dashboard: "Dashboard",
+  hospedes: "Hóspedes",
+  acomodacoes: "Acomodações",
+  hospedagens: "Hospedagens",
+  "nova-hospedagem": "Nova Hospedagem",
+  "detalhes-hospedagem": "Detalhes da Hospedagem",
+  disponibilidade: "Disponibilidade",
+  "checkin-checkout": "Check-in / Check-out",
+  historico: "Histórico",
+  financeiro: "Financeiro",
+  receitas: "Receitas",
+  despesas: "Despesas",
+  "resumo-financeiro": "Resumo financeiro",
+};
+
+function PageInDevelopment({ pageName }) {
+  return (
+    <div className="page-placeholder">
+      <Card>
+        <h2>{pageName}</h2>
+        <p>Esta página ainda está em desenvolvimento.</p>
+      </Card>
+    </div>
+  );
+}
 
 function AdminPage({
   pageName,
   activeItem,
-  onNavigate,
   children,
+  onNavigate,
   onLogout,
-  onViewProfile,
-  onChangeAccount,
-  onAccountSave,
-  account,
+  sidebarOpen,
+  setSidebarOpen,
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
   return (
     <Layout
       title={pageName}
-      navItems={adminNavItems}
+      navItems={sidebarItems}
       activeItem={activeItem}
       onNavigate={onNavigate}
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
-      userName={account?.name || "Administrador"}
+      isAuthenticated
+      userName="Maria Souza"
       userRole="Administrador"
       onLogout={onLogout}
-      onViewProfile={onViewProfile}
-      onChangeAccount={onChangeAccount}
-      userEmail={account?.email}
-      onAccountSave={onAccountSave}
     >
       {children}
     </Layout>
   );
 }
 
-function PageInDevelopment({
-  pageName,
-  onNavigate,
-  activeItem,
-  onLogout,
-  onViewProfile,
-  onChangeAccount,
-  onAccountSave,
-  account,
-}) {
-  return (
-    <AdminPage
-      pageName={pageName}
-      activeItem={activeItem}
-      onNavigate={onNavigate}
-      onLogout={onLogout}
-      onViewProfile={onViewProfile}
-      onChangeAccount={onChangeAccount}
-      account={account}
-      onAccountSave={onAccountSave}
-    >
-      <Card title={pageName} subtitle="Módulo administrativo">
-        <p>Esta página ainda está em desenvolvimento.</p>
-      </Card>
-    </AdminPage>
-  );
+function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
+  const pageName = pageLabels[activeItem] || activeItem;
+  const layoutProps = {
+    ...props,
+    sidebarOpen,
+    setSidebarOpen,
+  };
+
+  switch (activeItem) {
+    case "dashboard":
+      return <Dashboard {...props} />;
+    case "hospedes":
+      return <Hospedes {...props} />;
+    case "acomodacoes":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Acomodacoes />
+        </AdminPage>
+      );
+    case "hospedagens":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Hospedagens />
+        </AdminPage>
+      );
+    case "nova-hospedagem":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <NovaHospedagem />
+        </AdminPage>
+      );
+    case "detalhes-hospedagem":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <DetalhesHospedagem />
+        </AdminPage>
+      );
+    case "checkin-checkout":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <CheckinCheckout />
+        </AdminPage>
+      );
+    case "disponibilidade":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Disponibilidade />
+        </AdminPage>
+      );
+    case "historico":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Historico />
+        </AdminPage>
+      );
+    case "financeiro":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Financeiro />
+        </AdminPage>
+      );
+    case "receitas":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Receitas />
+        </AdminPage>
+      );
+    case "despesas":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Despesas />
+        </AdminPage>
+      );
+    case "resumo-financeiro":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <ResumoFinanceiro />
+        </AdminPage>
+      );
+    default:
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <PageInDevelopment pageName={pageName} />
+        </AdminPage>
+      );
+  }
 }
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
-  const [account, setAccount] = useState({
-    name: "Administrador",
-    email: "admin@gestaoflats.com",
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("gestao-flats:auth") === "true";
   });
-  const handleLogout = () => setIsAuthenticated(false);
-  const handleViewProfile = () => setActiveItem("profile");
-  const handleAccountSave = (updatedAccount) => {
-    setAccount((current) => ({ ...current, ...updatedAccount }));
+
+  useEffect(() => {
+    function handleLogin() {
+      localStorage.setItem("gestao-flats:auth", "true");
+      setIsAuthenticated(true);
+      setActiveItem("dashboard");
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("gestao-flats:auth");
+      setIsAuthenticated(false);
+      setActiveItem("dashboard");
+    }
+
+    window.addEventListener("gestao-flats:login", handleLogin);
+    window.addEventListener("gestao-flats:logout", handleLogout);
+    return () => {
+      window.removeEventListener("gestao-flats:login", handleLogin);
+      window.removeEventListener("gestao-flats:logout", handleLogout);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    window.dispatchEvent(new Event("gestao-flats:logout"));
   };
 
   if (!isAuthenticated) {
-    return <Login onLogin={() => setIsAuthenticated(true)} />;
-  }
-
-  if (activeItem === "dashboard") {
     return (
-      <Dashboard
-        onNavigate={setActiveItem}
-        onLogout={handleLogout}
-        onViewProfile={handleViewProfile}
-        onChangeAccount={() => undefined}
-        onAccountSave={handleAccountSave}
-        account={account}
-      />
+      <Layout
+        title="Home"
+        showSidebar={false}
+        isAuthenticated={false}
+        sidebarOpen={false}
+        setSidebarOpen={setSidebarOpen}
+        headerProps={{ showToggle: false, showTitle: false }}
+      >
+        <Home />
+      </Layout>
     );
   }
 
-  if (activeItem === "hospedes") {
-    return (
-      <Hospedes
-        onNavigate={setActiveItem}
-        onLogout={handleLogout}
-        onViewProfile={handleViewProfile}
-        onChangeAccount={() => undefined}
-        onAccountSave={handleAccountSave}
-        account={account}
-      />
-    );
-  }
-
-  if (activeItem === "profile") {
-    return (
-      <Perfil
-        account={account}
-        onNavigate={setActiveItem}
-        onLogout={handleLogout}
-        onChangeAccount={() => undefined}
-        onAccountSave={handleAccountSave}
-      />
-    );
-  }
-
-  const implementedPages = {
-    "checkin-checkout": CheckinCheckout,
-    disponibilidade: Disponibilidade,
-    hospedagens: Hospedagens,
-    financeiro: Financeiro,
-    receitas: Receitas,
-    despesas: Despesas,
-    "resumo-financeiro": ResumoFinanceiro,
+  const adminProps = {
+    onNavigate: setActiveItem,
+    onLogout: handleLogout,
+    onViewProfile: () => undefined,
+    onChangeAccount: () => undefined,
+    onAccountSave: () => undefined,
+    account: { name: "Maria Souza", email: "admin@gestaoflats.com" },
   };
 
-  const PageComponent = implementedPages[activeItem];
-  if (PageComponent) {
-    return (
-      <AdminPage
-        pageName={
-          adminNavItems
-            .flatMap((item) => [item, ...(item.children || [])])
-            .find((item) => item.value === activeItem)?.label
-        }
-        activeItem={activeItem}
-        onNavigate={setActiveItem}
-        onLogout={handleLogout}
-        onViewProfile={handleViewProfile}
-        onChangeAccount={() => undefined}
-        account={account}
-        onAccountSave={handleAccountSave}
-      >
-        <PageComponent />
-      </AdminPage>
-    );
-  }
-
-  const page = adminNavItems
-    .flatMap((item) => [item, ...(item.children || [])])
-    .find((item) => item.value === activeItem);
-
   return (
-    <PageInDevelopment
-      pageName={page?.label || "Página"}
+    <AdminRouter
       activeItem={activeItem}
-      onNavigate={setActiveItem}
-      onLogout={handleLogout}
-      onViewProfile={handleViewProfile}
-      onChangeAccount={() => undefined}
-      account={account}
-      onAccountSave={handleAccountSave}
+      props={adminProps}
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
     />
   );
 }

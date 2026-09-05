@@ -5,6 +5,7 @@ import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
 import Table from "../../../components/Table/Table";
 import { hospedagens as initialHospedagens } from "../../../data/hospedagens";
+import "./Hospedagens.css";
 
 const actionButtonStyle = {
   background: "transparent",
@@ -77,7 +78,7 @@ export default function Hospedagens() {
   return (
     <div className="hospedagens-page">
       <Card title="Filtro de Hospedagens" subtitle="Pesquise por hóspede ou acomodação">
-        <div className="filter-grid" style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-grid">
           <Input
             label="Buscar"
             name="busca"

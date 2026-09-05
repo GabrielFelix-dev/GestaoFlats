@@ -1,20 +1,46 @@
 .app-shell {
   min-height: 100vh;
-  background: var(--color-background);
+  position: relative;
+  z-index: 2;
+}
+
+.shell-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
 }
 
 .content-shell {
   display: flex;
-  min-height: calc(100vh - 72px);
+  min-height: calc(100vh - var(--header-height, 72px));
+  padding-top: var(--header-height, 72px);
 }
 
 .main-content {
   flex: 1;
   min-width: 0;
+  background: transparent;
+  padding: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 768px) {
   .content-shell {
     display: block;
+    position: relative;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }

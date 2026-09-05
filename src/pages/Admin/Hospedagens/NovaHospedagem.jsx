@@ -3,6 +3,7 @@ import Button from "../../../components/Button/Button";
 import Card from "../../../components/Card/Card";
 import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
+import "./NovaHospedagem.css";
 
 export default function NovaHospedagem() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ export default function NovaHospedagem() {
   return (
     <div className="nova-hospedagem-page">
       <Card title="Nova Hospedagem" subtitle="Preencha os dados para registrar uma reserva">
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1rem" }}>
+        <form onSubmit={handleSubmit} className="nova-hospedagem-form">
           <Input
             label="Nome do Hóspede"
             name="hospede"
@@ -76,7 +77,7 @@ export default function NovaHospedagem() {
             value={formData.valorTotal}
             onChange={handleChange}
           />
-          <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
+          <div className="nova-hospedagem-actions">
             <Button variant="primary" type="submit">
               Salvar Reserva
             </Button>

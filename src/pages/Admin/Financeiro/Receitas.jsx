@@ -5,6 +5,7 @@ import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
 import Table from "../../../components/Table/Table";
 import { receitas as initialReceitas } from "../../../data/receitas";
+import "./Financeiro.css";
 
 const actionButtonStyle = {
   background: "transparent",
@@ -74,7 +75,7 @@ export default function Receitas() {
   return (
     <div className="receitas-page">
       <Card title="Filtro de Receitas" subtitle="Gerencie as entradas financeiras">
-        <div className="filter-grid" style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-grid">
           <Input
             label="Buscar por descrição"
             name="busca"

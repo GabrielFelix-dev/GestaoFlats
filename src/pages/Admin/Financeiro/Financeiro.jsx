@@ -4,28 +4,29 @@ import Button from "../../../components/Button/Button";
 import ResumoFinanceiro from "./ResumoFinanceiro";
 import Receitas from "./Receitas";
 import Despesas from "./Despesas";
+import "./Financeiro.css";
 
 export default function Financeiro() {
   const [abaAtiva, setAbaAtiva] = useState("resumo");
 
   return (
-    <div className="financeiro-page" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+    <div className="financeiro-page">
       <Card title="Gestão Financeira" subtitle="Controle de receitas, despesas e fluxo de caixa">
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          <Button 
-            variant={abaAtiva === "resumo" ? "primary" : "outline"} 
+        <div className="financeiro-tabs">
+          <Button
+            variant={abaAtiva === "resumo" ? "primary" : "outline"}
             onClick={() => setAbaAtiva("resumo")}
           >
             📊 Visão Geral
           </Button>
-          <Button 
-            variant={abaAtiva === "receitas" ? "primary" : "outline"} 
+          <Button
+            variant={abaAtiva === "receitas" ? "primary" : "outline"}
             onClick={() => setAbaAtiva("receitas")}
           >
             🟢 Receitas
           </Button>
-          <Button 
-            variant={abaAtiva === "despesas" ? "primary" : "outline"} 
+          <Button
+            variant={abaAtiva === "despesas" ? "primary" : "outline"}
             onClick={() => setAbaAtiva("despesas")}
           >
             🔴 Despesas

@@ -4,6 +4,7 @@ import Card from "../../../components/Card/Card";
 import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
 import Table from "../../../components/Table/Table";
+import "./Disponibilidade.css";
 
 export default function Disponibilidade() {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ export default function Disponibilidade() {
   };
 
   return (
-    <div className="dashboard-page">
+    <div className="disponibilidade-page">
       <div className="page-header">
         <div>
           <p className="eyebrow">Consultas</p>

@@ -1,0 +1,118 @@
+.financeiro-page,
+.receitas-page,
+.despesas-page,
+.hospedagens-page,
+.nova-hospedagem-page,
+.detalhes-hospedagem-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.financeiro-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.financeiro-page .filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.receitas-page .filter-grid,
+.despesas-page .filter-grid,
+.hospedagens-page .filter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(180px, 0.7fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.resumo-financeiro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.resumo-financeiro-item {
+  padding: 0.5rem 0.25rem;
+}
+
+.resumo-financeiro-item span {
+  font-size: 0.88rem;
+  color: #4a5a72;
+  display: block;
+}
+
+.resumo-financeiro-item h2 {
+  margin-top: 0.5rem;
+  font-size: 1.6rem;
+  color: #002366;
+}
+
+.resumo-financeiro-item.success h2 {
+  color: #2a9d8f;
+}
+
+.resumo-financeiro-item.danger h2 {
+  color: #e63946;
+}
+
+.nova-hospedagem-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.nova-hospedagem-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.detalhes-hospedagem-info {
+  display: grid;
+  gap: 0.75rem;
+  line-height: 1.5;
+}
+
+.detalhes-hospedagem-info p strong {
+  color: #002366;
+}
+
+.detalhes-hospedagem-info p {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .receitas-page .filter-grid,
+  .despesas-page .filter-grid,
+  .hospedagens-page .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .financeiro-tabs {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .financeiro-tabs .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .nova-hospedagem-actions {
+    flex-direction: column;
+  }
+
+  .nova-hospedagem-actions .btn {
+    width: 100%;
+  }
+}
