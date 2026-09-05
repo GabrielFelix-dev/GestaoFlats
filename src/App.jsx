@@ -15,6 +15,7 @@ import Financeiro from "./pages/Admin/Financeiro/Financeiro";
 import Receitas from "./pages/Admin/Financeiro/Receitas";
 import Despesas from "./pages/Admin/Financeiro/Despesas";
 import ResumoFinanceiro from "./pages/Admin/Financeiro/ResumoFinanceiro";
+import Perfil from "./pages/Admin/Perfil/Perfil";
 import "./App.css";
 
 const sidebarItems = [
@@ -25,15 +26,7 @@ const sidebarItems = [
   { label: "Disponibilidade", value: "disponibilidade" },
   { label: "Check-in / Check-out", value: "checkin-checkout" },
   { label: "Histórico", value: "historico" },
-  {
-    label: "Financeiro",
-    value: "financeiro",
-    children: [
-      { label: "Resumo", value: "resumo-financeiro" },
-      { label: "Receitas", value: "receitas" },
-      { label: "Despesas", value: "despesas" },
-    ],
-  },
+  { label: "Financeiro", value: "financeiro" },
 ];
 
 const pageLabels = {
@@ -50,6 +43,7 @@ const pageLabels = {
   receitas: "Receitas",
   despesas: "Despesas",
   "resumo-financeiro": "Resumo financeiro",
+  perfil: "Perfil",
 };
 
 function PageInDevelopment({ pageName }) {
@@ -69,6 +63,10 @@ function AdminPage({
   children,
   onNavigate,
   onLogout,
+  onViewProfile,
+  onChangeAccount,
+  onAccountSave,
+  account,
   sidebarOpen,
   setSidebarOpen,
 }) {
@@ -81,9 +79,13 @@ function AdminPage({
       sidebarOpen={sidebarOpen}
       setSidebarOpen={setSidebarOpen}
       isAuthenticated
-      userName="Maria Souza"
+      userName={account?.name || "Maria Souza"}
       userRole="Administrador"
       onLogout={onLogout}
+      onViewProfile={onViewProfile}
+      onChangeAccount={onChangeAccount}
+      userEmail={account?.email}
+      onAccountSave={onAccountSave}
     >
       {children}
     </Layout>
@@ -101,6 +103,8 @@ function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
   switch (activeItem) {
     case "dashboard":
       return <Dashboard {...props} />;
+    case "perfil":
+      return <Perfil {...props} />;
     case "hospedes":
       return <Hospedes {...props} />;
     case "acomodacoes":
@@ -184,17 +188,24 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("gestao-flats:auth") === "true";
   });
+  const [showLoginAfterLogout, setShowLoginAfterLogout] = useState(false);
+  const [account, setAccount] = useState({
+    name: "Maria Souza",
+    email: "admin@gestaoflats.com",
+  });
 
   useEffect(() => {
     function handleLogin() {
       localStorage.setItem("gestao-flats:auth", "true");
       setIsAuthenticated(true);
+      setShowLoginAfterLogout(false);
       setActiveItem("dashboard");
     }
 
     function handleLogout() {
       localStorage.removeItem("gestao-flats:auth");
       setIsAuthenticated(false);
+      setShowLoginAfterLogout(true);
       setActiveItem("dashboard");
     }
 
@@ -210,6 +221,10 @@ export default function App() {
     window.dispatchEvent(new Event("gestao-flats:logout"));
   };
 
+  const handleAccountSave = (updatedAccount) => {
+    setAccount((current) => ({ ...current, ...updatedAccount }));
+  };
+
   if (!isAuthenticated) {
     return (
       <Layout
@@ -220,7 +235,7 @@ export default function App() {
         setSidebarOpen={setSidebarOpen}
         headerProps={{ showToggle: false, showTitle: false }}
       >
-        <Home />
+        <Home startInLogin={showLoginAfterLogout} />
       </Layout>
     );
   }
@@ -228,10 +243,10 @@ export default function App() {
   const adminProps = {
     onNavigate: setActiveItem,
     onLogout: handleLogout,
-    onViewProfile: () => undefined,
+    onViewProfile: () => setActiveItem("perfil"),
     onChangeAccount: () => undefined,
-    onAccountSave: () => undefined,
-    account: { name: "Maria Souza", email: "admin@gestaoflats.com" },
+    onAccountSave: handleAccountSave,
+    account,
   };
 
   return (

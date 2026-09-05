@@ -4,8 +4,8 @@ import Input from "../../components/Input/Input";
 import homeLogoImg from "../../assets/predios.png";
 import "./Home.css";
 
-export default function Home() {
-  const [isLogin, setIsLogin] = useState(false);
+export default function Home({ startInLogin = false }) {
+  const [isLogin, setIsLogin] = useState(startInLogin);
   const [form, setForm] = useState({ nome: "", email: "", senha: "" });
 
   function handleChange(event) {
@@ -36,18 +36,22 @@ export default function Home() {
             />
             <div className="home-banner-body">
               <h3 className="home-banner-title">
-                Gestão inteligente para mais controle, organização e resultados reais.
+                Gestão inteligente para mais controle, organização e resultados
+                reais.
               </h3>
               <span className="home-banner-divider" aria-hidden="true" />
               <p className="home-banner-text">
-                O sistema completo para administrar flats com eficiência, praticidade e segurança.
+                O sistema completo para administrar flats com eficiência,
+                praticidade e segurança.
               </p>
             </div>
           </div>
 
           <div className="home-form-card">
             <div className="home-form-header">
-              <p className="home-eyebrow">{isLogin ? "Acesso" : "Comece agora"}</p>
+              <p className="home-eyebrow">
+                {isLogin ? "Acesso" : "Comece agora"}
+              </p>
               <h2>{isLogin ? "Entrar no sistema" : "Criar conta"}</h2>
               <p>
                 {isLogin
@@ -97,7 +101,10 @@ export default function Home() {
 
             <p className="home-form-footer">
               {isLogin ? "Ainda não tem conta?" : "Já tem conta?"}{" "}
-              <button type="button" onClick={() => setIsLogin((value) => !value)}>
+              <button
+                type="button"
+                onClick={() => setIsLogin((value) => !value)}
+              >
                 {isLogin ? "Cadastre-se" : "Entrar"}
               </button>
             </p>

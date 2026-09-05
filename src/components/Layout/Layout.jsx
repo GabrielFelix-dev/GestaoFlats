@@ -17,6 +17,10 @@ export default function Layout({
   showSidebar = true,
   headerProps = {},
   onLogout,
+  onViewProfile,
+  onChangeAccount,
+  userEmail,
+  onAccountSave,
 }) {
   const headerRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(72);
@@ -43,7 +47,10 @@ export default function Layout({
   }, []);
 
   return (
-    <div className="app-shell" style={{ "--header-height": `${headerHeight}px` }}>
+    <div
+      className="app-shell"
+      style={{ "--header-height": `${headerHeight}px` }}
+    >
       <div ref={headerRef} className="shell-header">
         <Header
           title={title}
@@ -55,6 +62,10 @@ export default function Layout({
           }
           isSidebarOpen={sidebarOpen}
           onLogout={onLogout}
+          onViewProfile={onViewProfile}
+          onChangeAccount={onChangeAccount}
+          userEmail={userEmail}
+          onAccountSave={onAccountSave}
           {...headerProps}
         />
       </div>

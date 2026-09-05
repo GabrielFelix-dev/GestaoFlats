@@ -77,11 +77,54 @@
 }
 
 .user-badge {
+  cursor: pointer;
   gap: 0.75rem;
   padding: 0.55rem 0.8rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-menu-chevron {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 30;
+  min-width: 170px;
+  padding: 0.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 12px 24px rgba(0, 35, 102, 0.18);
+}
+
+.account-menu button {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 0.7rem 0.75rem;
+  text-align: left;
+}
+
+.account-menu button:hover {
+  background: var(--color-background);
+}
+
+.account-menu .logout-action {
+  color: #b42318;
 }
 
 .avatar {
@@ -183,6 +226,10 @@
   }
 
   .user-badge small {
+    display: none;
+  }
+
+  .user-menu-chevron {
     display: none;
   }
 
