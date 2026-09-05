@@ -42,6 +42,17 @@ body {
   font-family: Inter, Arial, sans-serif;
 }
 
+@media (max-width: 768px) {
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 35, 102, 0.55);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
 button,
 input,
 select {

@@ -103,7 +103,7 @@ export default function CheckinCheckout() {
         footer={
           <>
             <Button variant="outline">Cancelar</Button>
-            <Button>Confirmar</Button>
+            <Button variant="secondary">Confirmar</Button>
           </>
         }
       >

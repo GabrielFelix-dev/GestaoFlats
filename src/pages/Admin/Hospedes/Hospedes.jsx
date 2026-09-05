@@ -166,7 +166,7 @@ export default function Hospedes({
             <p>Cadastre, consulte, edite e exclua hóspedes do sistema.</p>
           </div>
 
-          <Button onClick={openCreateModal}>Novo hóspede</Button>
+          <Button variant="secondary" onClick={openCreateModal}>Novo hóspede</Button>
         </section>
 
         <section className="guest-filters" aria-label="Filtros de hóspedes">
@@ -231,7 +231,7 @@ export default function Hospedes({
             <Button variant="outline" onClick={closeModal}>
               Cancelar
             </Button>
-            <Button onClick={saveGuest}>
+            <Button variant="secondary" onClick={saveGuest}>
               {editingId ? "Salvar alterações" : "Cadastrar"}
             </Button>
           </>

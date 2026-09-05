@@ -29,6 +29,18 @@
   text-transform: uppercase;
 }
 
+@media (max-width: 768px) {
+  .dashboard-welcome h2,
+  .section-heading h2 {
+    color: #eafef8;
+  }
+
+  .dashboard-welcome > div > p:last-child,
+  .page-eyebrow {
+    color: #9bc8da;
+  }
+}
+
 .dashboard-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

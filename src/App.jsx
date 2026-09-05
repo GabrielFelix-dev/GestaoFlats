@@ -9,6 +9,7 @@ import NovaHospedagem from "./pages/Admin/Hospedagens/NovaHospedagem";
 import DetalhesHospedagem from "./pages/Admin/Hospedagens/DetalhesHospedagem";
 import CheckinCheckout from "./pages/Admin/CheckinCheckout/CheckinCheckout";
 import Disponibilidade from "./pages/Admin/Disponibilidade/Disponibilidade";
+import Acomodacoes from "./pages/Admin/Acomodacoes/Acomodacoes";
 import Historico from "./pages/Admin/Historico/Historico";
 import Financeiro from "./pages/Admin/Financeiro/Financeiro";
 import Receitas from "./pages/Admin/Financeiro/Receitas";
@@ -102,6 +103,12 @@ function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
       return <Dashboard {...props} />;
     case "hospedes":
       return <Hospedes {...props} />;
+    case "acomodacoes":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Acomodacoes />
+        </AdminPage>
+      );
     case "hospedagens":
       return (
         <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
