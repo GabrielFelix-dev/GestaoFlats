@@ -30,17 +30,17 @@
 }
 
 .input::placeholder {
-  color: #8a98a8;
+  color: rgba(0, 35, 102, 0.45);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--color-blue-medium);
-  box-shadow: 0 0 0 3px rgba(95, 126, 168, 0.16);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(87, 118, 175, 0.22);
 }
 
 .input:disabled {
-  background: #ecf1f4;
+  background: rgba(234, 254, 248, 0.6);
   color: var(--color-text-soft);
   cursor: not-allowed;
 }

@@ -11,6 +11,9 @@ export default function Table({
     return null;
   }
 
+  const hasActions = Boolean(actions);
+  const actionHeader = <th scope="col">Ações</th>;
+
   return (
     <div className={`table-wrapper ${className}`.trim()}>
       <table className="data-table">
@@ -21,15 +24,15 @@ export default function Table({
                 {column.label}
               </th>
             ))}
-            {actions && <th scope="col">Ações</th>}
+            {hasActions && actionHeader}
           </tr>
         </thead>
 
         <tbody>
           {data.length === 0 ? (
-            <tr>
+            <tr className="data-table-empty-row">
               <td
-                colSpan={columns.length + (actions ? 1 : 0)}
+                colSpan={columns.length + (hasActions ? 1 : 0)}
                 className="table-empty"
               >
                 {emptyMessage}
@@ -37,11 +40,24 @@ export default function Table({
             </tr>
           ) : (
             data.map((row, rowIndex) => (
-              <tr key={row.id || rowIndex}>
+              <tr
+                key={row.id || rowIndex}
+                className="data-table-row"
+                data-row-index={rowIndex}
+              >
                 {columns.map((column) => (
-                  <td key={`${rowIndex}-${column.key}`}>{row[column.key]}</td>
+                  <td
+                    key={`${rowIndex}-${column.key}`}
+                    data-label={column.label}
+                  >
+                    {row[column.key]}
+                  </td>
                 ))}
-                {actions && <td>{actions(row)}</td>}
+                {hasActions && (
+                  <td data-label="Ações" className="data-table-actions">
+                    {actions(row)}
+                  </td>
+                )}
               </tr>
             ))
           )}

@@ -6,13 +6,5 @@ export const adminNavItems = [
   { label: "Disponibilidade", value: "disponibilidade" },
   { label: "Check-in / Check-out", value: "checkin-checkout" },
   { label: "Histórico", value: "historico" },
-  {
-    label: "Financeiro",
-    value: "financeiro",
-    children: [
-      { label: "Receitas", value: "receitas" },
-      { label: "Despesas", value: "despesas" },
-      { label: "Resumo financeiro", value: "resumo-financeiro" },
-    ],
-  },
+  { label: "Financeiro", value: "financeiro" },
 ];

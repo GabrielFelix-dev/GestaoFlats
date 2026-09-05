@@ -1,14 +1,30 @@
 .sidebar {
   width: 260px;
-  background: var(--color-primary);
+  background: #5776af;
   color: var(--color-white);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   transition: width 0.2s ease;
   min-height: calc(100vh - 72px);
+  overflow: hidden;
 }
 
 .sidebar-collapsed {
   width: 88px;
+}
+
+.sidebar-collapsed .brand-text,
+.sidebar-collapsed .nav-label {
+  display: none;
+}
+
+.sidebar-collapsed .sidebar-header,
+.sidebar-collapsed .nav-item,
+.sidebar-collapsed .nav-subitem,
+.sidebar-collapsed .submenu {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  justify-content: center;
+  text-align: center;
 }
 
 .sidebar-header {
@@ -109,14 +125,18 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: 72px;
+    top: var(--header-height, 72px);
     bottom: 0;
     z-index: 20;
-    box-shadow: 0 8px 24px rgba(22, 60, 121, 0.2);
+    width: 260px;
+    border-right: none;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
   }
 
   .sidebar:not(.sidebar-collapsed) {
-    width: 100%;
+    width: 260px;
+    transform: translateX(0);
     max-width: 260px;
   }
 }

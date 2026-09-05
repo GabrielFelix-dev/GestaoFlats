@@ -1,20 +1,20 @@
-.guests-page {
+.accommodations-page {
   padding: 1.5rem;
 }
 
-.guests-heading {
+.accommodations-heading {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.guests-heading h2 {
+.accommodations-heading h2 {
   margin-top: 0.2rem;
   color: #eafef8;
 }
 
-.guests-heading > div > p:last-child {
+.accommodations-heading > div > p:last-child {
   margin-top: 0.4rem;
   color: #9bc8da;
 }
@@ -27,70 +27,65 @@
   text-transform: uppercase;
 }
 
-.guest-filters {
+.accommodations-filters {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(180px, 0.7fr);
+  grid-template-columns: minmax(0, 2fr) minmax(180px, 0.7fr) minmax(180px, 0.7fr);
   gap: 1rem;
   margin-top: 1.25rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(87, 118, 175, 0.18);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 35, 102, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
-.guest-table-section {
+.accommodations-table-section {
   margin-top: 1rem;
 }
 
-.guest-result-count {
+.accommodations-result-count {
   margin-bottom: 0.6rem;
   color: #4a5a72;
   font-size: 0.85rem;
 }
 
-.guest-actions {
+.accommodations-actions {
   display: flex;
   gap: 0.5rem;
   white-space: nowrap;
   flex-wrap: wrap;
 }
 
-.data-table td {
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-.guest-form-grid {
+.accommodations-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
-.guest-form-grid > :last-child {
+.accommodations-form-grid > :last-child {
   grid-column: 1 / -1;
 }
 
 @media (max-width: 720px) {
-  .guests-page {
+  .accommodations-page {
     padding: 1rem;
   }
 
-  .guests-heading {
+  .accommodations-heading {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .guests-heading > button {
+  .accommodations-heading > button {
     width: 100%;
   }
 
-  .guest-filters,
-  .guest-form-grid {
+  .accommodations-filters,
+  .accommodations-form-grid {
     grid-template-columns: 1fr;
   }
 
-  .guest-form-grid > :last-child {
+  .accommodations-form-grid > :last-child {
     grid-column: auto;
   }
 }

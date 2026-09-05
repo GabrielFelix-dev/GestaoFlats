@@ -6,9 +6,13 @@ export default function Sidebar({
   onNavigate,
   collapsed = false,
   onToggle,
+  headerHeight = 72,
 }) {
   return (
-    <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`.trim()}>
+    <aside
+      style={{ top: headerHeight }}
+      className={`sidebar ${collapsed ? "sidebar-collapsed" : "sidebar-open"}`.trim()}
+    >
       <div className="sidebar-header">
         <div className="brand">
           <span className="brand-mark">GF</span>

@@ -1,9 +1,9 @@
 .card {
-  background: var(--color-white);
+  background: rgba(255, 255, 255, 0.88);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  padding: 1.15rem;
+  padding: 1.25rem 1.25rem 1.15rem;
 }
 
 .card-header {
@@ -19,7 +19,11 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background: rgba(22, 60, 121, 0.08);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 35, 102, 0.12),
+    rgba(87, 118, 175, 0.18)
+  );
   border-radius: 10px;
   color: var(--color-primary);
   font-size: 1.2rem;
@@ -32,13 +36,13 @@
 .card-heading h3 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: #002366;
 }
 
 .card-heading p {
   margin-top: 0.2rem;
   font-size: 0.82rem;
-  color: var(--color-text-soft);
+  color: #4a5a72;
 }
 
 .card-body {
