@@ -357,7 +357,6 @@ Integrantes e contribuidores do Grupo Gestão Flats:
 | Ana Karolyne             | [@anakarolyne-oa](https://github.com/anakarolyne-oa)     |
 | Raphael Vicente          | [@RaphaelVicente08](https://github.com/RaphaelVicente08) |
 
-> Os perfis de Gabriel, Samires, Marina e José Luiz foram associados usando as identidades dos commits e a lista de contribuidores exibida pelo GitHub para este repositório. Ana Karolyne e Raphael Vicente foram adicionados como integrantes do grupo a partir dos perfis informados.
 
 ## Licença
 
