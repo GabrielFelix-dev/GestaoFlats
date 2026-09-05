@@ -358,6 +358,4 @@ Integrantes e contribuidores do Grupo Gestão Flats:
 | Raphael Vicente          | [@RaphaelVicente08](https://github.com/RaphaelVicente08) |
 
 
-## Licença
 
-Este repositório é um projeto acadêmico privado (`private: true` no `package.json`). Não há uma licença de uso ou distribuição definida neste momento.
