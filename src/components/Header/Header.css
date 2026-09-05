@@ -145,6 +145,7 @@
     align-items: stretch;
     gap: 0.6rem;
     padding: 0.85rem 1rem;
+    border-bottom: none;
   }
 
   .topbar-left {

@@ -37,7 +37,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-background);
+  background: var(--color-background) url("./assets/fundo-pagina.png") center top / cover no-repeat;
   color: var(--color-text);
   font-family: Inter, Arial, sans-serif;
 }

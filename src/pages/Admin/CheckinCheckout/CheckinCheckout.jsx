@@ -5,6 +5,7 @@ import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
 import Table from "../../../components/Table/Table";
 import Modal from "../../../components/Modal/Modal";
+import "./CheckinCheckout.css";
 
 export default function CheckinCheckout() {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ export default function CheckinCheckout() {
   };
 
   return (
-    <div className="dashboard-page">
+    <div className="checkin-checkout-page">
       <div className="page-header">
         <div>
           <p className="eyebrow">Gestão</p>

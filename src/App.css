@@ -1,7 +1,7 @@
 .dashboard-page {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
   padding: 1.5rem;
 }
 
@@ -27,7 +27,7 @@
 .stat-value {
   font-size: clamp(1.6rem, 2vw, 2.1rem);
   font-weight: 700;
-  color: var(--color-primary);
+  color: #002366;
 }
 
 .filter-grid {
@@ -51,7 +51,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #d3d6d8;
 }
 
 .summary-list li:last-child {
@@ -60,11 +60,11 @@
 }
 
 .summary-list span {
-  color: var(--color-text-soft);
+  color: #4a5a72;
 }
 
 .summary-list strong {
-  color: var(--color-primary);
+  color: #002366;
 }
 
 .modal-form {
@@ -80,13 +80,13 @@
 }
 
 .page-placeholder h2 {
-  color: var(--color-primary);
+  color: #002366;
   font-size: 1.4rem;
 }
 
 .page-placeholder p {
   margin-top: 0.5rem;
-  color: var(--color-text-soft);
+  color: #4a5a72;
 }
 
 @media (max-width: 640px) {

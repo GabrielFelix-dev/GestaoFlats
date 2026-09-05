@@ -125,13 +125,13 @@
   .sidebar {
     position: fixed;
     left: 0;
-    top: 72px;
+    top: var(--header-height, 72px);
     bottom: 0;
     z-index: 20;
     width: 260px;
+    border-right: none;
     transform: translateX(-100%);
     transition: transform 0.2s ease;
-    box-shadow: 0 8px 24px rgba(0, 35, 102, 0.25);
   }
 
   .sidebar:not(.sidebar-collapsed) {

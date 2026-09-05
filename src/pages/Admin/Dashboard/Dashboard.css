@@ -13,16 +13,16 @@
 .dashboard-welcome h2,
 .section-heading h2 {
   margin-top: 0.2rem;
-  color: var(--color-primary);
+  color: #eafef8;
 }
 
 .dashboard-welcome > div > p:last-child {
   margin-top: 0.4rem;
-  color: var(--color-text-soft);
+  color: #9bc8da;
 }
 
 .page-eyebrow {
-  color: var(--color-blue-medium);
+  color: #9bc8da;
   font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -38,14 +38,14 @@
 
 .kpi-value {
   display: block;
-  color: var(--color-primary);
+  color: #002366;
   font-size: 2rem;
   line-height: 1;
 }
 
 .kpi-detail {
   margin-top: 0.65rem;
-  color: var(--color-text-soft);
+  color: #4a5a72;
   font-size: 0.85rem;
 }
 
@@ -65,21 +65,21 @@
 .finance-summary div {
   padding: 0.9rem;
   border-radius: 10px;
-  background: rgba(234, 254, 248, 0.7);
-  border: 1px solid rgba(87, 118, 175, 0.12);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(87, 118, 175, 0.18);
 }
 
 .finance-summary span,
 .occupancy-box span {
   display: block;
-  color: var(--color-text-soft);
+  color: #4a5a72;
   font-size: 0.82rem;
 }
 
 .finance-summary strong {
   display: block;
   margin-top: 0.35rem;
-  color: var(--color-text);
+  color: #002366;
 }
 
 .finance-summary .finance-balance {
@@ -89,7 +89,7 @@
 
 .occupancy-box strong {
   display: block;
-  color: var(--color-primary);
+  color: #002366;
   font-size: 2rem;
 }
 
@@ -111,8 +111,8 @@
   border-radius: inherit;
   background: linear-gradient(
     90deg,
-    var(--color-secondary),
-    var(--color-primary)
+    #5776af,
+    #002366
   );
 }
 

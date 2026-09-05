@@ -9,6 +9,7 @@ import NovaHospedagem from "./pages/Admin/Hospedagens/NovaHospedagem";
 import DetalhesHospedagem from "./pages/Admin/Hospedagens/DetalhesHospedagem";
 import CheckinCheckout from "./pages/Admin/CheckinCheckout/CheckinCheckout";
 import Disponibilidade from "./pages/Admin/Disponibilidade/Disponibilidade";
+import Historico from "./pages/Admin/Historico/Historico";
 import Financeiro from "./pages/Admin/Financeiro/Financeiro";
 import Receitas from "./pages/Admin/Financeiro/Receitas";
 import Despesas from "./pages/Admin/Financeiro/Despesas";
@@ -129,6 +130,12 @@ function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
       return (
         <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
           <Disponibilidade />
+        </AdminPage>
+      );
+    case "historico":
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Historico />
         </AdminPage>
       );
     case "financeiro":

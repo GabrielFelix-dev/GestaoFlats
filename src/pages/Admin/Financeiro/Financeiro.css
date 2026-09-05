@@ -43,14 +43,14 @@
 
 .resumo-financeiro-item span {
   font-size: 0.88rem;
-  color: var(--color-text-soft);
+  color: #4a5a72;
   display: block;
 }
 
 .resumo-financeiro-item h2 {
   margin-top: 0.5rem;
   font-size: 1.6rem;
-  color: var(--color-primary);
+  color: #002366;
 }
 
 .resumo-financeiro-item.success h2 {
@@ -79,7 +79,7 @@
 }
 
 .detalhes-hospedagem-info p strong {
-  color: var(--color-primary);
+  color: #002366;
 }
 
 .detalhes-hospedagem-info p {
