@@ -41,7 +41,7 @@ export default function CheckinCheckout() {
     <div className="checkin-checkout-page">
       <div className="page-header">
         <div>
-          <p className="eyebrow">Gestão</p>
+          <p className="page-eyebrow">Gestão</p>
           <h1>Check-in / Check-out</h1>
           <p>Gerencie a entrada e saída dos hóspedes.</p>
         </div>

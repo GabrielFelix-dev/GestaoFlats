@@ -64,7 +64,11 @@ export default function AccountModal({ isOpen, onClose, account, onSave }) {
         </>
       }
     >
-      <form id="account-form" className="modal-form" onSubmit={handleSubmit}>
+      <form
+        id="account-form"
+        className="modal-form account-modal-form"
+        onSubmit={handleSubmit}
+      >
         <Input
           label="Nome exibido"
           name="name"

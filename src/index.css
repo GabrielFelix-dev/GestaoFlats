@@ -43,13 +43,10 @@ body {
 }
 
 @media (max-width: 768px) {
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 35, 102, 0.55);
-    pointer-events: none;
-    z-index: 0;
+  /* The desktop background is a 2.33:1 panorama, so `cover` only shows a
+     narrow slice of it on a phone. This is a portrait version of the same photo. */
+  body {
+    background-image: url("./assets/fundo-pagina-mobile.png");
   }
 }
 
@@ -85,4 +82,21 @@ p {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--color-blue-medium);
+}
+
+/* Eyebrow badge used as the page title kicker on the admin pages.
+   It sits directly on the photo background, so it needs its own
+   surface to stay readable at every viewport size. */
+.page-eyebrow {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-secondary);
+  color: var(--color-white);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 35, 102, 0.35);
 }

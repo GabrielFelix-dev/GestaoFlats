@@ -1,11 +1,9 @@
 import { useMemo, useState } from "react";
 import Button from "../../../components/Button/Button";
 import Input from "../../../components/Input/Input";
-import Layout from "../../../components/Layout/Layout";
 import Modal from "../../../components/Modal/Modal";
 import Select from "../../../components/Select/Select";
 import Table from "../../../components/Table/Table";
-import { adminNavItems } from "../../navigation";
 import "./Hospedes.css";
 
 const initialGuests = [
@@ -51,15 +49,7 @@ const columns = [
   { key: "status", label: "Status" },
 ];
 
-export default function Hospedes({
-  onNavigate,
-  onLogout,
-  onViewProfile,
-  onChangeAccount,
-  onAccountSave,
-  account,
-}) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+export default function Hospedes() {
   const [guests, setGuests] = useState(initialGuests);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -142,22 +132,7 @@ export default function Hospedes({
   }
 
   return (
-    <Layout
-      title="Hóspedes"
-      navItems={adminNavItems}
-      activeItem="hospedes"
-      onNavigate={onNavigate}
-      sidebarOpen={sidebarOpen}
-      setSidebarOpen={setSidebarOpen}
-      isAuthenticated
-      userName={account?.name || "Administrador"}
-      userRole="Administrador"
-      onLogout={onLogout}
-      onViewProfile={onViewProfile}
-      onChangeAccount={onChangeAccount}
-      userEmail={account?.email}
-      onAccountSave={onAccountSave}
-    >
+    <>
       <div className="guests-page">
         <section className="guests-heading">
           <div>
@@ -288,6 +263,6 @@ export default function Hospedes({
           />
         </div>
       </Modal>
-    </Layout>
+    </>
   );
 }

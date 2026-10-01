@@ -67,21 +67,36 @@ export default function Header({
             <div className="user-menu">
               <button
                 type="button"
-                className="user-badge"
+                className={`user-badge${isUserMenuOpen ? " is-open" : ""}`}
                 aria-label={`Abrir opções da conta de ${userName}`}
                 aria-expanded={isUserMenuOpen}
                 onClick={() => setIsUserMenuOpen((open) => !open)}
               >
-                <span className="avatar">
-                  {userName.charAt(0).toUpperCase()}
+            <span className="avatar">
+                  {userName
+                    .split(" ")
+                    .map((n) => n?.[0])
+                    .filter(Boolean)
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()}
                 </span>
                 <div className="user-badge-text">
                   <strong>{userName}</strong>
                   <small>{userRole}</small>
                 </div>
-                <span className="user-menu-chevron" aria-hidden="true">
-                  {isUserMenuOpen ? "⌃" : "⌄"}
-                </span>
+                <svg
+                  className="user-menu-chevron"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m5.5 8 4.5 4.5L14.5 8" />
+                </svg>
               </button>
 
               {isUserMenuOpen && (

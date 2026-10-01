@@ -10,21 +10,13 @@
 }
 
 .guests-heading h2 {
-  margin-top: 0.2rem;
+  margin-top: 0.8rem;
   color: #eafef8;
 }
 
 .guests-heading > div > p:last-child {
-  margin-top: 0.4rem;
+  margin-top: 0.6rem;
   color: #9bc8da;
-}
-
-.page-eyebrow {
-  color: #9bc8da;
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .guest-filters {
@@ -94,3 +86,4 @@
     grid-column: auto;
   }
 }
+

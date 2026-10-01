@@ -10,21 +10,13 @@
 }
 
 .accommodations-heading h2 {
-  margin-top: 0.2rem;
+  margin-top: 0.8rem;
   color: #eafef8;
 }
 
 .accommodations-heading > div > p:last-child {
-  margin-top: 0.4rem;
+  margin-top: 0.6rem;
   color: #9bc8da;
-}
-
-.page-eyebrow {
-  color: #9bc8da;
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .accommodations-filters {
@@ -89,3 +81,4 @@
     grid-column: auto;
   }
 }
+

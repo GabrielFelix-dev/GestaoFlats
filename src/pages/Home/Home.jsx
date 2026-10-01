@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
-import homeLogoImg from "../../assets/predios.png";
+import homeLogoImg from "../../assets/casa_gestaoflats.png";
 import "./Home.css";
 
 export default function Home({ startInLogin = false }) {
@@ -32,7 +32,7 @@ export default function Home({ startInLogin = false }) {
               className="home-banner-image"
               style={{ backgroundImage: `url(${homeLogoImg})` }}
               role="img"
-              aria-label="Prédios"
+              aria-label="Casa do Gestão Flats"
             />
             <div className="home-banner-body">
               <h3 className="home-banner-title">

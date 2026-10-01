@@ -102,11 +102,23 @@ function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
 
   switch (activeItem) {
     case "dashboard":
-      return <Dashboard {...props} />;
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Dashboard {...props} />
+        </AdminPage>
+      );
     case "perfil":
-      return <Perfil {...props} />;
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Perfil {...props} />
+        </AdminPage>
+      );
     case "hospedes":
-      return <Hospedes {...props} />;
+      return (
+        <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
+          <Hospedes {...props} />
+        </AdminPage>
+      );
     case "acomodacoes":
       return (
         <AdminPage pageName={pageName} activeItem={activeItem} {...layoutProps}>
@@ -182,9 +194,16 @@ function AdminRouter({ activeItem, props, sidebarOpen, setSidebarOpen }) {
   }
 }
 
+const ACTIVE_ITEM_KEY = "gestao-flats:active-item";
+
+function readStoredActiveItem() {
+  const stored = localStorage.getItem(ACTIVE_ITEM_KEY);
+  return stored && pageLabels[stored] ? stored : "dashboard";
+}
+
 export default function App() {
-  const [activeItem, setActiveItem] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeItem, setActiveItem] = useState(readStoredActiveItem);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem("gestao-flats:auth") === "true";
   });
@@ -193,6 +212,10 @@ export default function App() {
     name: "Maria Souza",
     email: "admin@gestaoflats.com",
   });
+
+  useEffect(() => {
+    localStorage.setItem(ACTIVE_ITEM_KEY, activeItem);
+  }, [activeItem]);
 
   useEffect(() => {
     function handleLogin() {

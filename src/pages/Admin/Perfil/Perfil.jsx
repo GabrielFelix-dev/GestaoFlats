@@ -1,9 +1,7 @@
 import { useState } from "react";
 import Button from "../../../components/Button/Button";
 import Card from "../../../components/Card/Card";
-import Layout from "../../../components/Layout/Layout";
 import AccountModal from "../../../components/AccountModal/AccountModal";
-import { adminNavItems } from "../../navigation";
 import "./Perfil.css";
 
 const recentActivity = [
@@ -26,126 +24,105 @@ const recentActivity = [
 
 export default function Perfil({
   account,
-  onNavigate,
-  onLogout,
-  onChangeAccount,
   onAccountSave,
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const displayName = account?.name || "Administrador";
   const email = account?.email || "admin@gestaoflats.com";
+  const initials = displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <Layout
-      title="Perfil"
-      navItems={adminNavItems}
-      activeItem=""
-      onNavigate={onNavigate}
-      sidebarOpen={sidebarOpen}
-      setSidebarOpen={setSidebarOpen}
-      isAuthenticated
-      userName={displayName}
-      userRole="Administrador"
-      onLogout={onLogout}
-      onViewProfile={() => undefined}
-      onChangeAccount={onChangeAccount}
-      userEmail={email}
-      onAccountSave={onAccountSave}
-    >
-      <div className="profile-page">
-        <section className="profile-cover" aria-hidden="true" />
-
-        <section className="profile-intro">
-          <div className="profile-avatar">
-            {displayName.charAt(0).toUpperCase()}
-          </div>
+    <div className="profile-page">
+      <div className="profile-cover">
+        <div className="profile-avatar">{initials}</div>
+        <div className="profile-heading">
           <div className="profile-identity">
-            <p className="profile-eyebrow">Conta administrativa</p>
+            <p className="page-eyebrow">Conta administrativa</p>
             <h2>{displayName}</h2>
-            <p className="profile-handle">@administrador · Gestão Flats</p>
-            <p className="profile-bio">
-              Responsável pela operação, reservas e acompanhamento financeiro
-              dos flats.
-            </p>
+            <p>Responsável pela operação, reservas e acompanhamento financeiro dos flats.</p>
           </div>
-          <Button variant="outline" onClick={() => setIsAccountModalOpen(true)}>
+          <Button variant="secondary" onClick={() => setIsAccountModalOpen(true)}>
             Editar perfil
           </Button>
-        </section>
-
-        <div className="profile-layout">
-          <div className="profile-main-column">
-            <Card
-              title="Atividade recente"
-              subtitle="Últimas ações realizadas no painel"
-            >
-              <div className="activity-list">
-                {recentActivity.map((item) => (
-                  <div
-                    className="activity-item"
-                    key={`${item.action}-${item.time}`}
-                  >
-                    <span className="activity-dot" aria-hidden="true" />
-                    <div>
-                      <strong>{item.action}</strong>
-                      <p>{item.detail}</p>
-                    </div>
-                    <time>{item.time}</time>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            <Card
-              title="Acesso e segurança"
-              subtitle="Informações da sua conta"
-            >
-              <div className="security-row">
-                <div>
-                  <strong>E-mail principal</strong>
-                  <p>{email}</p>
-                </div>
-                <span className="status-badge">Verificado</span>
-              </div>
-              <div className="security-row">
-                <div>
-                  <strong>Último acesso</strong>
-                  <p>Hoje, às 08:31 · Este dispositivo</p>
-                </div>
-                <span className="security-device">Ativo</span>
-              </div>
-            </Card>
-          </div>
-
-          <aside className="profile-side-column">
-            <Card title="Visão operacional" subtitle="Resumo do seu escopo">
-              <div className="profile-stats">
-                <div>
-                  <strong>18</strong>
-                  <span>Acomodações</span>
-                </div>
-                <div>
-                  <strong>42</strong>
-                  <span>Hospedagens</span>
-                </div>
-                <div>
-                  <strong>03</strong>
-                  <span>Usuários ativos</span>
-                </div>
-              </div>
-            </Card>
-
-            <Card title="Permissões" subtitle="Nível de acesso atual">
-              <div className="permission-list">
-                <span>Gestão de hospedagens</span>
-                <span>Controle financeiro</span>
-                <span>Cadastro de hóspedes</span>
-                <span>Configurações administrativas</span>
-              </div>
-            </Card>
-          </aside>
         </div>
+      </div>
+
+      <div className="profile-layout">
+        <div className="profile-main-column">
+          <Card
+            title="Atividade recente"
+            subtitle="Últimas ações realizadas no painel"
+          >
+            <div className="activity-list">
+              {recentActivity.map((item) => (
+                <div
+                  className="activity-item"
+                  key={`${item.action}-${item.time}`}
+                >
+                  <span className="activity-dot" aria-hidden="true" />
+                  <div>
+                    <strong>{item.action}</strong>
+                    <p>{item.detail}</p>
+                  </div>
+                  <time>{item.time}</time>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card
+            title="Acesso e segurança"
+            subtitle="Informações da sua conta"
+          >
+            <div className="security-row">
+              <div>
+                <strong>E-mail principal</strong>
+                <p>{email}</p>
+              </div>
+              <span className="status-badge">Verificado</span>
+            </div>
+            <div className="security-row">
+              <div>
+                <strong>Último acesso</strong>
+                <p>Hoje, às 08:31 · Este dispositivo</p>
+              </div>
+              <span className="security-device">Ativo</span>
+            </div>
+          </Card>
+        </div>
+
+        <aside className="profile-side-column">
+          <Card title="Visão operacional" subtitle="Resumo do seu escopo">
+            <div className="profile-stats">
+              <div>
+                <strong>18</strong>
+                <span>Acomodações</span>
+              </div>
+              <div>
+                <strong>42</strong>
+                <span>Hospedagens</span>
+              </div>
+              <div>
+                <strong>03</strong>
+                <span>Usuários ativos</span>
+              </div>
+            </div>
+          </Card>
+
+          <Card title="Permissões" subtitle="Nível de acesso atual">
+            <div className="permission-list">
+              <span>Gestão de hospedagens</span>
+              <span>Controle financeiro</span>
+              <span>Cadastro de hóspedes</span>
+              <span>Configurações administrativas</span>
+            </div>
+          </Card>
+        </aside>
       </div>
 
       <AccountModal
@@ -154,6 +131,6 @@ export default function Perfil({
         account={account}
         onSave={onAccountSave}
       />
-    </Layout>
+    </div>
   );
 }

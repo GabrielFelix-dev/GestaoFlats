@@ -47,7 +47,7 @@ export default function Disponibilidade() {
     <div className="disponibilidade-page">
       <div className="page-header">
         <div>
-          <p className="eyebrow">Consultas</p>
+          <p className="page-eyebrow">Consultas</p>
           <h1>Disponibilidade</h1>
           <p>Consulte a disponibilidade das acomodações.</p>
         </div>

@@ -8,8 +8,11 @@
   overflow: hidden;
 }
 
+/* Closed state: fully hidden on desktop, same as the off-canvas
+   behaviour used on mobile. The header ☰ button reopens it. */
 .sidebar-collapsed {
-  width: 88px;
+  width: 0;
+  border-right: none;
 }
 
 .sidebar-collapsed .brand-text,
