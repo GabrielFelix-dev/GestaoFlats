@@ -1,22 +1,21 @@
 # Gestão Flats
 
-Sistema web para administração de flats, hospedagens e operações financeiras. O projeto foi desenvolvido como uma aplicação front-end em React para centralizar rotinas de hospedagem em uma interface administrativa simples, responsiva e orientada a dados.
+Sistema web para administração de flats, hospedagens e operações financeiras. O projeto é dividido em dois módulos independentes: uma aplicação front-end em React e uma API REST com persistência em banco de dados.
 
-> Projeto acadêmico em evolução. Atualmente, a aplicação utiliza dados mockados e persistência local apenas para o estado de autenticação. A próxima grande etapa é a integração com um backend real.
-
-![Identidade visual do Gestão Flats](src/assets/gestãoflats-nome.png)
+![Identidade visual do Gestão Flats](frontend/src/assets/gestãoflats-nome.png)
 
 ## Sumário
 
 - [Sobre o projeto](#sobre-o-projeto)
-- [Objetivo](#objetivo)
-- [Funcionalidades](#funcionalidades)
+- [Estrutura do repositório](#estrutura-do-repositório)
 - [Tecnologias](#tecnologias)
 - [Como executar](#como-executar)
-- [Arquitetura](#arquitetura)
-- [Componentes reutilizáveis](#componentes-reutilizáveis)
-- [Fluxos principais](#fluxos-principais)
-- [Dados atuais](#dados-atuais)
+- [Testes da API](#testes-da-api)
+- [API](#api)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Arquitetura do front-end](#arquitetura-do-front-end)
+- [PWA](#pwa)
+- [Arquitetura do backend](#arquitetura-do-backend)
 - [Limitações conhecidas](#limitações-conhecidas)
 - [Próximos passos](#próximos-passos)
 - [Contribuidores](#contribuidores)
@@ -29,324 +28,467 @@ O sistema foi pensado para reduzir a fragmentação das tarefas operacionais e o
 
 - dashboard com indicadores;
 - cadastros e filtros;
-- tabelas responsivas;
+- check-in e check-out;
 - controle visual de status;
 - menu de conta e perfil administrativo;
 - módulo financeiro com receitas, despesas e resumo.
 
-## Objetivo
+## Estrutura do repositório
 
-O objetivo do projeto é criar uma base de sistema de gestão para flats que seja:
-
-- clara para uso diário por uma equipe administrativa;
-- organizada em módulos independentes;
-- responsiva para desktop e dispositivos menores;
-- preparada para receber uma API e persistência real;
-- fácil de evoluir com novos fluxos de hospedagem.
-
-## Funcionalidades
-
-### Acesso e conta
-
-- Tela inicial com apresentação do produto.
-- Alternância entre cadastro e login.
-- Login demonstrativo com armazenamento do estado de autenticação no `localStorage`.
-- Logout pelo menu do usuário.
-- Após o logout, o sistema retorna diretamente ao formulário de login.
-- Menu da conta com as opções `Ver perfil`, `Alterar conta` e `Sair`.
-- Perfil administrativo com dados da conta, atividade recente, permissões e informações de segurança.
-- Modal para edição de nome, e-mail e senha.
-
-### Dashboard
-
-O dashboard apresenta uma visão resumida da operação:
-
-- hospedagens ativas;
-- acomodações disponíveis;
-- check-ins e check-outs do dia;
-- resumo de receitas, despesas e saldo;
-- percentual de ocupação;
-- próximas movimentações.
-
-### Hóspedes
-
-- Listagem de hóspedes.
-- Busca por nome ou documento.
-- Filtro por status.
-- Cadastro de novo hóspede.
-- Edição de dados.
-- Exclusão local de registros.
-- Tabela adaptada para telas menores.
-
-### Acomodações
-
-- Listagem de flats, quartos, studios e apartamentos.
-- Busca por nome da acomodação.
-- Filtros por tipo e status.
-- Cadastro e edição de acomodações.
-- Exclusão local.
-- Exibição de capacidade, valor da diária e situação atual.
-
-### Hospedagens
-
-- Listagem de reservas.
-- Busca por hóspede ou acomodação.
-- Filtro por status da hospedagem.
-- Cancelamento visual de reserva.
-- Exclusão local de reserva.
-- Tela de nova hospedagem.
-- Tela de detalhes de hospedagem.
-
-### Disponibilidade
-
-- Filtros por período, acomodação e status.
-- Estrutura preparada para exibir a disponibilidade dos imóveis.
-
-### Check-in e check-out
-
-- Área destinada ao acompanhamento de entradas e saídas.
-- Filtros operacionais.
-- Estrutura de confirmação por modal.
-
-### Histórico
-
-- Registros de hospedagens concluídas e canceladas.
-- Filtros por período e status.
-- Modal com detalhes do registro selecionado.
-
-### Financeiro
-
-O acesso lateral apresenta apenas o item `Financeiro`. As subdivisões ficam dentro da própria página para evitar duplicidade na navegação:
-
-- **Visão Geral:** indicadores de receitas, despesas e saldo.
-- **Receitas:** busca, filtro, alteração de status e exclusão local.
-- **Despesas:** busca, filtro, alteração de status e exclusão local.
+```text
+GestaoFlats/
+│
+├── frontend/                  # Aplicação React (Vite)
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/        # Button, Card, Input, Modal, Table, Layout...
+│   │   ├── context/           # AuthContext: sessão e usuário autenticado
+│   │   ├── hooks/             # useApiResource, useFeedback, useDebouncedValue
+│   │   ├── pages/             # Home e páginas administrativas
+│   │   ├── services/          # Cliente HTTP da API, um módulo por recurso
+│   │   ├── utils/             # Formatação de valores, datas e rótulos
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── public/
+│   │   ├── manifest.webmanifest
+│   │   ├── sw.js
+│   │   ├── pwa-192.png
+│   │   ├── pwa-512.png
+│   │   ├── pwa-maskable-512.png
+│   │   └── apple-touch-icon.png
+│   ├── scripts/
+│   │   └── gerar-icones-pwa.mjs # Gera os ícones da PWA a partir da arte
+│   ├── .env.example
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js          # Inclui proxy de /api para o back-end
+│
+├── backend/                   # API REST (Express)
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── database.js
+│   │   │   └── env.js
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── scripts/
+│   │   └── smoke-test.js       # Teste de fumaça da API
+│   ├── .env
+│   ├── .env.example
+│   ├── .gitignore
+│   └── package.json
+│
+├── arquitetura.md
+├── package.json                # Comandos para rodar os dois módulos
+└── README.md
+```
 
 ## Tecnologias
+
+### Front-end
 
 - [React](https://react.dev/) `18.3.1`;
 - [React DOM](https://react.dev/reference/react-dom) `18.3.1`;
 - [Vite](https://vite.dev/) `5.4.10`;
 - `@vitejs/plugin-react`;
 - JavaScript com módulos ES;
-- CSS próprio, sem biblioteca visual externa;
-- `localStorage` para o estado demonstrativo de autenticação.
+- CSS próprio, sem biblioteca visual externa.
 
-O projeto ainda não utiliza backend, banco de dados, biblioteca de rotas, testes automatizados ou ferramenta de lint configurada no `package.json`.
+### Back-end
+
+- [Express](https://expressjs.com/pt-br/4x/) `4.x`;
+- [MongoDB](https://www.mongodb.com/) com [Mongoose](https://mongoosejs.com/) `9.x`;
+- [Zod](https://zod.dev/) para validação de payloads;
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) para tokens JWT;
+- [bcryptjs](https://github.com/dcodeIO/bcrypt.js) para hash de senhas;
+- `helmet`, `cors`, `morgan` e `express-rate-limit` para segurança e observabilidade.
 
 ## Como executar
 
 ### Pré-requisitos
 
-- Node.js instalado;
+- Node.js 18 ou superior;
 - npm instalado;
-- Git, caso o projeto seja clonado.
+- MongoDB em execução (local ou uma URI do MongoDB Atlas).
 
 ### Instalação
 
 ```bash
 git clone git@github.com:GabrielFelix-dev/GestaoFlats.git
 cd GestaoFlats
-npm install
+npm run install:all
 ```
 
+O comando acima instala as dependências do `frontend` e do `backend`.
+
+### Configuração do back-end
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Em Windows PowerShell:
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+```
+
+O arquivo `.env` já está presente no projeto local. Ao final do desenvolvimento, ajuste `JWT_SECRET` e `CLIENT_URL`.
+
 ### Ambiente de desenvolvimento
+
+Para subir a API e o front-end ao mesmo tempo:
 
 ```bash
 npm run dev
 ```
 
-O Vite disponibiliza a aplicação em:
-
-```text
-http://localhost:5173/
-```
-
-Para permitir acesso por outros dispositivos da rede local:
+Comandos separados também estão disponíveis:
 
 ```bash
-npm run dev -- --host 0.0.0.0
+npm run dev:backend    # API em http://localhost:3333
+npm run dev:frontend   # Vite em http://localhost:5173
 ```
 
-### Build de produção
+O Vite está configurado com um proxy para `/api`, portanto o front-end consome a API local sem configurar CORS manualmente no navegador.
+
+### Primeiro acesso
+
+O banco começa vazio. Na tela inicial, escolha **Cadastre-se** e crie a conta administrativa: o primeiro usuário cadastrado recebe o perfil `admin` e é o responsável pela operação. A partir daí, entre com e-mail e senha.
+
+### Build de produção do front-end
 
 ```bash
 npm run build
 ```
 
-### Pré-visualização do build
+## Testes da API
+
+Com a API no ar, existe um teste de fumaça que exercita o fluxo inteiro: autenticação, cadastros, filtros, ciclo de hospedagem, financeiro, dashboard e os casos de erro.
 
 ```bash
+cd backend
+npm run test:api
+```
+
+O script sobe e derruba um usuário de teste, uma acomodação, um hóspede, uma hospedagem, uma receita e uma despesa, e remove tudo ao final. Para apontar para outra API:
+
+```bash
+API_URL=https://sua-api.com npm run test:api
+```
+
+Para preservar os dados gerados, por exemplo para inspecionar no Compass:
+
+```bash
+npm run test:api -- --manter
+```
+
+A API limita as rotas de autenticação a 20 tentativas por janela de 15 minutos. Se o limite for atingido, o teste detecta o `429` e interrompe com a orientação de reiniciar a API, em vez de falhar em cascata.
+
+Observação: a conta de teste fica no banco, porque a API não expõe rota de exclusão de usuário. Se quiser limpar depois, remova pelo Compass ou apague o documento na coleção `users`.
+
+## API
+
+Todas as rotas, exceto autenticação e saúde, exigem o header `Authorization: Bearer <token>`.
+
+| Método | Rota                                | Descrição                                  |
+| ------ | ----------------------------------- | ------------------------------------------ |
+| GET    | `/health`                           | Verificação de disponibilidade              |
+| POST   | `/api/auth/register`                | Criação de conta                            |
+| POST   | `/api/auth/login`                   | Autenticação                                |
+| GET    | `/api/auth/me`                      | Dados do usuário autenticado                |
+| PUT    | `/api/auth/profile`                 | Atualização de nome e e-mail                |
+| PUT    | `/api/auth/password`                | Troca de senha                              |
+| GET    | `/api/hospedes`                     | Listagem com filtros                        |
+| POST   | `/api/hospedes`                     | Cadastro de hóspede                         |
+| GET    | `/api/hospedes/:id`                 | Detalhe de hóspede                          |
+| PUT    | `/api/hospedes/:id`                 | Edição de hóspede                           |
+| DELETE | `/api/hospedes/:id`                 | Exclusão de hóspede                         |
+| GET    | `/api/acomodacoes`                  | Listagem com filtros                        |
+| POST   | `/api/acomodacoes`                  | Cadastro de acomodação                      |
+| PUT    | `/api/acomodacoes/:id`              | Edição de acomodação                        |
+| PATCH  | `/api/acomodacoes/:id/status`       | Alteração de status                         |
+| DELETE | `/api/acomodacoes/:id`              | Exclusão de acomodação                      |
+| GET    | `/api/hospedagens`                  | Reservas com filtros                        |
+| POST   | `/api/hospedagens`                  | Criação de reserva                          |
+| PUT    | `/api/hospedagens/:id`              | Edição de reserva                           |
+| PATCH  | `/api/hospedagens/:id/status`       | Cancelamento ou conclusão                   |
+| DELETE | `/api/hospedagens/:id`              | Exclusão de reserva                         |
+| GET    | `/api/checkin-checkout`             | Entradas e saídas de uma data               |
+| POST   | `/api/checkin-checkout/:id/checkin` | Registrar check-in                          |
+| POST   | `/api/checkin-checkout/:id/checkout`| Registrar check-out                         |
+| GET    | `/api/checkin-checkout/disponibilidade` | Disponibilidade por período            |
+| GET    | `/api/receitas`                     | Listagem de receitas                        |
+| POST   | `/api/receitas`                     | Cadastro de receita                         |
+| PUT    | `/api/receitas/:id`                 | Edição de receita                           |
+| PATCH  | `/api/receitas/:id/status`          | Alteração de status                         |
+| DELETE | `/api/receitas/:id`                 | Exclusão de receita                         |
+| GET    | `/api/despesas`                     | Listagem de despesas                        |
+| POST   | `/api/despesas`                     | Cadastro de despesa                         |
+| PUT    | `/api/despesas/:id`                 | Edição de despesa                           |
+| PATCH  | `/api/despesas/:id/status`          | Baixa de pagamento                          |
+| DELETE | `/api/despesas/:id`                 | Exclusão de despesa                         |
+| GET    | `/api/dashboard/resumo`             | Indicadores consolidados                    |
+| GET    | `/api/dashboard/historico`          | Histórico de hospedagens                    |
+
+### Exemplo de uso
+
+```bash
+# 1. Criar conta
+curl -X POST http://localhost:3333/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Maria Souza","email":"admin@gestaoflats.com","password":"senha123"}'
+
+# 2. Autenticar
+curl -X POST http://localhost:3333/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@gestaoflats.com","password":"senha123"}'
+
+# 3. Usar o token retornado
+curl http://localhost:3333/api/dashboard/resumo \
+  -H "Authorization: Bearer <token>"
+```
+
+### Convenções de resposta
+
+Sucesso:
+
+```json
+{ "hospede": { "id": "6abfb07fe7e7458c37dfb88b", "nome": "Mariana Alves" } }
+```
+
+Listagem:
+
+```json
+{ "hospedes": [], "total": 0 }
+```
+
+Erro:
+
+```json
+{
+  "erro": "Dados inválidos.",
+  "detalhes": [{ "campo": "cpf", "mensagem": "CPF deve ter 11 dígitos." }]
+}
+```
+
+O `id` é o ObjectId do MongoDB em forma de string; o campo `_id` nunca é devolvido.
+
+Códigos utilizados: `200`, `201`, `204`, `401` (não autenticado), `404` (não encontrado), `409` (conflito de regra de negócio), `422` (validação de payload) e `500` (erro interno).
+
+## Variáveis de ambiente
+
+### Back-end (`backend/.env`)
+
+| Variável         | Descrição                                              | Padrão                                 |
+| ---------------- | ------------------------------------------------------ | -------------------------------------- |
+| `PORT`           | Porta da API                                            | `3333`                                 |
+| `NODE_ENV`       | Ambiente de execução                                    | `development`                          |
+| `MONGODB_URI`    | String de conexão com o MongoDB                          | `mongodb://127.0.0.1:27017/gestaoflats` |
+| `JWT_SECRET`     | Segredo de assinatura dos tokens                        | valor de desenvolvimento                |
+| `JWT_EXPIRES_IN` | Validade do token                                       | `1d`                                   |
+| `CLIENT_URL`     | Origem permitida no CORS                                | `http://localhost:5173`                |
+
+### Front-end (`frontend/.env`)
+
+| Variável         | Descrição                                                             | Padrão |
+| ---------------- | --------------------------------------------------------------------- | ------ |
+| `VITE_API_URL`   | URL base da API. Em desenvolvimento usa o proxy `/api` do Vite        | `/api` |
+
+O arquivo `.env` do front-end é opcional em desenvolvimento. Ele só é necessário quando a API roda em outro domínio, como na publicação:
+
+```bash
+VITE_API_URL=https://gestaoflats-api.vercel.app/api
+```
+
+## Arquitetura do front-end
+
+O front-end não mantém dados próprios: toda a informação vem da API REST. O fluxo é sempre o mesmo.
+
+```text
+página → hook (useApiResource) → serviço (services/*) → request (services/api.js) → API
+```
+
+### Camadas
+
+| Pasta                  | Responsabilidade                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| `services/api.js`      | Cliente HTTP: URL base, token JWT, serialização, `ApiError` e expiração de sessão              |
+| `services/*.js`        | Um módulo por recurso, com os endpoints da API e o formato da resposta                          |
+| `context/AuthContext`  | Sessão: usuário, login, cadastro, logout, atualização de perfil e revalidação do token          |
+| `hooks/useApiResource` | Carregamento, estado de erro e recarga de uma lista após create/update/delete                   |
+| `hooks/useFeedback`    | Mensagens de sucesso e erro exibidas em `<Alert>`                                              |
+| `hooks/useDebouncedValue` | Atrasa a busca enquanto o usuário digita, evitando uma requisição por tecla                  |
+| `utils/format.js`      | Moeda, datas e cálculo de diárias                                                              |
+| `utils/mask.js`        | Máscaras de CPF e telefone aplicadas enquanto o usuário digita                                    |
+| `utils/labels.js`      | Rótulos acentuados dos enums que a API grava sem acento                                        |
+
+### Sessão e token
+
+- O cadastro cria a conta e devolve o usuário ao formulário de login: a sessão só começa no `POST /api/auth/login`.
+- O login guarda o token em `localStorage` e o usuário em JSON.
+- Toda requisição autenticada envia `Authorization: Bearer <token>`.
+- Uma resposta `401` limpa a sessão e dispara o evento `gestao-flats:unauthorized`, que devolve o usuário à tela de acesso.
+- Ao abrir a aplicação com um token guardado, o `AuthContext` chama `GET /api/auth/me` para confirmar que a sessão ainda é válida.
+
+### Datas
+
+Check-in, check-out, vencimento e lançamento são gravados como meia-noite UTC (`YYYY-MM-DDT00:00:00.000Z`). Exibi-los no fuso local do navegador voltaria um dia em fusos negativos como o do Brasil, então `formatDate` formata explicitamente em UTC. Já `formatDateTime`, usada em datas reais de criação, usa o fuso local.
+
+### CPF e telefone
+
+`utils/mask.js` aplica a pontuação enquanto o usuário digita (`000.000.000-00` e `(00) 00000-0000`) e reformata o que vem do banco. O valor gravado é sempre só dígitos, no front-end e também na API (`schemas/hospede.schema.js` remove a pontuação antes de validar), para que a busca por CPF e o índice único do campo não dependam de como o número foi digitado. Por isso a busca de hóspedes remove os separadores quando o termo tem apenas dígitos e pontuação.
+
+## PWA
+
+A aplicação front-end é instalável e funciona como aplicativo de janela própria (sem barra de navegador).
+
+### Arquivos envolvidos
+
+| Arquivo                                  | Função                                                              |
+| ---------------------------------------- | ------------------------------------------------------------------- |
+| `frontend/public/manifest.webmanifest`   | Nome, cores, ícones, modo de exibição e atalhos.                   |
+| `frontend/public/sw.js`                  | Service worker: cache do app shell e dos arquivos estáticos.         |
+| `frontend/public/pwa-192.png`            | Ícone 192x192 (qualquer propósito).                                 |
+| `frontend/public/pwa-512.png`            | Ícone 512x512 (qualquer propósito).                                 |
+| `frontend/public/pwa-maskable-512.png`  | Ícone 512x512 adaptativo (máscara do sistema).                      |
+| `frontend/public/apple-touch-icon.png`   | Ícone para iOS/iPadOS.                                              |
+| `frontend/src/assets/pwa-icon.png`       | Arte original usada para gerar os ícones.                           |
+| `frontend/src/main.jsx`                  | Registra o service worker apenas no build de produção.              |
+
+### Gerar os ícones
+
+Os ícones não são editados à mão: eles são gerados a partir de `src/assets/pwa-icon.png`.
+
+```bash
+npm run gerar-icones --prefix frontend
+```
+
+Para trocar a arte, substitua `src/assets/pwa-icon.png` e rode o comando de novo.
+
+Dois cuidados que o script já resolve:
+
+- **Nada de fundo branco.** A arte original tem os cantos transparentes, e é justamente isso que faz o Android, o Chrome e sobretudo o iOS comporem o PNG sobre a cor branca da tela. Todos os ícones saem opacos, com o preenchimento na cor média da própria arte — o fundo some na emenda em vez de virar uma moldura.
+- **A arte ocupa o máximo possível.** O ícone do iOS é o único com recuo (10%), porque o sistema aplica o próprio arredondamento e recortaria as bordas da ilustração; os demais são Sangria total.
+
+Depois de gerar os ícones, suba a versão de `CACHE_NAME` em `frontend/public/sw.js` para que os usuários com o app instalado recebam os arquivos novos.
+
+### Testar localmente
+
+O service worker só é registrado em produção, porque no servidor de desenvolvimento do Vite ele conflita com o hot reload. Para validar:
+
+```bash
+npm run build
 npm run preview
 ```
 
-## Arquitetura
+Acesse `http://localhost:4173`, abra o DevTools e confirme a aba **Application**: `Manifest` com os três ícones, `Service Workers` registrado e `Cache Storage` com `gestaoflats-v3`.
 
-A aplicação utiliza uma composição de componentes React. O controle de tela é feito atualmente pelo estado `activeItem` em `src/App.jsx`; não há roteamento por URL implementado.
+No celular, use a mesma rede local e abra `http://192.168.1.x:4173` (o endereço aparece no terminal do preview). O botão de instalar aparece na barra de endereços do Chrome, ou pelo menu do navegador.
+
+### Estratégia de cache
+
+- **App shell** (`/`, `index.html`, manifest, ícones): pré-cacheado na instalação.
+- **Navegação** (`/`): rede primeiro, com fallback para o `index.html` em cache — sem internet, o app abre.
+- **`/assets/`**: cache primeiro. Os arquivos têm hash no nome, então nunca mudam de conteúdo.
+- **`/api`**: **nunca** é cacheado. Dados desatualizados em um painel administrativo são piores do que uma falha de rede visível.
+
+### Atalhos do manifesto
+
+Os atalhos do manifesto abrem páginas específicas via `?pagina=dashboard`, `?pagina=hospedes` e `?pagina=financeiro`. O `App.jsx` lê esse parâmetro ao iniciar e, se o valor for válido, abre a página correspondente em vez da última visitada.
+
+## Arquitetura do backend
+
+A API segue uma separação em camadas:
 
 ```text
-src/
-├── assets/
-│   ├── fundo-pagina.png
-│   ├── predios.png
-│   └── gestãoflats-nome.png
-├── components/
-│   ├── AccountModal/
-│   ├── Button/
-│   ├── Card/
-│   ├── Header/
-│   ├── Input/
-│   ├── Layout/
-│   ├── Modal/
-│   ├── Select/
-│   ├── Sidebar/
-│   └── Table/
-├── data/
-│   ├── despesas.js
-│   ├── hospedagens.js
-│   └── receitas.js
-├── pages/
-│   ├── Home/
-│   └── Admin/
-│       ├── Acomodacoes/
-│       ├── CheckinCheckout/
-│       ├── Dashboard/
-│       ├── Disponibilidade/
-│       ├── Financeiro/
-│       ├── Historico/
-│       ├── Hospedagens/
-│       ├── Hospedes/
-│       └── Perfil/
-├── routes/
-├── App.jsx
-├── index.css
-└── main.jsx
+routes → middlewares → controllers → services → models → MongoDB
 ```
 
-### Organização das responsabilidades
+- **routes**: define os caminhos, encadeia os middlewares e os controllers.
+- **middlewares**: autenticação por JWT, validação com Zod e tratamento de erros.
+- **controllers**: traduzem requisição e resposta HTTP.
+- **services**: regras de negócio, validações de domínio e cálculo de valores.
+- **models**: acesso ao banco e mapeamento entre documentos e objetos da API.
 
-- `App.jsx`: estado de autenticação, estado da conta, navegação entre módulos e composição do roteamento interno.
-- `Layout`: composição do cabeçalho, sidebar e área principal.
-- `Header`: identidade da aplicação, título da página e menu da conta.
-- `Sidebar`: navegação principal e controle de recolhimento.
-- `pages`: telas e regras específicas de cada módulo.
-- `components`: elementos visuais compartilhados.
-- `data`: dados iniciais usados como mock no front-end.
-- `assets`: imagens utilizadas na identidade visual e na tela inicial.
+### Regras de negócio implementadas
 
-> `src/routes/AppRoutes.jsx` existe como ponto de extensão, mas está vazio. A navegação atual é controlada diretamente pelo `switch` de `src/App.jsx`.
+- CPF e nome de acomodação não podem ser duplicados.
+- Uma acomodação não pode receber duas reservas que se sobreponham no tempo.
+- O número de hóspedes é validado contra a capacidade da acomodação.
+- O valor total da hospedagem é calculado a partir do número de diárias e da diária.
+- A criação de uma hospedagem gera automaticamente uma receita vinculada.
+- O cancelamento de uma hospedagem cancela a receita correspondente.
+- O check-out marca a receita como recebida.
+- Acomodações com hospedagens vinculadas não podem ser excluídas.
+- Hospedagens em andamento não podem ser excluídas.
 
-## Componentes reutilizáveis
+### Banco de dados
 
-| Componente     | Responsabilidade                                                    |
-| -------------- | ------------------------------------------------------------------- |
-| `Button`       | Botões com variantes, tamanhos, estados e ações.                    |
-| `Input`        | Campos com label, validação HTML, erro e texto auxiliar.            |
-| `Select`       | Campos de seleção com opções e estados de erro.                     |
-| `Card`         | Blocos de conteúdo com título, subtítulo e conteúdo customizável.   |
-| `Table`        | Tabelas com colunas dinâmicas, dados, estado vazio e ações.         |
-| `Modal`        | Overlay, fechamento por clique externo/Escape e rodapé customizado. |
-| `AccountModal` | Edição dos dados da conta e validação de senha.                     |
-| `Header`       | Cabeçalho, perfil resumido e ações da conta.                        |
-| `Sidebar`      | Navegação lateral responsiva.                                       |
-| `Layout`       | Estrutura compartilhada das páginas administrativas.                |
+O banco é o MongoDB, indicado pela string `MONGODB_URI`. As coleções e os índices são criados automaticamente pelo Mongoose na primeira execução.
 
-## Fluxos principais
+Os nomes das coleções são definidos explicitamente em cada model (opção `collection`), para não depender da regra de pluralização do Mongoose:
 
-```mermaid
-flowchart TD
-	A[Home] --> B{Usuário escolhe uma ação}
-	B -->|Criar conta| C[Modo cadastro]
-	C --> D[Modo login]
-	B -->|Entrar| E[Dashboard]
-	D --> E
-	E --> F[Hóspedes]
-	E --> G[Acomodações]
-	E --> H[Hospedagens]
-	E --> I[Financeiro]
-	E --> J[Perfil]
-	E --> K[Disponibilidade]
-	E --> L[Check-in / Check-out]
-	E --> M[Histórico]
-	E --> N[Logout]
-	N --> D
+| Model         | Coleção        | Conteúdo                              |
+| ------------- | -------------- | ------------------------------------- |
+| `User`        | `users`        | contas administrativas                 |
+| `Hospede`     | `hospedes`     | hóspedes cadastrados                   |
+| `Acomodacao`  | `acomodacoes`  | flats, quartos, studios e Apartamentos |
+| `Hospedagem`  | `hospedagens`  | reservas e ciclo de hospedagem          |
+| `Receita`     | `receitas`     | entradas financeiras                   |
+| `Despesa`     | `despesas`     | saídas financeiras                     |
+
+Conexões usuais:
+
+```text
+# MongoDB local
+mongodb://127.0.0.1:27017/gestaoflats
+
+# MongoDB Atlas
+mongodb+srv://<usuario>:<senha>@<cluster>.mongodb.net/gestaoflats?retryWrites=true&w=majority
 ```
 
-### Autenticação atual
-
-1. O `App` verifica a chave `gestao-flats:auth` no `localStorage`.
-2. O envio do formulário de login dispara o evento `gestao-flats:login`.
-3. O evento grava o valor `true` e abre o Dashboard.
-4. O logout remove a chave e retorna à Home no modo login.
-
-Esse fluxo é propositalmente demonstrativo. Ele não valida credenciais nem representa uma autenticação segura para produção.
-
-## Dados atuais
-
-O protótipo utiliza dados fixos ou mantidos em estado local:
-
-- `src/data/hospedagens.js`: reservas mockadas;
-- `src/data/receitas.js`: receitas mockadas;
-- `src/data/despesas.js`: despesas mockadas;
-- dados de hóspedes e acomodações: arrays definidos nas próprias páginas;
-- dashboard, histórico, perfil e resumo financeiro: indicadores e registros demonstrativos.
-
-As alterações feitas em cadastros, tabelas e conta não são persistidas em um banco e, em geral, são perdidas após atualizar a página.
+Para começar do zero, apague o banco `gestaoflats` pelo MongoDB Compass ou pelo shell do MongoDB.
 
 ## Limitações conhecidas
 
-- Login sem validação real de credenciais.
-- Cadastro sem criação de usuário persistido.
-- Ausência de backend e banco de dados.
-- Alterações de conta não sobrevivem ao refresh.
-- Senha não é persistida.
-- Disponibilidade e check-in/check-out ainda não possuem dados reais integrados.
-- Algumas ações são demonstrativas e não executam uma operação de servidor.
-- `Nova hospedagem` ainda utiliza comportamento local de demonstração.
-- Indicadores do dashboard e do módulo financeiro são mockados e podem apresentar valores diferentes.
-- Não há testes automatizados, lint ou pipeline de integração contínua configurados.
-- A arquitetura documentada em `arquitetura.md` é uma referência inicial e pode divergir da árvore atual.
+- Não há paginação, ordenação ou filtros avançados no servidor.
+- Não há recuperação de senha por e-mail.
+- A PWA só registra o service worker em HTTPS ou em `localhost`; accessada por IP local em HTTP o navegador não permite a instalação.
+- Os arquivos de imagem do front-end somam cerca de 12 MB e ainda não foram otimizados.
+- Não há testes unitários no front-end, nem lint configurado.
+- Não há pipeline de integração contínua.
 
 ## Próximos passos
 
-### Backend e persistência
+### Publicação
 
-- Criar uma API para usuários, hóspedes, acomodações, hospedagens e lançamentos financeiros.
-- Modelar o banco de dados e seus relacionamentos.
-- Persistir cadastros, alterações, exclusões e status.
-- Integrar o front-end com endpoints reais.
-
-### Autenticação e segurança
-
-- Implementar cadastro real de usuários.
-- Validar credenciais no servidor.
-- Utilizar sessão segura ou tokens com expiração.
-- Proteger rotas e operações administrativas por perfil de acesso.
-- Implementar troca e recuperação de senha.
+- Definir entre GitHub Pages e Vercel e aplicar a configuração de `base`, manifesto, service worker e `VITE_API_URL` correspondente.
+- Publicar a API com `MONGODB_URI`, `JWT_SECRET` e `CLIENT_URL` do ambiente.
 
 ### Produto e operação
 
-- Implementar disponibilidade baseada em reservas reais.
-- Conectar check-in e check-out ao ciclo de uma hospedagem.
-- Completar nova hospedagem e tela de detalhes.
-- Unificar os indicadores do dashboard com o módulo financeiro.
-- Adicionar paginação, ordenação e filtros no servidor.
-- Permitir múltiplos usuários e níveis de permissão.
+- Adicionar paginação, ordenação e filtros avançados no servidor.
+- Relatórios de occupancy e receita por período.
+- Recuperação de senha por e-mail.
 
 ### Qualidade e manutenção
 
-- Adicionar testes unitários e testes de fluxo com navegador.
+- Adicionar testes unitários dos hooks e das páginas.
 - Configurar ESLint e formatação automática.
+- Otimizar as imagens de fundo e o logotipo.
 - Criar pipeline de integração contínua.
-- Adicionar tratamento de erros, estados de carregamento e mensagens de sucesso.
-- Implementar rotas reais, provavelmente com React Router.
-- Atualizar a documentação de arquitetura conforme o sistema evoluir.
 
 ## Contribuidores
 
 ### Grupo Gestão Flats
-
-Integrantes e contribuidores do Grupo Gestão Flats:
 
 | Nome                     | Perfil                                                   |
 | ------------------------ | -------------------------------------------------------- |
@@ -356,6 +498,3 @@ Integrantes e contribuidores do Grupo Gestão Flats:
 | José Luiz Nogueira Silva | [@jluizns](https://github.com/jluizns)                   |
 | Ana Karolyne             | [@anakarolyne-oa](https://github.com/anakarolyne-oa)     |
 | Raphael Vicente          | [@RaphaelVicente08](https://github.com/RaphaelVicente08) |
-
-
-
