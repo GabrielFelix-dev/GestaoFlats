@@ -1,0 +1,65 @@
+import Hospede from "../models/Hospede.js";
+import { conflict, notFound } from "../utils/errors.js";
+
+async function ensureCpfAvailable(cpf, ignoreId = null) {
+  const filtro = { cpf };
+
+  if (ignoreId) {
+    filtro._id = { $ne: ignoreId };
+  }
+
+  const existente = await Hospede.findOne(filtro);
+
+  if (existente) {
+    throw conflict("Já existe um hóspede com este CPF.");
+  }
+}
+
+export const hospedeService = {
+  async list(filters) {
+    const hospedes = await Hospede.listar(filters);
+
+    return hospedes;
+  },
+
+  async getById(id) {
+    const hospede = await Hospede.findById(id);
+
+    if (!hospede) {
+      throw notFound("Hóspede não encontrado.");
+    }
+
+    return hospede;
+  },
+
+  async create(data) {
+    await ensureCpfAvailable(data.cpf);
+
+    return Hospede.create(data);
+  },
+
+  async update(id, data) {
+    const hospede = await this.getById(id);
+
+    if (data.cpf) {
+      await ensureCpfAvailable(data.cpf, hospede._id);
+    }
+
+    const updated = await Hospede.findByIdAndUpdate(hospede._id, data, {
+      new: true,
+      runValidators: true,
+    });
+
+    return updated;
+  },
+
+  async remove(id) {
+    const hospede = await this.getById(id);
+
+    await Hospede.deleteOne({ _id: hospede._id });
+
+    return true;
+  },
+};
+
+export default hospedeService;
