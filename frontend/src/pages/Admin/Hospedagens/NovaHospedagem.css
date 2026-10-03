@@ -1,0 +1,62 @@
+.nova-hospedagem-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.nova-hospedagem-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.nova-hospedagem-summary,
+.nova-hospedagem-actions,
+.nova-hospedagem-form > .alert {
+  grid-column: 1 / -1;
+}
+
+.nova-hospedagem-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-tint);
+  border: 1px solid rgba(87, 118, 175, 0.18);
+}
+
+.nova-hospedagem-summary span {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.nova-hospedagem-summary strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.05rem;
+  color: var(--color-primary);
+}
+
+.nova-hospedagem-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .nova-hospedagem-form {
+    grid-template-columns: 1fr;
+  }
+
+  .nova-hospedagem-actions {
+    flex-direction: column;
+  }
+
+  .nova-hospedagem-actions .btn {
+    width: 100%;
+  }
+}

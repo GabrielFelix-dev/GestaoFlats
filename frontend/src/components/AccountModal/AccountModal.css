@@ -1,0 +1,68 @@
+.account-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.account-modal-form .input-label {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.account-modal-form .input {
+  background: var(--color-white);
+  border-color: var(--color-border);
+  border-radius: var(--radius-sm);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-modal-form .input:hover:not(:disabled) {
+  border-color: var(--color-blue-light);
+}
+
+.account-modal-form .input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(87, 118, 175, 0.25);
+}
+
+.account-modal-form .input::placeholder {
+  color: rgba(0, 35, 102, 0.4);
+}
+
+.account-modal-form .input-helper {
+  color: var(--color-text-soft);
+}
+
+.account-modal-divider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.35rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.account-modal-divider span {
+  color: var(--color-secondary);
+  font-weight: 700;
+}
+
+.account-modal-divider small {
+  color: var(--color-text-soft);
+}
+
+.account-modal-message {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.account-modal-error {
+  color: #8f2b28;
+}
+
+.account-modal-success {
+  color: #22603c;
+}

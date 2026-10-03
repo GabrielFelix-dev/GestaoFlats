@@ -1,0 +1,60 @@
+.checkin-checkout-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+.page-header {
+  margin-bottom: 1.25rem;
+}
+
+.page-header h1 {
+  margin-top: 0.8rem;
+  color: #eafef8;
+}
+
+.page-header > div > p:last-child {
+  margin-top: 0.6rem;
+  color: #9bc8da;
+}
+
+@media (max-width: 640px) {
+  .checkin-checkout-page {
+    padding: 1rem;
+  }
+}
+
+.checkin-totais {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-self: end;
+}
+
+.checkin-totais > div {
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-tint);
+  border: 1px solid rgba(87, 118, 175, 0.16);
+}
+
+.checkin-totais span {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.checkin-totais strong {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+
+.checkin-no-action {
+  color: var(--color-text-soft);
+  font-size: 0.82rem;
+}
+
