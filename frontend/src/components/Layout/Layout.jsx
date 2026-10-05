@@ -3,6 +3,13 @@ import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
 import "./Layout.css";
 
+/**
+ * Layout principal da área administrativa.
+ * Responsável por:
+ * - Medir altura do header para posicionar conteúdo corretamente (CSS var --header-height)
+ * - Renderizar Header + Sidebar + área de conteúdo (main)
+ * - Controlar estado de abertura/fechamento da sidebar
+ */
 export default function Layout({
   children,
   title,
@@ -22,6 +29,7 @@ export default function Layout({
   const headerRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(72);
 
+  // Observa mudanças de altura do header (ex.: responsivo) e sincroniza CSS var.
   useEffect(() => {
     const node = headerRef.current;
     if (!node) return;

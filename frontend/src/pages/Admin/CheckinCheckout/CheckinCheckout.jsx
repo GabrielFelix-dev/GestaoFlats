@@ -11,6 +11,7 @@ import { useFeedback } from "../../../hooks/useFeedback";
 import { formatCurrency, formatDate, todayInputValue } from "../../../utils/format";
 import "./CheckinCheckout.css";
 
+/** Colunas da tabela de movimentações. */
 const columns = [
   { key: "hospede", label: "Hóspede" },
   { key: "acomodacao", label: "Acomodação" },
@@ -20,6 +21,12 @@ const columns = [
   { key: "situacao", label: "Situação" },
 ];
 
+/**
+ * Normaliza objeto da API para linha da tabela:
+ * - Extrai nomes aninhados (hospede.nome, acomodacao.nome)
+ * - Formata datas e moeda
+ * - Adiciona badge de situação com label contextual
+ */
 function mapRow(hospedagem, situacao) {
   return {
     ...hospedagem,
@@ -36,14 +43,16 @@ export default function CheckinCheckout() {
   const [data, setData] = useState(todayInputValue());
   const { feedback, clear, run } = useFeedback();
 
+  // Carrega movimentações do dia selecionado; recarrega quando `data` muda.
   const load = useCallback(() => checkinCheckoutService.list({ data }), [data]);
 
   const { data: resultado, isLoading, error, reload } = useApiResource(load, [
     data,
   ]);
 
+  /** Check-in: confirma e chama API; em sucesso recarrega lista. */
   function fazerCheckIn(hospedagem) {
-    if (!window.confirm(`Confirmar o check-in de ${hospedagem.hospede?.nome}?`))
+    if (!window.confirm(`Confirmar o check-in de ${hospedagem.hospede}?`))
       return;
 
     run(() => checkinCheckoutService.checkIn(hospedagem.id), {
@@ -52,8 +61,9 @@ export default function CheckinCheckout() {
     });
   }
 
+  /** Check-out: confirma e chama API; em sucesso recarrega lista. */
   function fazerCheckOut(hospedagem) {
-    if (!window.confirm(`Confirmar o check-out de ${hospedagem.hospede?.nome}?`))
+    if (!window.confirm(`Confirmar o check-out de ${hospedagem.hospede}?`))
       return;
 
     run(() => checkinCheckoutService.checkOut(hospedagem.id), {
@@ -66,6 +76,7 @@ export default function CheckinCheckout() {
   const checkOuts = resultado?.checkOuts ?? [];
   const hospedesNoLocal = resultado?.hospedesNoLocal ?? [];
 
+  // Evita duplicar hóspedes que já aparecem na lista de check-out do dia.
   const idsEmCheckOut = new Set(checkOuts.map((item) => item.id));
   const linhas = [
     ...checkIns.map((item) => mapRow(item, "Aguardando check-in")),
@@ -75,6 +86,12 @@ export default function CheckinCheckout() {
       .map((item) => mapRow(item, "Hospedado")),
   ];
 
+  /**
+   * Renderiza botão de ação conforme status da hospedagem:
+   * - checkIns: botão "Fazer check-in"
+   * - checkOuts: botão "Fazer check-out"
+   * - hospedesNoLocal sem ação: label "Sem ação para hoje"
+   */
   function renderAction(hospedagem) {
     const podeEntrar = checkIns.some((item) => item.id === hospedagem.id);
     const podeSair = checkOuts.some((item) => item.id === hospedagem.id);

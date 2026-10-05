@@ -12,12 +12,14 @@ import { authService } from "../services/auth";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  // Estado inicial lido do localStorage (token + user JSON).
   const [user, setUser] = useState(getStoredUser);
   const [isAuthenticated, setIsAuthenticated] = useState(Boolean(getStoredToken()));
   const [isCheckingSession, setIsCheckingSession] = useState(
     Boolean(getStoredToken()),
   );
 
+  // Bootstrap: se há token salvo, valida com /auth/me para confirmar sessão ativa.
   useEffect(() => {
     if (!getStoredToken()) return undefined;
 
@@ -45,6 +47,7 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  // Listener global: API devolve 401 -> limpa sessão e redireciona para login.
   useEffect(() => {
     function handleUnauthorized() {
       setUser(null);
@@ -62,6 +65,7 @@ export function AuthProvider({ children }) {
     return data;
   }, []);
 
+  // Cadastro não faz login automático: retorna só o usuário, token vem no login posterior.
   const register = useCallback(async (payload) => {
     return authService.register(payload);
   }, []);

@@ -24,6 +24,7 @@ import {
 } from "../../../utils/labels";
 import "./Hospedes.css";
 
+/** Estado inicial do formulário de hóspede (criação e edição). */
 const emptyForm = {
   nome: "",
   cpf: "",
@@ -34,12 +35,17 @@ const emptyForm = {
   status: "Ativo",
 };
 
+/**
+ * Colunas da tabela.
+ * `width` + table-layout:fixed (Table.css) garante larguras fixas e
+ * evita quebra de layout quando a sidebar reduz a área de conteúdo.
+ */
 const columns = [
-  { key: "nome", label: "Nome" },
-  { key: "cpf", label: "CPF" },
-  { key: "telefone", label: "Telefone" },
-  { key: "email", label: "E-mail" },
-  { key: "statusBadge", label: "Status" },
+  { key: "nome", label: "Nome", width: "35%" },
+  { key: "cpf", label: "CPF", width: "18%" },
+  { key: "telefone", label: "Telefone", width: "18%" },
+  { key: "email", label: "E-mail", width: "20%" },
+  { key: "statusBadge", label: "Status", width: "9%" },
 ];
 
 export default function Hospedes() {
@@ -50,9 +56,12 @@ export default function Hospedes() {
   const [form, setForm] = useState(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Debounce no input de busca para não disparar request a cada tecla.
   const debouncedSearch = useDebouncedValue(search);
   const { feedback, clear, run } = useFeedback();
 
+  // Lista com filtros; `normalizeSearchTerm` remove pontuação se busca for só dígitos
+  // (permite achar CPF digitado com ou sem máscara).
   const load = useCallback(
     () =>
       hospedesService.list({
@@ -69,6 +78,10 @@ export default function Hospedes() {
 
   const hospedes = data ?? [];
 
+  /**
+   * Handler único para inputs do formulário.
+   * Aplica máscara (CPF/telefone) em tempo real via `masks[name]`.
+   */
   function handleChange(event) {
     const { name, value } = event.target;
     const mask = masks[name];
@@ -86,6 +99,10 @@ export default function Hospedes() {
     setIsModalOpen(true);
   }
 
+  /**
+   * Preenche formulário com dados do hóspede para edição.
+   * Reaplica máscaras nos valores vindos da API (que vêm sem pontuação).
+   */
   function openEditModal(hospede) {
     setEditingId(hospede.id);
     setForm({
@@ -107,6 +124,12 @@ export default function Hospedes() {
     setForm(emptyForm);
   }
 
+  /**
+   * Salva (create ou update).
+   * - `onlyDigits` remove máscaras antes de enviar à API (backend valida só dígitos).
+   * - `run` (useFeedback) trata loading, erro e toast de sucesso.
+   * - Em sucesso, fecha modal e recarrega lista via `reload()`.
+   */
   async function saveGuest(event) {
     event?.preventDefault();
     setIsSaving(true);
@@ -148,6 +171,11 @@ export default function Hospedes() {
     });
   }
 
+  /**
+   * Prepara linhas para a Table:
+   * - Aplica máscaras de exibição (CPF/telefone formatados)
+   * - Adiciona badge de status como JSX
+   */
   const rows = hospedes.map((hospede) => ({
     ...hospede,
     cpf: maskCpf(hospede.cpf),
