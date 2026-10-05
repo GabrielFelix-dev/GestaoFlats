@@ -11,6 +11,7 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 640px;
+  table-layout: fixed;
 }
 
 .data-table th,
@@ -19,8 +20,9 @@
   border-bottom: 1px solid var(--color-border);
   text-align: left;
   vertical-align: middle;
-  word-break: break-word;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .data-table th {
@@ -103,7 +105,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.85rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .data-table .data-table-row td:last-child {
@@ -114,7 +116,7 @@
   .data-table .data-table-row td::before {
     content: attr(data-label);
     flex: 0 0 auto;
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;

@@ -1,5 +1,6 @@
 import "./Table.css";
 
+/** Renderiza célula: valor vazio vira "—", senão passa direto (pode ser JSX). */
 function renderCell(value) {
   if (value === null || value === undefined || value === "") {
     return <span className="table-empty-value">—</span>;
@@ -8,6 +9,15 @@ function renderCell(value) {
   return value;
 }
 
+/**
+ * Tabela genérica reutilizável.
+ * Props:
+ * - columns: [{ key, label, width? }]
+ * - data: array de objetos com chaves batendo com columns[*].key
+ * - actions: função (row) => JSX para coluna de ações (Editar/Excluir etc.)
+ * - table-layout: fixed + overflow-x:auto no wrapper garante scroll horizontal
+ *   e larguras respeitadas mesmo com sidebar aberta.
+ */
 export default function Table({
   columns = [],
   data = [],

@@ -21,6 +21,10 @@ import { authService } from "./services";
 import { adminNavItems } from "./pages/navigation";
 import "./App.css";
 
+/**
+ * Rótulos de exibição para cada rota/página.
+ * Chaves devem bater com os valores usados em `activeItem` e no `adminNavItems`.
+ */
 const pageLabels = {
   dashboard: "Dashboard",
   hospedes: "Hóspedes",
@@ -38,14 +42,20 @@ const pageLabels = {
   perfil: "Perfil",
 };
 
+/** Chave do localStorage que guarda a última aba ativa do admin. */
 const ACTIVE_ITEM_KEY = "gestao-flats:active-item";
 
+/** Lê o parâmetro ?pagina= da URL; se válido, retorna o item correspondente. */
 function readParamItem() {
   const param = new URLSearchParams(window.location.search).get("pagina");
 
   return param && pageLabels[param] ? param : null;
 }
 
+/**
+ * Determina a aba inicial: prioriza ?pagina=, depois localStorage,
+ * fallback para "dashboard".
+ */
 function readStoredActiveItem() {
   const fromParam = readParamItem();
 
@@ -58,6 +68,7 @@ function readStoredActiveItem() {
   return stored && pageLabels[stored] ? stored : "dashboard";
 }
 
+/** Placeholder genérico para páginas ainda não implementadas. */
 function PageInDevelopment({ pageName }) {
   return (
     <div className="page-placeholder">
@@ -69,6 +80,10 @@ function PageInDevelopment({ pageName }) {
   );
 }
 
+/**
+ * Roteador simples baseado em estado (sem react-router).
+ * Cada case retorna o componente da página, passando props compartilhadas.
+ */
 function renderPage(activeItem, pageProps) {
   switch (activeItem) {
     case "dashboard":
@@ -112,15 +127,18 @@ export default function App() {
   const [showLoginAfterLogout, setShowLoginAfterLogout] = useState(false);
   const [selectedHospedagemId, setSelectedHospedagemId] = useState(null);
 
+  // Persiste a aba ativa para restaurar ao recarregar.
   useEffect(() => {
     localStorage.setItem(ACTIVE_ITEM_KEY, activeItem);
   }, [activeItem]);
 
+  /** Troca a aba e fecha a sidebar (mobile). */
   function handleNavigate(page) {
     setActiveItem(page);
     setSidebarOpen(false);
   }
 
+  /** Faz logout e prepara a tela de login para o próximo acesso. */
   function handleLogout() {
     setShowLoginAfterLogout(true);
     setSelectedHospedagemId(null);
@@ -139,6 +157,7 @@ export default function App() {
     await authService.changePassword(credentials);
   }
 
+  // Estado de bootstrap: valida token salvo no localStorage via /auth/me.
   if (isCheckingSession) {
     return (
       <div className="app-loading">
@@ -147,6 +166,7 @@ export default function App() {
     );
   }
 
+  // Não autenticado: exibe tela de login/cadastro (Home) sem sidebar.
   if (!isAuthenticated) {
     return (
       <Layout
@@ -162,6 +182,7 @@ export default function App() {
     );
   }
 
+  // Props compartilhadas com todas as páginas administrativas.
   const pageProps = {
     onNavigate: handleNavigate,
     user,
@@ -172,6 +193,7 @@ export default function App() {
     onSelectHospedagem: setSelectedHospedagemId,
   };
 
+  // Layout autenticado: header + sidebar + conteúdo dinâmico.
   return (
     <Layout
       title={pageLabels[activeItem] || activeItem}

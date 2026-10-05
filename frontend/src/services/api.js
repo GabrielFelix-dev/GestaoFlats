@@ -11,6 +11,7 @@ export const apiBaseUrl = (import.meta.env.VITE_API_URL ?? "/api").replace(
   "",
 );
 
+/** Erro tipado da API: carrega status HTTP e detalhes de validação (Zod). */
 export class ApiError extends Error {
   constructor(message, { status = 0, detalhes = null } = {}) {
     super(message);
@@ -99,6 +100,12 @@ function extractMessage(payload, fallback) {
   return fallback;
 }
 
+/**
+ * Cliente HTTP centralizado.
+ * - Injeta Authorization: Bearer <token> quando `auth=true`
+ * - Converte respostas não-OK em ApiError com mensagem amigável
+ * - Dispara evento UNAUTHORIZED_EVENT em 401 para limpar sessão global
+ */
 export async function request(
   path,
   { method = "GET", body, params, auth = true } = {},
