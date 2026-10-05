@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../../../components/Button/Button";
 import Card from "../../../components/Card/Card";
 import Despesas from "./Despesas";
+import DesempenhoImoveis from "./DesempenhoImoveis";
 import Receitas from "./Receitas";
 import ResumoFinanceiro from "./ResumoFinanceiro";
 import "./Financeiro.css";
@@ -10,6 +11,7 @@ const abas = [
   { id: "resumo", label: "Visão geral" },
   { id: "receitas", label: "Receitas" },
   { id: "despesas", label: "Despesas" },
+  { id: "imoveis", label: "Desempenho dos imóveis" },
 ];
 
 export default function Financeiro() {
@@ -44,6 +46,7 @@ export default function Financeiro() {
 
       {abaAtiva === "receitas" && <Receitas />}
       {abaAtiva === "despesas" && <Despesas />}
+      {abaAtiva === "imoveis" && <DesempenhoImoveis />}
     </div>
   );
 }

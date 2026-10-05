@@ -1,7 +1,25 @@
 import Despesa from "../models/Despesa.js";
+import Acomodacao from "../models/Acomodacao.js";
 import { notFound } from "../utils/errors.js";
 
 const VAZIO = { pago: 0, pendente: 0, total: 0, aPagar: 0 };
+
+function mapAcomodacao(data) {
+  const mapped = { ...data };
+
+  if (Object.hasOwn(data, "acomodacaoId")) {
+    mapped.acomodacao = data.acomodacaoId || null;
+    delete mapped.acomodacaoId;
+  }
+
+  return mapped;
+}
+
+async function assertAcomodacaoExists(acomodacaoId) {
+  if (acomodacaoId && !(await Acomodacao.exists({ _id: acomodacaoId }))) {
+    throw notFound("Acomodação não encontrada.");
+  }
+}
 
 export const despesaService = {
   async list(filters) {
@@ -9,7 +27,7 @@ export const despesaService = {
   },
 
   async getById(id) {
-    const despesa = await Despesa.findById(id);
+    const despesa = await Despesa.findById(id).populate("acomodacao", "nome endereco");
 
     if (!despesa) {
       throw notFound("Despesa não encontrada.");
@@ -19,16 +37,22 @@ export const despesaService = {
   },
 
   async create(data) {
-    return Despesa.create(data);
+    await assertAcomodacaoExists(data.acomodacaoId);
+    const despesa = await Despesa.create(mapAcomodacao(data));
+
+    return this.getById(despesa._id);
   },
 
   async update(id, data) {
     const despesa = await this.getById(id);
+    await assertAcomodacaoExists(data.acomodacaoId);
 
-    return Despesa.findByIdAndUpdate(despesa._id, data, {
+    await Despesa.findByIdAndUpdate(despesa._id, mapAcomodacao(data), {
       new: true,
       runValidators: true,
     });
+
+    return this.getById(despesa._id);
   },
 
   async changeStatus(id, status, dataPagamento) {

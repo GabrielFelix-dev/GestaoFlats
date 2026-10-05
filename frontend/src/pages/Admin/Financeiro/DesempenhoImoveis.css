@@ -1,0 +1,338 @@
+.property-performance {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.property-performance-filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.performance-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 0.75rem;
+}
+
+.performance-kpi .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.performance-kpi strong {
+  color: #263b4d;
+  font-size: 1.2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.performance-kpi.revenue strong {
+  color: #267354;
+}
+
+.performance-kpi.expense strong {
+  color: #a0443c;
+}
+
+.performance-kpi small {
+  color: #65737e;
+  font-size: 0.78rem;
+}
+
+.performance-rankings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 0.75rem;
+}
+
+.performance-ranking .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.performance-ranking strong {
+  color: #273c4c;
+}
+
+.performance-ranking span {
+  color: #65737e;
+  font-variant-numeric: tabular-nums;
+}
+
+.performance-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.performance-chart-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.7fr) minmax(0, 2fr);
+  gap: 0.4rem 1rem;
+  align-items: center;
+}
+
+.performance-chart-row > strong {
+  grid-row: span 3;
+  color: #293f50;
+  overflow-wrap: anywhere;
+}
+
+.performance-bar-line {
+  display: grid;
+  grid-template-columns: 74px minmax(70px, 1fr) minmax(90px, auto);
+  gap: 0.65rem;
+  align-items: center;
+  color: #596976;
+  font-size: 0.8rem;
+}
+
+.performance-bar-track {
+  height: 9px;
+  overflow: hidden;
+  background: #edf1f2;
+  border-radius: 2px;
+}
+
+.performance-bar {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  background: #43876d;
+  border-radius: inherit;
+}
+
+.performance-bar.expense {
+  background: #ce8064;
+}
+
+.performance-bar.result {
+  background: #4d7892;
+}
+
+.performance-bar.negative {
+  background: #b84c42;
+}
+
+.performance-bar-line b {
+  color: #314554;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.performance-result {
+  font-weight: 650;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.performance-result.lucro {
+  color: #267354;
+}
+
+.performance-result.prejuízo {
+  color: #a0443c;
+}
+
+.performance-result.equilíbrio {
+  color: #596976;
+}
+
+.performance-integrity-note {
+  margin-top: 0.8rem;
+  color: #875127;
+  font-size: 0.86rem;
+}
+
+.performance-empty {
+  color: #65737e;
+}
+
+.property-detail-address {
+  margin: 0 0 1rem;
+  color: #65737e;
+}
+
+.property-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.property-detail-grid div {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #e4e9eb;
+}
+
+.property-detail-grid dt {
+  color: #65737e;
+  font-size: 0.78rem;
+}
+
+.property-detail-grid dd {
+  margin: 0.25rem 0 0;
+  color: #293f50;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.property-detail-expenses {
+  margin-top: 1.2rem;
+}
+
+.property-detail-expenses h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.property-detail-expenses ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.property-detail-expenses li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.7rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid #e4e9eb;
+  align-items: center;
+}
+
+.property-detail-expenses time {
+  color: #65737e;
+  font-size: 0.8rem;
+}
+
+.property-detail-expenses strong {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .property-performance-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 769px) {
+  .performance-table {
+    overflow-x: auto;
+  }
+
+  .performance-table .data-table {
+    min-width: 1180px;
+    table-layout: fixed;
+  }
+
+  .performance-table .data-table th,
+  .performance-table .data-table td {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .performance-table .data-table th {
+    white-space: nowrap;
+  }
+
+  .performance-table .data-table th:nth-child(1),
+  .performance-table .data-table td:nth-child(1) {
+    width: 190px;
+  }
+
+  .performance-table .data-table th:nth-child(2),
+  .performance-table .data-table td:nth-child(2) {
+    width: 230px;
+  }
+
+  .performance-table .data-table th:nth-child(3),
+  .performance-table .data-table td:nth-child(3),
+  .performance-table .data-table th:nth-child(4),
+  .performance-table .data-table td:nth-child(4),
+  .performance-table .data-table th:nth-child(5),
+  .performance-table .data-table td:nth-child(5),
+  .performance-table .data-table th:nth-child(9),
+  .performance-table .data-table td:nth-child(9) {
+    width: 82px;
+    text-align: center;
+  }
+
+  .performance-table .data-table th:nth-child(6),
+  .performance-table .data-table td:nth-child(6),
+  .performance-table .data-table th:nth-child(7),
+  .performance-table .data-table td:nth-child(7) {
+    width: 112px;
+    white-space: nowrap;
+  }
+
+  .performance-table .data-table th:nth-child(8),
+  .performance-table .data-table td:nth-child(8) {
+    width: 155px;
+  }
+
+  .performance-table .data-table th:last-child,
+  .performance-table .data-table td:last-child {
+    width: 100px;
+  }
+}
+
+@media (max-width: 640px) {
+  .property-performance-filters,
+  .property-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-kpi:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .performance-rankings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .performance-ranking .card-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .performance-ranking span {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .performance-chart-row {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-chart-row > strong {
+    grid-row: auto;
+    margin-bottom: 0.2rem;
+  }
+
+  .performance-bar-line {
+    grid-template-columns: 65px minmax(55px, 1fr) minmax(84px, auto);
+    gap: 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .property-detail-expenses li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .property-detail-expenses time {
+    grid-column: 1;
+  }
+
+  .property-detail-expenses strong {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

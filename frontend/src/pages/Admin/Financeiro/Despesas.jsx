@@ -7,11 +7,15 @@ import Modal from "../../../components/Modal/Modal";
 import Select from "../../../components/Select/Select";
 import StatusBadge from "../../../components/StatusBadge/StatusBadge";
 import Table from "../../../components/Table/Table";
-import { despesasService } from "../../../services";
+import { acomodacoesService, despesasService } from "../../../services";
 import { useApiResource } from "../../../hooks/useApiResource";
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import { useFeedback } from "../../../hooks/useFeedback";
-import { formatCurrency, formatDate, todayInputValue } from "../../../utils/format";
+import {
+  formatCurrency,
+  formatDate,
+  todayInputValue,
+} from "../../../utils/format";
 import {
   DESPESA_CATEGORIAS,
   DESPESA_STATUS,
@@ -27,11 +31,13 @@ const emptyForm = {
   dataVencimento: todayInputValue(),
   dataPagamento: "",
   status: "Pendente",
+  acomodacaoId: "geral",
 };
 
 const columns = [
   { key: "descricao", label: "Descrição" },
   { key: "categoriaLabel", label: "Categoria" },
+  { key: "acomodacaoLabel", label: "Imóvel" },
   { key: "valorLabel", label: "Valor" },
   { key: "dataVencimentoLabel", label: "Vencimento" },
   { key: "statusBadge", label: "Status" },
@@ -45,6 +51,8 @@ export default function Despesas({ compact = false }) {
   const [form, setForm] = useState(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
   const { feedback, clear, run } = useFeedback();
+  const loadAccommodations = useCallback(() => acomodacoesService.list({}), []);
+  const accommodations = useApiResource(loadAccommodations).data ?? [];
 
   const debouncedBusca = useDebouncedValue(busca);
 
@@ -87,6 +95,7 @@ export default function Despesas({ compact = false }) {
         ? despesa.dataPagamento.slice(0, 10)
         : "",
       status: despesa.status ?? "Pendente",
+      acomodacaoId: despesa.acomodacao?.id ?? "geral",
     });
     clear();
     setIsModalOpen(true);
@@ -108,6 +117,7 @@ export default function Despesas({ compact = false }) {
       valor: Number(form.valor),
       dataVencimento: form.dataVencimento,
       status: form.status,
+      acomodacaoId: form.acomodacaoId === "geral" ? null : form.acomodacaoId,
     };
 
     if (form.dataPagamento) payload.dataPagamento = form.dataPagamento;
@@ -158,6 +168,7 @@ export default function Despesas({ compact = false }) {
   const rows = despesas.map((despesa) => ({
     ...despesa,
     categoriaLabel: categoriaLabel(despesa.categoria),
+    acomodacaoLabel: despesa.acomodacao?.nome ?? "Geral",
     valorLabel: formatCurrency(despesa.valor),
     dataVencimentoLabel: formatDate(despesa.dataVencimento),
     statusBadge: <StatusBadge status={despesa.status} />,
@@ -167,7 +178,10 @@ export default function Despesas({ compact = false }) {
     <>
       <div className="despesas-page">
         {!compact && (
-          <Card title="Filtro de Despesas" subtitle="Gerencie as saídas financeiras e contas">
+          <Card
+            title="Filtro de Despesas"
+            subtitle="Gerencie as saídas financeiras e contas"
+          >
             <div className="filter-grid">
               <Input
                 label="Buscar por descrição"
@@ -218,7 +232,9 @@ export default function Despesas({ compact = false }) {
                   variant="outline"
                   onClick={() => alternarStatus(despesa)}
                 >
-                  {despesa.status === "Pago" ? "Marcar pendente" : "Marcar pago"}
+                  {despesa.status === "Pago"
+                    ? "Marcar pendente"
+                    : "Marcar pago"}
                 </Button>
                 <Button
                   size="sm"
@@ -277,6 +293,21 @@ export default function Despesas({ compact = false }) {
             onChange={handleChange}
             options={toOptions(DESPESA_CATEGORIAS, categoriaLabel)}
             required
+          />
+
+          <Select
+            label="Vincular a imóvel"
+            name="acomodacaoId"
+            value={form.acomodacaoId}
+            onChange={handleChange}
+            placeholder="Selecione o imóvel"
+            options={[
+              { value: "geral", label: "Despesa geral" },
+              ...accommodations.map((acomodacao) => ({
+                value: acomodacao.id,
+                label: acomodacao.nome,
+              })),
+            ]}
           />
 
           <Input

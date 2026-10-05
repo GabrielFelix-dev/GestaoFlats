@@ -10,7 +10,7 @@ Sistema web para administração de flats, hospedagens e operações financeiras
 - [Estrutura do repositório](#estrutura-do-repositório)
 - [Tecnologias](#tecnologias)
 - [Como executar](#como-executar)
-- [Testes da API](#testes-da-api)
+- [Testes](#testes)
 - [API](#api)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
 - [Arquitetura do front-end](#arquitetura-do-front-end)
@@ -140,7 +140,7 @@ Em Windows PowerShell:
 Copy-Item backend/.env.example backend/.env
 ```
 
-O arquivo `.env` já está presente no projeto local. Ao final do desenvolvimento, ajuste `JWT_SECRET` e `CLIENT_URL`.
+Crie esse arquivo localmente e ajuste `MONGODB_URI`, `JWT_SECRET` e `CLIENT_URL`. O arquivo de ambiente não é incluído no repositório.
 
 ### Ambiente de desenvolvimento
 
@@ -169,74 +169,60 @@ O banco começa vazio. Na tela inicial, escolha **Cadastre-se** e crie a conta a
 npm run build
 ```
 
-## Testes da API
+## Testes
 
-Com a API no ar, existe um teste de fumaça que exercita o fluxo inteiro: autenticação, cadastros, filtros, ciclo de hospedagem, financeiro, dashboard e os casos de erro.
-
-```bash
-cd backend
-npm run test:api
-```
-
-O script sobe e derruba um usuário de teste, uma acomodação, um hóspede, uma hospedagem, uma receita e uma despesa, e remove tudo ao final. Para apontar para outra API:
+Os testes unitários do backend usam o runner nativo do Node.js e não precisam de MongoDB:
 
 ```bash
-API_URL=https://sua-api.com npm run test:api
+npm test --prefix backend
 ```
 
-Para preservar os dados gerados, por exemplo para inspecionar no Compass:
-
-```bash
-npm run test:api -- --manter
-```
-
-A API limita as rotas de autenticação a 20 tentativas por janela de 15 minutos. Se o limite for atingido, o teste detecta o `429` e interrompe com a orientação de reiniciar a API, em vez de falhar em cascata.
-
-Observação: a conta de teste fica no banco, porque a API não expõe rota de exclusão de usuário. Se quiser limpar depois, remova pelo Compass ou apague o documento na coleção `users`.
+Ainda não há teste de integração HTTP que valide a API completa contra um MongoDB. Os fluxos de cadastro/login, hospedagens e persistência precisam ser exercitados em ambiente configurado antes de serem considerados validados.
 
 ## API
 
 Todas as rotas, exceto autenticação e saúde, exigem o header `Authorization: Bearer <token>`.
 
-| Método | Rota                                | Descrição                                  |
-| ------ | ----------------------------------- | ------------------------------------------ |
-| GET    | `/health`                           | Verificação de disponibilidade              |
-| POST   | `/api/auth/register`                | Criação de conta                            |
-| POST   | `/api/auth/login`                   | Autenticação                                |
-| GET    | `/api/auth/me`                      | Dados do usuário autenticado                |
-| PUT    | `/api/auth/profile`                 | Atualização de nome e e-mail                |
-| PUT    | `/api/auth/password`                | Troca de senha                              |
-| GET    | `/api/hospedes`                     | Listagem com filtros                        |
-| POST   | `/api/hospedes`                     | Cadastro de hóspede                         |
-| GET    | `/api/hospedes/:id`                 | Detalhe de hóspede                          |
-| PUT    | `/api/hospedes/:id`                 | Edição de hóspede                           |
-| DELETE | `/api/hospedes/:id`                 | Exclusão de hóspede                         |
-| GET    | `/api/acomodacoes`                  | Listagem com filtros                        |
-| POST   | `/api/acomodacoes`                  | Cadastro de acomodação                      |
-| PUT    | `/api/acomodacoes/:id`              | Edição de acomodação                        |
-| PATCH  | `/api/acomodacoes/:id/status`       | Alteração de status                         |
-| DELETE | `/api/acomodacoes/:id`              | Exclusão de acomodação                      |
-| GET    | `/api/hospedagens`                  | Reservas com filtros                        |
-| POST   | `/api/hospedagens`                  | Criação de reserva                          |
-| PUT    | `/api/hospedagens/:id`              | Edição de reserva                           |
-| PATCH  | `/api/hospedagens/:id/status`       | Cancelamento ou conclusão                   |
-| DELETE | `/api/hospedagens/:id`              | Exclusão de reserva                         |
-| GET    | `/api/checkin-checkout`             | Entradas e saídas de uma data               |
-| POST   | `/api/checkin-checkout/:id/checkin` | Registrar check-in                          |
-| POST   | `/api/checkin-checkout/:id/checkout`| Registrar check-out                         |
-| GET    | `/api/checkin-checkout/disponibilidade` | Disponibilidade por período            |
-| GET    | `/api/receitas`                     | Listagem de receitas                        |
-| POST   | `/api/receitas`                     | Cadastro de receita                         |
-| PUT    | `/api/receitas/:id`                 | Edição de receita                           |
-| PATCH  | `/api/receitas/:id/status`          | Alteração de status                         |
-| DELETE | `/api/receitas/:id`                 | Exclusão de receita                         |
-| GET    | `/api/despesas`                     | Listagem de despesas                        |
-| POST   | `/api/despesas`                     | Cadastro de despesa                         |
-| PUT    | `/api/despesas/:id`                 | Edição de despesa                           |
-| PATCH  | `/api/despesas/:id/status`          | Baixa de pagamento                          |
-| DELETE | `/api/despesas/:id`                 | Exclusão de despesa                         |
-| GET    | `/api/dashboard/resumo`             | Indicadores consolidados                    |
-| GET    | `/api/dashboard/historico`          | Histórico de hospedagens                    |
+| Método | Rota                                    | Descrição                        |
+| ------ | --------------------------------------- | -------------------------------- |
+| GET    | `/health`                               | Verificação de disponibilidade   |
+| POST   | `/api/auth/register`                    | Criação de conta                 |
+| POST   | `/api/auth/login`                       | Autenticação                     |
+| GET    | `/api/auth/me`                          | Dados do usuário autenticado     |
+| PUT    | `/api/auth/profile`                     | Atualização de nome e e-mail     |
+| PUT    | `/api/auth/password`                    | Troca de senha                   |
+| GET    | `/api/hospedes`                         | Listagem com filtros             |
+| POST   | `/api/hospedes`                         | Cadastro de hóspede              |
+| GET    | `/api/hospedes/:id`                     | Detalhe de hóspede               |
+| PUT    | `/api/hospedes/:id`                     | Edição de hóspede                |
+| DELETE | `/api/hospedes/:id`                     | Exclusão de hóspede              |
+| GET    | `/api/acomodacoes`                      | Listagem com filtros             |
+| POST   | `/api/acomodacoes`                      | Cadastro de acomodação           |
+| PUT    | `/api/acomodacoes/:id`                  | Edição de acomodação             |
+| PATCH  | `/api/acomodacoes/:id/status`           | Alteração de status              |
+| DELETE | `/api/acomodacoes/:id`                  | Exclusão de acomodação           |
+| GET    | `/api/hospedagens`                      | Reservas com filtros             |
+| POST   | `/api/hospedagens`                      | Criação de reserva               |
+| PUT    | `/api/hospedagens/:id`                  | Edição de reserva                |
+| PATCH  | `/api/hospedagens/:id/status`           | Cancelamento ou conclusão        |
+| DELETE | `/api/hospedagens/:id`                  | Exclusão de reserva              |
+| GET    | `/api/checkin-checkout`                 | Entradas e saídas de uma data    |
+| POST   | `/api/checkin-checkout/:id/checkin`     | Registrar check-in               |
+| POST   | `/api/checkin-checkout/:id/checkout`    | Registrar check-out              |
+| GET    | `/api/checkin-checkout/disponibilidade` | Disponibilidade por período      |
+| GET    | `/api/receitas`                         | Listagem de receitas             |
+| POST   | `/api/receitas`                         | Cadastro de receita              |
+| PUT    | `/api/receitas/:id`                     | Edição de receita                |
+| PATCH  | `/api/receitas/:id/status`              | Alteração de status              |
+| DELETE | `/api/receitas/:id`                     | Exclusão de receita              |
+| GET    | `/api/despesas`                         | Listagem de despesas             |
+| POST   | `/api/despesas`                         | Cadastro de despesa              |
+| PUT    | `/api/despesas/:id`                     | Edição de despesa                |
+| PATCH  | `/api/despesas/:id/status`              | Baixa de pagamento               |
+| DELETE | `/api/despesas/:id`                     | Exclusão de despesa              |
+| GET    | `/api/dashboard/resumo`                 | Indicadores consolidados         |
+| GET    | `/api/dashboard/historico`              | Histórico de hospedagens         |
+| GET    | `/api/financeiro/rentabilidade`         | Desempenho financeiro por imóvel |
 
 ### Exemplo de uso
 
@@ -287,20 +273,20 @@ Códigos utilizados: `200`, `201`, `204`, `401` (não autenticado), `404` (não 
 
 ### Back-end (`backend/.env`)
 
-| Variável         | Descrição                                              | Padrão                                 |
-| ---------------- | ------------------------------------------------------ | -------------------------------------- |
-| `PORT`           | Porta da API                                            | `3333`                                 |
-| `NODE_ENV`       | Ambiente de execução                                    | `development`                          |
-| `MONGODB_URI`    | String de conexão com o MongoDB                          | `mongodb://127.0.0.1:27017/gestaoflats` |
-| `JWT_SECRET`     | Segredo de assinatura dos tokens                        | valor de desenvolvimento                |
-| `JWT_EXPIRES_IN` | Validade do token                                       | `1d`                                   |
-| `CLIENT_URL`     | Origem permitida no CORS                                | `http://localhost:5173`                |
+| Variável         | Descrição                        | Padrão                                  |
+| ---------------- | -------------------------------- | --------------------------------------- |
+| `PORT`           | Porta da API                     | `3333`                                  |
+| `NODE_ENV`       | Ambiente de execução             | `development`                           |
+| `MONGODB_URI`    | String de conexão com o MongoDB  | `mongodb://127.0.0.1:27017/gestaoflats` |
+| `JWT_SECRET`     | Segredo de assinatura dos tokens | valor de desenvolvimento                |
+| `JWT_EXPIRES_IN` | Validade do token                | `1d`                                    |
+| `CLIENT_URL`     | Origem permitida no CORS         | `http://localhost:5173`                 |
 
 ### Front-end (`frontend/.env`)
 
-| Variável         | Descrição                                                             | Padrão |
-| ---------------- | --------------------------------------------------------------------- | ------ |
-| `VITE_API_URL`   | URL base da API. Em desenvolvimento usa o proxy `/api` do Vite        | `/api` |
+| Variável       | Descrição                                                      | Padrão |
+| -------------- | -------------------------------------------------------------- | ------ |
+| `VITE_API_URL` | URL base da API. Em desenvolvimento usa o proxy `/api` do Vite | `/api` |
 
 O arquivo `.env` do front-end é opcional em desenvolvimento. Ele só é necessário quando a API roda em outro domínio, como na publicação:
 
@@ -318,17 +304,17 @@ página → hook (useApiResource) → serviço (services/*) → request (service
 
 ### Camadas
 
-| Pasta                  | Responsabilidade                                                                              |
-| ---------------------- | --------------------------------------------------------------------------------------------- |
-| `services/api.js`      | Cliente HTTP: URL base, token JWT, serialização, `ApiError` e expiração de sessão              |
-| `services/*.js`        | Um módulo por recurso, com os endpoints da API e o formato da resposta                          |
-| `context/AuthContext`  | Sessão: usuário, login, cadastro, logout, atualização de perfil e revalidação do token          |
-| `hooks/useApiResource` | Carregamento, estado de erro e recarga de uma lista após create/update/delete                   |
-| `hooks/useFeedback`    | Mensagens de sucesso e erro exibidas em `<Alert>`                                              |
-| `hooks/useDebouncedValue` | Atrasa a busca enquanto o usuário digita, evitando uma requisição por tecla                  |
-| `utils/format.js`      | Moeda, datas e cálculo de diárias                                                              |
-| `utils/mask.js`        | Máscaras de CPF e telefone aplicadas enquanto o usuário digita                                    |
-| `utils/labels.js`      | Rótulos acentuados dos enums que a API grava sem acento                                        |
+| Pasta                     | Responsabilidade                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------- |
+| `services/api.js`         | Cliente HTTP: URL base, token JWT, serialização, `ApiError` e expiração de sessão      |
+| `services/*.js`           | Um módulo por recurso, com os endpoints da API e o formato da resposta                 |
+| `context/AuthContext`     | Sessão: usuário, login, cadastro, logout, atualização de perfil e revalidação do token |
+| `hooks/useApiResource`    | Carregamento, estado de erro e recarga de uma lista após create/update/delete          |
+| `hooks/useFeedback`       | Mensagens de sucesso e erro exibidas em `<Alert>`                                      |
+| `hooks/useDebouncedValue` | Atrasa a busca enquanto o usuário digita, evitando uma requisição por tecla            |
+| `utils/format.js`         | Moeda, datas e cálculo de diárias                                                      |
+| `utils/mask.js`           | Máscaras de CPF e telefone aplicadas enquanto o usuário digita                         |
+| `utils/labels.js`         | Rótulos acentuados dos enums que a API grava sem acento                                |
 
 ### Sessão e token
 
@@ -352,16 +338,16 @@ A aplicação front-end é instalável e funciona como aplicativo de janela pró
 
 ### Arquivos envolvidos
 
-| Arquivo                                  | Função                                                              |
-| ---------------------------------------- | ------------------------------------------------------------------- |
-| `frontend/public/manifest.webmanifest`   | Nome, cores, ícones, modo de exibição e atalhos.                   |
-| `frontend/public/sw.js`                  | Service worker: cache do app shell e dos arquivos estáticos.         |
-| `frontend/public/pwa-192.png`            | Ícone 192x192 (qualquer propósito).                                 |
-| `frontend/public/pwa-512.png`            | Ícone 512x512 (qualquer propósito).                                 |
-| `frontend/public/pwa-maskable-512.png`  | Ícone 512x512 adaptativo (máscara do sistema).                      |
-| `frontend/public/apple-touch-icon.png`   | Ícone para iOS/iPadOS.                                              |
-| `frontend/src/assets/pwa-icon.png`       | Arte original usada para gerar os ícones.                           |
-| `frontend/src/main.jsx`                  | Registra o service worker apenas no build de produção.              |
+| Arquivo                                | Função                                                       |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `frontend/public/manifest.webmanifest` | Nome, cores, ícones, modo de exibição e atalhos.             |
+| `frontend/public/sw.js`                | Service worker: cache do app shell e dos arquivos estáticos. |
+| `frontend/public/pwa-192.png`          | Ícone 192x192 (qualquer propósito).                          |
+| `frontend/public/pwa-512.png`          | Ícone 512x512 (qualquer propósito).                          |
+| `frontend/public/pwa-maskable-512.png` | Ícone 512x512 adaptativo (máscara do sistema).               |
+| `frontend/public/apple-touch-icon.png` | Ícone para iOS/iPadOS.                                       |
+| `frontend/src/assets/pwa-icon.png`     | Arte original usada para gerar os ícones.                    |
+| `frontend/src/main.jsx`                | Registra o service worker apenas no build de produção.       |
 
 ### Gerar os ícones
 
@@ -436,14 +422,14 @@ O banco é o MongoDB, indicado pela string `MONGODB_URI`. As coleções e os ín
 
 Os nomes das coleções são definidos explicitamente em cada model (opção `collection`), para não depender da regra de pluralização do Mongoose:
 
-| Model         | Coleção        | Conteúdo                              |
-| ------------- | -------------- | ------------------------------------- |
-| `User`        | `users`        | contas administrativas                 |
-| `Hospede`     | `hospedes`     | hóspedes cadastrados                   |
-| `Acomodacao`  | `acomodacoes`  | flats, quartos, studios e Apartamentos |
-| `Hospedagem`  | `hospedagens`  | reservas e ciclo de hospedagem          |
-| `Receita`     | `receitas`     | entradas financeiras                   |
-| `Despesa`     | `despesas`     | saídas financeiras                     |
+| Model        | Coleção       | Conteúdo                               |
+| ------------ | ------------- | -------------------------------------- |
+| `User`       | `users`       | contas administrativas                 |
+| `Hospede`    | `hospedes`    | hóspedes cadastrados                   |
+| `Acomodacao` | `acomodacoes` | flats, quartos, studios e Apartamentos |
+| `Hospedagem` | `hospedagens` | reservas e ciclo de hospedagem         |
+| `Receita`    | `receitas`    | entradas financeiras                   |
+| `Despesa`    | `despesas`    | saídas financeiras                     |
 
 Conexões usuais:
 

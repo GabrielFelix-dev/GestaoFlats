@@ -11,7 +11,11 @@ import { useApiResource } from "../../../hooks/useApiResource";
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import { useFeedback } from "../../../hooks/useFeedback";
 import { formatCurrency, pluralize } from "../../../utils/format";
-import { ACOMODACAO_STATUS, ACOMODACAO_TIPOS, toOptions } from "../../../utils/labels";
+import {
+  ACOMODACAO_STATUS,
+  ACOMODACAO_TIPOS,
+  toOptions,
+} from "../../../utils/labels";
 import "./Acomodacoes.css";
 
 const emptyForm = {
@@ -21,12 +25,22 @@ const emptyForm = {
   valorDiaria: "",
   andar: "",
   descricao: "",
+  endereco: {
+    rua: "",
+    numero: "",
+    complemento: "",
+    bairro: "",
+    cidade: "",
+    estado: "",
+    cep: "",
+  },
   status: "Disponivel",
 };
 
 const columns = [
   { key: "nome", label: "Acomodação" },
   { key: "tipo", label: "Tipo" },
+  { key: "localizacao", label: "Localização" },
   { key: "capacidadeLabel", label: "Capacidade" },
   { key: "valorDiariaLabel", label: "Valor da diária" },
   { key: "statusBadge", label: "Status" },
@@ -64,6 +78,16 @@ export default function Acomodacoes() {
 
   function handleChange(event) {
     const { name, value } = event.target;
+
+    if (name.startsWith("endereco.")) {
+      const field = name.slice("endereco.".length);
+      setForm((current) => ({
+        ...current,
+        endereco: { ...current.endereco, [field]: value },
+      }));
+      return;
+    }
+
     setForm((current) => ({ ...current, [name]: value }));
   }
 
@@ -83,6 +107,15 @@ export default function Acomodacoes() {
       valorDiaria: String(acomodacao.valorDiaria ?? ""),
       andar: acomodacao.andar ?? "",
       descricao: acomodacao.descricao ?? "",
+      endereco: {
+        rua: acomodacao.endereco?.rua ?? "",
+        numero: acomodacao.endereco?.numero ?? "",
+        complemento: acomodacao.endereco?.complemento ?? "",
+        bairro: acomodacao.endereco?.bairro ?? "",
+        cidade: acomodacao.endereco?.cidade ?? "",
+        estado: acomodacao.endereco?.estado ?? "",
+        cep: acomodacao.endereco?.cep ?? "",
+      },
       status: acomodacao.status ?? "Disponivel",
     });
     clear();
@@ -109,6 +142,12 @@ export default function Acomodacoes() {
 
     if (form.andar.trim()) payload.andar = form.andar.trim();
     if (form.descricao.trim()) payload.descricao = form.descricao.trim();
+    const endereco = Object.fromEntries(
+      Object.entries(form.endereco)
+        .map(([key, value]) => [key, value.trim()])
+        .filter(([, value]) => value),
+    );
+    payload.endereco = Object.keys(endereco).length ? endereco : null;
 
     const result = await run(
       () =>
@@ -143,6 +182,10 @@ export default function Acomodacoes() {
       "hóspede",
       "hóspedes",
     ),
+    localizacao:
+      [acomodacao.endereco?.bairro, acomodacao.endereco?.cidade]
+        .filter(Boolean)
+        .join(" · ") || "—",
     valorDiariaLabel: formatCurrency(acomodacao.valorDiaria),
     statusBadge: <StatusBadge status={acomodacao.status} />,
   }));
@@ -154,7 +197,9 @@ export default function Acomodacoes() {
           <div>
             <p className="page-eyebrow">Cadastros</p>
             <h2>Gestão de acomodações</h2>
-            <p>Cadastre, consulte, edite e exclua as acomodações disponíveis.</p>
+            <p>
+              Cadastre, consulte, edite e exclua as acomodações disponíveis.
+            </p>
           </div>
 
           <Button variant="secondary" onClick={openCreateModal}>
@@ -163,7 +208,11 @@ export default function Acomodacoes() {
         </section>
 
         {feedback && (
-          <Alert type={feedback.type} message={feedback.message} onClose={clear} />
+          <Alert
+            type={feedback.type}
+            message={feedback.message}
+            onClose={clear}
+          />
         )}
         {error && <Alert message={error} onClose={reload} />}
 
@@ -324,6 +373,50 @@ export default function Acomodacoes() {
             value={form.descricao}
             onChange={handleChange}
             placeholder="Características da acomodação (opcional)"
+          />
+
+          <Input
+            label="Rua"
+            name="endereco.rua"
+            value={form.endereco.rua}
+            onChange={handleChange}
+          />
+          <Input
+            label="Número"
+            name="endereco.numero"
+            value={form.endereco.numero}
+            onChange={handleChange}
+          />
+          <Input
+            label="Complemento"
+            name="endereco.complemento"
+            value={form.endereco.complemento}
+            onChange={handleChange}
+          />
+          <Input
+            label="Bairro"
+            name="endereco.bairro"
+            value={form.endereco.bairro}
+            onChange={handleChange}
+          />
+          <Input
+            label="Cidade"
+            name="endereco.cidade"
+            value={form.endereco.cidade}
+            onChange={handleChange}
+          />
+          <Input
+            label="Estado"
+            name="endereco.estado"
+            maxLength={2}
+            value={form.endereco.estado}
+            onChange={handleChange}
+          />
+          <Input
+            label="CEP"
+            name="endereco.cep"
+            value={form.endereco.cep}
+            onChange={handleChange}
           />
         </form>
       </Modal>

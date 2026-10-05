@@ -72,20 +72,20 @@ GestaoFlats/
 
 ### Componentes reutilizáveis
 
-| Componente     | Responsabilidade                                                    |
-| -------------- | ------------------------------------------------------------------- |
-| `Button`       | Botões com variantes, tamanhos, estados e ações.                    |
-| `Input`        | Campos com label, validação HTML, erro e texto auxiliar.            |
-| `Select`       | Campos de seleção com opções e estados de erro.                     |
-| `Card`         | Blocos de conteúdo com título, subtítulo, ação e conteúdo.         |
+| Componente     | Responsabilidade                                                       |
+| -------------- | ---------------------------------------------------------------------- |
+| `Button`       | Botões com variantes, tamanhos, estados e ações.                       |
+| `Input`        | Campos com label, validação HTML, erro e texto auxiliar.               |
+| `Select`       | Campos de seleção com opções e estados de erro.                        |
+| `Card`         | Blocos de conteúdo com título, subtítulo, ação e conteúdo.             |
 | `Table`        | Tabelas com colunas dinâmicas, dados, estados de carregamento e ações. |
-| `Modal`        | Overlay, fechamento por clique externo/Escape e rodapé customizado. |
-| `Alert`        | Mensagens de sucesso e erro, com fechamento manual.                 |
-| `StatusBadge`  | Etiqueta colorida conforme o status do registro.                   |
-| `AccountModal` | Edição dos dados da conta e troca de senha.                         |
-| `Header`       | Cabeçalho, perfil resumido e ações da conta.                        |
-| `Sidebar`      | Navegação lateral responsiva.                                       |
-| `Layout`       | Estrutura compartilhada das páginas administrativas.                |
+| `Modal`        | Overlay, fechamento por clique externo/Escape e rodapé customizado.    |
+| `Alert`        | Mensagens de sucesso e erro, com fechamento manual.                    |
+| `StatusBadge`  | Etiqueta colorida conforme o status do registro.                       |
+| `AccountModal` | Edição dos dados da conta e troca de senha.                            |
+| `Header`       | Cabeçalho, perfil resumido e ações da conta.                           |
+| `Sidebar`      | Navegação lateral responsiva.                                          |
+| `Layout`       | Estrutura compartilhada das páginas administrativas.                   |
 
 ### Acesso aos dados
 
@@ -116,16 +116,16 @@ A navegação é controlada pelo estado `activeItem` em `src/App.jsx` e persisti
 routes → middlewares → controllers → services → models → MongoDB
 ```
 
-| Camada        | Responsabilidade                                                        |
-| ------------- | ----------------------------------------------------------------------- |
-| `routes`      | Caminhos, encadeamento de middlewares e controllers.                    |
-| `middlewares` | Autenticação JWT, validação com Zod e tratamento de erros.              |
-| `controllers` | Conversão entre requisição/resposta HTTP e services.                    |
-| `services`    | Regras de negócio, consistência e cálculos.                             |
-| `models`      | Schemas Mongoose, consultas ao MongoDB e mapeamento de documentos.      |
-| `schemas`     | Definição das regras de validação de payload (Zod).                     |
-| `utils`       | Tokens JWT, erros de aplicação, asyncHandler, regex e status.           |
-| `config`      | Leitura de ambiente e conexão com o banco.                              |
+| Camada        | Responsabilidade                                                   |
+| ------------- | ------------------------------------------------------------------ |
+| `routes`      | Caminhos, encadeamento de middlewares e controllers.               |
+| `middlewares` | Autenticação JWT, validação com Zod e tratamento de erros.         |
+| `controllers` | Conversão entre requisição/resposta HTTP e services.               |
+| `services`    | Regras de negócio, consistência e cálculos.                        |
+| `models`      | Schemas Mongoose, consultas ao MongoDB e mapeamento de documentos. |
+| `schemas`     | Definição das regras de validação de payload (Zod).                |
+| `utils`       | Tokens JWT, erros de aplicação, asyncHandler, regex e status.      |
+| `config`      | Leitura de ambiente e conexão com o banco.                         |
 
 ### Coleções
 
@@ -233,15 +233,23 @@ A transição de status também reflete no financeiro: a criação gera uma rece
 
 ### Regras de negócio
 
-| Regra                                                                       | Onde está                                    |
-| --------------------------------------------------------------------------- | -------------------------------------------- |
-| CPF e nome de acomodação não podem duplicar                                  | `services/hospede`, `services/acomodacao`    |
-| Acomodação não aceita duas reservas com período sobreposto                  | `services/hospedagem`                        |
-| Número de hóspedes é validado contra a capacidade da acomodação             | `services/hospedagem`                        |
-| Valor total é calculado pela diária × número de diárias                     | `services/hospedagem`                        |
-| Hospedagem finalizada não pode ser editada                                  | `services/hospedagem`                        |
-| Hospedagem em andamento não pode ser excluída                                | `services/hospedagem`                        |
-| Acomodação com hospedagem vinculada não pode ser excluída                    | `services/acomodacao`                        |
+| Regra                                                           | Onde está                                 |
+| --------------------------------------------------------------- | ----------------------------------------- |
+| CPF e nome de acomodação não podem duplicar                     | `services/hospede`, `services/acomodacao` |
+| Acomodação não aceita duas reservas com período sobreposto      | `services/hospedagem`                     |
+| Número de hóspedes é validado contra a capacidade da acomodação | `services/hospedagem`                     |
+| Valor total é calculado pela diária × número de diárias         | `services/hospedagem`                     |
+| Hospedagem finalizada não pode ser editada                      | `services/hospedagem`                     |
+| Hospedagem em andamento não pode ser excluída                   | `services/hospedagem`                     |
+| Acomodação com hospedagem vinculada não pode ser excluída       | `services/acomodacao`                     |
+
+### Desempenho financeiro por imóvel
+
+`GET /api/financeiro/rentabilidade` calcula os indicadores no backend e aceita `dataInicial`, `dataFinal`, `acomodacaoId` e `bairro`. O intervalo considera o check-in incluído e o check-out excluído, contando noites UTC. Hospedagens canceladas não ocupam noites; confirmadas, ativas e concluídas entram no cálculo. Em hospedagens que cruzam o período, a receita vinculada é rateada pelas noites que intersectam o intervalo.
+
+Receitas de hospedagem são relacionadas pelo caminho existente `Receita.hospedagem → Hospedagem.acomodacao`; não há `acomodacaoId` duplicado em Receita. Despesas têm referência opcional a `Acomodacao`; a ausência da referência representa despesa geral. Despesas gerais entram somente no consolidado da carteira, sem rateio nos resultados individuais ou em filtros de imóvel/bairro. Despesas canceladas são excluídas.
+
+O campo opcional `Acomodacao.endereco` guarda rua, número, complemento, bairro, cidade, estado e CEP. Imóveis antigos sem esse objeto continuam válidos.
 
 ## Comunicação entre os módulos
 

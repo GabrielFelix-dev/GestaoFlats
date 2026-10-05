@@ -1,7 +1,6 @@
 .home-page {
   min-height: calc(100vh - 72px);
   padding: 0;
-  overflow-y: auto;
   overflow-x: hidden;
   position: relative;
   z-index: 2;
@@ -84,14 +83,14 @@
   width: 56px;
   height: 3px;
   border-radius: 999px;
-  background:	#d3d6d8;
+  background: #d3d6d8;
   opacity: 0.8;
 }
 
 .home-banner-text {
   font-size: 1.05rem;
   line-height: 1.7;
-  color: 	#d3d6d8;
+  color: #d3d6d8;
   font-weight: 500;
 }
 

@@ -93,7 +93,7 @@ hospedagemSchema.statics.listar = function listar({
 hospedagemSchema.statics.disponiveis = function disponiveis(acomodacaoId, inicio, fim, ignoreId) {
   const condicoes = [
     { acomodacao: acomodacaoId },
-    { status: { $in: ["Confirmada", "Ativa"] } },
+    { status: { $in: ["Confirmada", "Ativa", "Concluida"] } },
     { dataCheckIn: { $lt: fim } },
     { dataCheckOut: { $gt: inicio } },
   ];

@@ -5,7 +5,11 @@ export const trimmed = (min, max = 255) => z.string().trim().min(min).max(max);
 
 export const dateString = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Use o formato AAAA-MM-DD.");
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Use o formato AAAA-MM-DD.")
+  .refine((value) => {
+    const parsed = new Date(`${value}T00:00:00.000Z`);
+    return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+  }, "Data inválida.");
 
 export const emailString = z
   .string()

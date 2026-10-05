@@ -26,20 +26,28 @@ function filtroPeriodo(campo, dataInicial, dataFinal) {
 export const dashboardService = {
   async resumo({ dataInicial, dataFinal } = {}) {
     const hoje = new Date().toISOString().slice(0, 10);
+    const inicioHoje = new Date(`${hoje}T00:00:00.000Z`);
+    const amanha = new Date(inicioHoje.getTime() + 86400000);
     const movimentacoes = await checkinCheckoutService.list({ data: hoje });
 
     const [
       hospedagensAtivas,
       acomodacoesTotal,
       acomodacoesDisponiveis,
+      acomodacoesOcupadasIds,
       hospedesCadastrados,
       receitas,
       despesas,
       proximasMovimentacoes,
     ] = await Promise.all([
       Hospedagem.countDocuments({ status: { $in: ["Confirmada", "Ativa"] } }),
-      Acomodacao.countDocuments({}),
+      Acomodacao.countDocuments({ status: { $ne: "Inativa" } }),
       Acomodacao.countDocuments({ status: "Disponivel" }),
+      Hospedagem.distinct("acomodacao", {
+        status: { $in: ["Confirmada", "Ativa"] },
+        dataCheckIn: { $lt: amanha },
+        dataCheckOut: { $gt: inicioHoje },
+      }),
       Hospede.countDocuments({}),
       Receita.aggregate([
         { $match: filtroPeriodo("data", dataInicial, dataFinal) },
@@ -85,6 +93,10 @@ export const dashboardService = {
 
     const resumoReceitas = receitas[0] ?? { recebido: 0, pendente: 0 };
     const resumoDespesas = despesas[0] ?? { pago: 0, pendente: 0 };
+    const acomodacoesOcupadas = Math.min(
+      acomodacoesTotal,
+      new Set(acomodacoesOcupadasIds.map(String)).size,
+    );
 
     return {
       periodo: { dataInicial: dataInicial ?? null, dataFinal: dataFinal ?? null },
@@ -93,7 +105,7 @@ export const dashboardService = {
         acomodacoesTotal,
         acomodacoesDisponiveis,
         taxaOcupacao: acomodacoesTotal
-          ? Math.round(((acomodacoesTotal - acomodacoesDisponiveis) / acomodacoesTotal) * 100)
+          ? Math.round((acomodacoesOcupadas / acomodacoesTotal) * 100)
           : 0,
         hospedesCadastrados,
       },

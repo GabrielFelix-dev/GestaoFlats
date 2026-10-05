@@ -7,6 +7,12 @@ const despesaSchema = new mongoose.Schema(
     descricao: { type: String, required: true, trim: true, maxlength: 200 },
     categoria: { type: String, required: true, trim: true, maxlength: 80, index: true },
     valor: { type: Number, required: true, min: 0 },
+    acomodacao: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Acomodacao",
+      default: null,
+      index: true,
+    },
     dataVencimento: { type: Date, required: true, index: true },
     dataPagamento: { type: Date, default: null },
     status: { type: String, enum: STATUS_DESPESA, default: "Pendente", index: true },
@@ -25,7 +31,7 @@ const despesaSchema = new mongoose.Schema(
   },
 );
 
-despesaSchema.statics.listar = function listar({ search, status, categoria, dataInicial, dataFinal } = {}) {
+despesaSchema.statics.listar = function listar({ search, status, categoria, acomodacaoId, dataInicial, dataFinal } = {}) {
   const filtro = {};
 
   if (search) {
@@ -41,6 +47,10 @@ despesaSchema.statics.listar = function listar({ search, status, categoria, data
     filtro.categoria = categoria;
   }
 
+  if (acomodacaoId) {
+    filtro.acomodacao = acomodacaoId;
+  }
+
   if (dataInicial || dataFinal) {
     filtro.dataVencimento = {};
 
@@ -53,7 +63,9 @@ despesaSchema.statics.listar = function listar({ search, status, categoria, data
     }
   }
 
-  return this.find(filtro).sort({ dataVencimento: -1 });
+  return this.find(filtro)
+    .populate("acomodacao", "nome endereco")
+    .sort({ dataVencimento: -1 });
 };
 
 despesaSchema.statics.resumo = function resumo({ dataInicial, dataFinal } = {}) {

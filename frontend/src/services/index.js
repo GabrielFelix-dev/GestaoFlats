@@ -7,3 +7,4 @@ export { checkinCheckoutService } from "./checkinCheckout";
 export { receitasService } from "./receitas";
 export { despesasService } from "./despesas";
 export { dashboardService } from "./dashboard";
+export { financeiroService } from "./financeiro";

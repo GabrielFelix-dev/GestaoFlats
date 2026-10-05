@@ -29,15 +29,10 @@ html {
   font-size: 16px;
 }
 
-@media (min-width: 961px) {
-  body:has(.home-page) {
-    overflow: hidden;
-  }
-}
-
 body {
   margin: 0;
-  background: var(--color-background) url("./assets/fundo-pagina.png") center top / cover no-repeat;
+  background: var(--color-background) url("./assets/fundo-pagina.png") center
+    top / cover no-repeat;
   color: var(--color-text);
   font-family: Inter, Arial, sans-serif;
 }

@@ -9,6 +9,7 @@ import acomodacoesRoutes from "./routes/acomodacoes.routes.js";
 import checkinCheckoutRoutes from "./routes/checkinCheckout.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import despesasRoutes from "./routes/despesas.routes.js";
+import financeiroRoutes from "./routes/financeiro.routes.js";
 import hospedagensRoutes from "./routes/hospedagens.routes.js";
 import hospedesRoutes from "./routes/hospedes.routes.js";
 import receitasRoutes from "./routes/receitas.routes.js";
@@ -41,6 +42,7 @@ export function createApp() {
   app.use("/api/checkin-checkout", checkinCheckoutRoutes);
   app.use("/api/receitas", receitasRoutes);
   app.use("/api/despesas", despesasRoutes);
+  app.use("/api/financeiro", financeiroRoutes);
   app.use("/api/dashboard", dashboardRoutes);
 
   app.use(notFoundHandler);

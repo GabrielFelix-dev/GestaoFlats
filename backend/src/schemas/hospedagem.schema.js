@@ -13,7 +13,7 @@ const hospedagemBaseSchema = z.object({
   status: z.enum(STATUS_HOSPEDAGEM).optional(),
 });
 
-export const createHospedagemSchema = hospedagemBaseSchema.refine(
+export const createHospedagemSchema = hospedagemBaseSchema.omit({ status: true }).refine(
   (data) => data.dataCheckOut > data.dataCheckIn,
   {
     message: "A data de check-out deve ser posterior à data de check-in.",

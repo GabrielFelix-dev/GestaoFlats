@@ -1,4 +1,5 @@
 import Acomodacao from "../models/Acomodacao.js";
+import Despesa from "../models/Despesa.js";
 import Hospedagem from "../models/Hospedagem.js";
 import { conflict, notFound } from "../utils/errors.js";
 import { escapeRegex } from "../utils/regex.js";
@@ -81,6 +82,12 @@ export const acomodacaoService = {
 
     if (vinculadas > 0) {
       throw conflict("Acomodação possui hospedagens vinculadas.");
+    }
+
+    const despesasVinculadas = await Despesa.countDocuments({ acomodacao: acomodacao._id });
+
+    if (despesasVinculadas > 0) {
+      throw conflict("Acomodação possui despesas vinculadas.");
     }
 
     await Acomodacao.deleteOne({ _id: acomodacao._id });

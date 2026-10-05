@@ -1,7 +1,34 @@
 import Receita from "../models/Receita.js";
-import { notFound } from "../utils/errors.js";
+import Hospedagem from "../models/Hospedagem.js";
+import { conflict, notFound } from "../utils/errors.js";
 
 const VAZIO = { recebido: 0, pendente: 0, total: 0, aReceber: 0 };
+
+function mapHospedagem(data) {
+  const mapped = { ...data };
+
+  if (Object.hasOwn(data, "hospedagemId")) {
+    mapped.hospedagem = data.hospedagemId;
+    delete mapped.hospedagemId;
+  }
+
+  return mapped;
+}
+
+async function assertHospedagemAvailable(hospedagemId, ignoreId = null) {
+  if (!hospedagemId) return;
+
+  if (!(await Hospedagem.exists({ _id: hospedagemId }))) {
+    throw notFound("Hospedagem não encontrada.");
+  }
+
+  const filtro = { hospedagem: hospedagemId };
+  if (ignoreId) filtro._id = { $ne: ignoreId };
+
+  if (await Receita.exists(filtro)) {
+    throw conflict("Já existe uma receita vinculada a esta hospedagem.");
+  }
+}
 
 export const receitaService = {
   async list(filters) {
@@ -19,13 +46,18 @@ export const receitaService = {
   },
 
   async create(data) {
-    return Receita.create(data);
+    const mapped = mapHospedagem(data);
+    await assertHospedagemAvailable(mapped.hospedagem);
+
+    return Receita.create(mapped);
   },
 
   async update(id, data) {
     const receita = await this.getById(id);
+    const mapped = mapHospedagem(data);
+    await assertHospedagemAvailable(mapped.hospedagem, receita._id);
 
-    return Receita.findByIdAndUpdate(receita._id, data, {
+    return Receita.findByIdAndUpdate(receita._id, mapped, {
       new: true,
       runValidators: true,
     });

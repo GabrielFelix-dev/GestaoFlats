@@ -7,8 +7,10 @@ function inicioDoDia(iso) {
   return new Date(`${iso}T00:00:00.000Z`);
 }
 
-function fimDoDia(iso) {
-  return new Date(`${iso}T23:59:59.999Z`);
+function inicioDoDiaSeguinte(iso) {
+  const data = new Date(`${iso}T00:00:00.000Z`);
+  data.setUTCDate(data.getUTCDate() + 1);
+  return data;
 }
 
 function mesmoDia(valor, iso) {
@@ -18,6 +20,8 @@ function mesmoDia(valor, iso) {
 export const checkinCheckoutService = {
   async list({ data, status } = {}) {
     const referencia = data ?? new Date().toISOString().slice(0, 10);
+    const inicio = inicioDoDia(referencia);
+    const fim = inicioDoDiaSeguinte(referencia);
     const filtro = status ? { status } : {};
 
     const hospedagens = await Hospedagem.find(filtro)
@@ -38,8 +42,8 @@ export const checkinCheckoutService = {
     const hospedesNoLocal = hospedagens.filter(
       (item) =>
         item.status === "Ativa" &&
-        item.dataCheckIn <= fimDoDia(referencia) &&
-        item.dataCheckOut >= inicioDoDia(referencia),
+        item.dataCheckIn < fim &&
+        item.dataCheckOut > inicio,
     );
 
     return {
@@ -85,10 +89,10 @@ export const checkinCheckoutService = {
 
   async calcularDisponibilidade({ dataInicial, dataFinal, tipo }) {
     const inicio = inicioDoDia(dataInicial);
-    const fim = fimDoDia(dataFinal);
-    const totalDias = Math.max(1, Math.ceil((fim - inicio) / 86400000));
+    const fim = inicioDoDia(dataFinal);
+    const totalDias = Math.max(0, Math.round((fim - inicio) / 86400000));
 
-    const filtroAcomodacao = { status: { $ne: "Inativa" } };
+    const filtroAcomodacao = { status: { $nin: ["Inativa", "Manutencao"] } };
 
     if (tipo) {
       filtroAcomodacao.tipo = tipo;
@@ -114,7 +118,7 @@ export const checkinCheckoutService = {
       const diasReservados = itens.reduce((total, item) => {
         const reservaInicio = Math.max(inicio.getTime(), new Date(item.dataCheckIn).getTime());
         const reservaFim = Math.min(fim.getTime(), new Date(item.dataCheckOut).getTime());
-        const dias = Math.max(0, Math.ceil((reservaFim - reservaInicio) / 86400000));
+        const dias = Math.max(0, Math.round((reservaFim - reservaInicio) / 86400000));
 
         return total + dias;
       }, 0);
@@ -123,7 +127,7 @@ export const checkinCheckoutService = {
 
       return {
         acomodacao,
-        disponivel: itens.length === 0,
+        disponivel: diasReservados === 0,
         diasDisponiveis,
         ocupacaoPercentual: Math.min(
           100,

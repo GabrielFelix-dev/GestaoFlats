@@ -53,6 +53,29 @@ async function sincronizarReceita(hospedagem, status) {
   return receita;
 }
 
+async function sincronizarValorReceita(hospedagem, acomodacao) {
+  let receita = await Receita.findOne({ hospedagem: hospedagem._id });
+
+  if (!receita) {
+    receita = await Receita.create({
+      descricao: `Reserva ${acomodacao.nome}`,
+      origem: "Hospedagem",
+      categoria: "Reserva",
+      valor: hospedagem.valorTotal,
+      data: new Date(),
+      hospedagem: hospedagem._id,
+      status: "Pendente",
+    });
+    return receita;
+  }
+
+  receita.descricao = `Reserva ${acomodacao.nome}`;
+  receita.valor = hospedagem.valorTotal;
+  await receita.save();
+
+  return receita;
+}
+
 export const hospedagemService = {
   async list(filters) {
     return Hospedagem.listar(filters);
@@ -123,6 +146,10 @@ export const hospedagemService = {
       throw conflict("Hospedagem finalizada não pode ser editada.");
     }
 
+    if (data.status && data.status !== atual.status) {
+      throw conflict("Altere o status usando as ações de check-in, check-out ou cancelamento.");
+    }
+
     const merged = {
       hospedeId: data.hospedeId ?? atual.hospede._id,
       acomodacaoId: data.acomodacaoId ?? atual.acomodacao._id,
@@ -141,7 +168,7 @@ export const hospedagemService = {
       throw conflict("A data de check-out deve ser posterior à data de check-in.");
     }
 
-    await resolverRelacionados(merged);
+    const { acomodacao } = await resolverRelacionados(merged);
 
     const conflito = await Hospedagem.disponiveis(merged.acomodacaoId, inicio, fim, atual._id);
 
@@ -167,6 +194,8 @@ export const hospedagemService = {
       { new: true, runValidators: true },
     );
 
+    await sincronizarValorReceita(atualizada, acomodacao);
+
     return this.getById(atualizada._id);
   },
 
@@ -179,6 +208,14 @@ export const hospedagemService = {
 
     if (status === "Ativa" && hospedagem.status !== "Confirmada") {
       throw conflict("Somente hospedagens confirmadas podem ser iniciadas.");
+    }
+
+    if (status === "Concluida" && hospedagem.status !== "Ativa") {
+      throw conflict("O check-out exige uma hospedagem em andamento.");
+    }
+
+    if (status === "Cancelada" && ["Concluida", "Cancelada"].includes(hospedagem.status)) {
+      throw conflict("Hospedagem concluída ou cancelada não pode ser cancelada novamente.");
     }
 
     hospedagem.status = status;

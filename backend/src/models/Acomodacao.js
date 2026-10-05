@@ -11,6 +11,15 @@ const acomodacaoSchema = new mongoose.Schema(
     tipo: { type: String, enum: TIPO_ACOMODACAO, required: true, index: true },
     capacidade: { type: Number, required: true, min: 1, max: 20 },
     valorDiaria: { type: Number, required: true, min: 0 },
+    endereco: {
+      rua: { type: String, trim: true, maxlength: 120 },
+      numero: { type: String, trim: true, maxlength: 20 },
+      complemento: { type: String, trim: true, maxlength: 80 },
+      bairro: { type: String, trim: true, maxlength: 80, index: true },
+      cidade: { type: String, trim: true, maxlength: 80 },
+      estado: { type: String, trim: true, maxlength: 2 },
+      cep: { type: String, trim: true, maxlength: 9 },
+    },
     andar: { type: String, trim: true },
     descricao: { type: String, trim: true, maxlength: 500 },
     status: {
