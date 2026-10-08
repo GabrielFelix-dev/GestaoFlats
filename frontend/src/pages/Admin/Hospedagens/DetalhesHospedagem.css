@@ -1,0 +1,60 @@
+.detalhes-hospedagem-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detalhes-hospedagem-empty {
+  margin-bottom: 1rem;
+  color: var(--color-text-soft);
+}
+
+.detalhes-hospedagem-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.detalhes-hospedagem-info > div,
+.detalhes-hospedagem-observacoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-tint);
+  border: 1px solid rgba(87, 118, 175, 0.16);
+}
+
+.detalhes-hospedagem-info span,
+.detalhes-hospedagem-observacoes span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.detalhes-hospedagem-info strong {
+  color: var(--color-primary);
+}
+
+.detalhes-hospedagem-observacoes {
+  margin-top: 1rem;
+}
+
+.detalhes-hospedagem-observacoes p {
+  color: var(--color-text);
+}
+
+.detalhes-hospedagem-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.detalhes-hospedagem-actions .select {
+  max-width: 260px;
+}

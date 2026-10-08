@@ -1,0 +1,53 @@
+.hospedagens-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hospedagens-page .filter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(180px, 0.7fr);
+  gap: 1rem;
+  align-items: end;
+}
+
+.hospedagens-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hospedagens-heading h2 {
+  margin-top: 0.8rem;
+  color: #eafef8;
+}
+
+.hospedagens-heading > div > p:last-child {
+  margin-top: 0.6rem;
+  color: #9bc8da;
+}
+
+.hospedagens-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}
+
+.hospedagens-legend {
+  margin-top: 0.75rem;
+  color: var(--color-text-soft);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .hospedagens-page .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hospedagens-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

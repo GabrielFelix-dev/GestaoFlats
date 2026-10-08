@@ -1,0 +1,97 @@
+:root {
+  --color-primary: #002366;
+  --color-secondary: #5776af;
+  --color-blue-medium: #5776af;
+  --color-blue-light: #7ea2c5;
+  --color-blue-soft: #9bc8da;
+  --color-border: #d3d6d8;
+  --color-background: #d5f6f9;
+  --color-background-soft: #f4faf9;
+  --color-surface: #ffffff;
+  --color-surface-tint: rgba(87, 118, 175, 0.06);
+  --color-white: #ffffff;
+  --color-text: #002366;
+  --color-text-soft: #4a5a72;
+  --color-error: #d9534f;
+  --shadow-soft: 0 2px 8px rgba(0, 35, 102, 0.08);
+  --shadow-medium: 0 8px 22px rgba(0, 35, 102, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background) url("./assets/fundo-pagina.png") center
+    top / cover no-repeat;
+  color: var(--color-text);
+  font-family: Inter, Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+  /* The desktop background is a 2.33:1 panorama, so `cover` only shows a
+     narrow slice of it on a phone. This is a portrait version of the same photo. */
+  body {
+    background-image: url("./assets/fundo-pagina-mobile.png");
+  }
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-blue-medium);
+}
+
+/* Eyebrow badge used as the page title kicker on the admin pages.
+   It sits directly on the photo background, so it needs its own
+   surface to stay readable at every viewport size. */
+.page-eyebrow {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-secondary);
+  color: var(--color-white);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 35, 102, 0.35);
+}
