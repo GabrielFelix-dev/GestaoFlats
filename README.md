@@ -1,4 +1,4 @@
-# Gestão Flats
+# GestãoFlats
 
 Sistema web para administração de flats, hospedagens e operações financeiras. O projeto é dividido em dois módulos independentes: uma aplicação front-end em React e uma API REST com persistência em banco de dados.
 
