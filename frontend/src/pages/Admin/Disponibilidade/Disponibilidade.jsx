@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Alert from "../../../components/Alert/Alert";
 import Button from "../../../components/Button/Button";
 import Card from "../../../components/Card/Card";
-import Input from "../../../components/Input/Input";
 import Select from "../../../components/Select/Select";
 import StatusBadge from "../../../components/StatusBadge/StatusBadge";
 import Table from "../../../components/Table/Table";
+import CalendarPicker from "../../../components/CalendarPicker/CalendarPicker";
 import { checkinCheckoutService } from "../../../services";
 import { useApiResource } from "../../../hooks/useApiResource";
 import { useFeedback } from "../../../hooks/useFeedback";
@@ -35,36 +35,81 @@ export default function Disponibilidade() {
     dataFinal: hojeMais(1),
     tipo: "",
   });
-  const [consulta, setConsulta] = useState(null);
+  const [indicadoresEntrada, setIndicadoresEntrada] = useState({ livres: [], parciais: [], lotados: [] });
+  const [indicadoresSaida, setIndicadoresSaida] = useState({ livres: [], parciais: [], lotados: [] });
+  const [mesVisualizadoEntrada, setMesVisualizadoEntrada] = useState(null);
+  const [mesVisualizadoSaida, setMesVisualizadoSaida] = useState(null);
   const { feedback, clear, run } = useFeedback();
+  const timeoutRef = useRef(null);
 
-  const load = useCallback(
-    () =>
-      consulta
-        ? checkinCheckoutService.disponibilidade({
-            dataInicial: consulta.dataInicial,
-            dataFinal: consulta.dataFinal,
-            tipo: consulta.tipo,
-          })
-        : null,
-    [consulta],
-  );
+  // Busca indicadores para o mês que cada calendário está exibindo
+  function buscarIndicadores(mes, setState) {
+    if (!mes) return;
+    checkinCheckoutService.diasComDisponibilidade(mes, formData.tipo || undefined).then((res) => {
+      setState({
+        livres: res.diasLivres ?? [],
+        parciais: res.diasParciais ?? [],
+        lotados: res.diasLotados ?? [],
+      });
+    });
+  }
 
-  const { data, isLoading, error, reload } = useApiResource(load, [consulta]);
+  // Indicadores do calendário de entrada (baseado no mês visualizado ou no value)
+  useEffect(() => {
+    const mes = mesVisualizadoEntrada || formData.dataInicial.slice(0, 7);
+    buscarIndicadores(mes, setIndicadoresEntrada);
+  }, [mesVisualizadoEntrada, formData.dataInicial.slice(0, 7), formData.tipo]);
+
+  // Indicadores do calendário de saída
+  useEffect(() => {
+    const mes = mesVisualizadoSaida || formData.dataFinal.slice(0, 7);
+    buscarIndicadores(mes, setIndicadoresSaida);
+  }, [mesVisualizadoSaida, formData.dataFinal.slice(0, 7), formData.tipo]);
+
+  // Callbacks quando o mês visualizado muda no calendário
+  function handleViewMonthChangeEntrada(year, month) {
+    const mes = `${year}-${String(month + 1).padStart(2, "0")}`;
+    setMesVisualizadoEntrada(mes);
+  }
+
+  function handleViewMonthChangeSaida(year, month) {
+    const mes = `${year}-${String(month + 1).padStart(2, "0")}`;
+    setMesVisualizadoSaida(mes);
+  }
+
+  const load = useCallback(async () => {
+    const params = {
+      dataInicial: formData.dataInicial,
+      dataFinal: formData.dataFinal,
+      ...(formData.tipo && { tipo: formData.tipo }),
+    };
+    return checkinCheckoutService.disponibilidade(params);
+  }, [formData.dataInicial, formData.dataFinal, formData.tipo]);
+
+  const { data, isLoading, error, reload } = useApiResource(load, [
+    formData.dataInicial,
+    formData.dataFinal,
+    formData.tipo,
+  ]);
+
+  // Auto-reload com debounce - só se datas válidas
+  useEffect(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      if (formData.dataFinal > formData.dataInicial) {
+        reload();
+      }
+    }, 300);
+    return () => clearTimeout(timeoutRef.current);
+  }, [formData.dataInicial, formData.dataFinal, formData.tipo, reload]);
 
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    if (formData.dataFinal <= formData.dataInicial) {
-      return;
-    }
-
-    setConsulta(formData);
+  function handleDateChange(name, value) {
+    setFormData((current) => ({ ...current, [name]: value }));
   }
 
   const linhas = (data?.acomodacoes ?? []).map((item) => ({
@@ -96,27 +141,43 @@ export default function Disponibilidade() {
       {feedback && (
         <Alert type={feedback.type} message={feedback.message} onClose={clear} />
       )}
-      {error && <Alert message={error} onClose={reload} />}
+      {error && formData.dataFinal > formData.dataInicial && (
+        <Alert message={error} onClose={reload} />
+      )}
 
       <Card title="Consultar disponibilidade">
-        <form className="filter-grid" onSubmit={handleSubmit}>
-          <Input
+        <div className="filter-grid">
+          <CalendarPicker
             label="Data de entrada"
-            type="date"
             name="dataInicial"
             value={formData.dataInicial}
-            onChange={handleChange}
+            onChange={(value) => handleDateChange("dataInicial", value)}
+            diasLivres={indicadoresEntrada.livres}
+            diasParciais={indicadoresEntrada.parciais}
+            diasLotados={indicadoresEntrada.lotados}
             required
+            placeholder="Data de entrada"
+            variant="availability"
+            showLegend
+            legendLabels={{ livre: "Livre", parcial: "Parcial", lotado: "Lotado" }}
+            onViewMonthChange={handleViewMonthChangeEntrada}
           />
 
-          <Input
+          <CalendarPicker
             label="Data de saída"
-            type="date"
             name="dataFinal"
-            min={formData.dataInicial}
             value={formData.dataFinal}
-            onChange={handleChange}
+            onChange={(value) => handleDateChange("dataFinal", value)}
+            diasLivres={indicadoresSaida.livres}
+            diasParciais={indicadoresSaida.parciais}
+            diasLotados={indicadoresSaida.lotados}
+            minDate={formData.dataInicial}
             required
+            placeholder="Data de saída"
+            variant="availability"
+            showLegend
+            legendLabels={{ livre: "Livre", parcial: "Parcial", lotado: "Lotado" }}
+            onViewMonthChange={handleViewMonthChangeSaida}
           />
 
           <Select
@@ -126,11 +187,7 @@ export default function Disponibilidade() {
             value={formData.tipo}
             onChange={handleChange}
           />
-
-          <Button type="submit" variant="secondary" disabled={isLoading}>
-            {isLoading ? "Consultando..." : "Consultar"}
-          </Button>
-        </form>
+        </div>
       </Card>
 
       {data && (

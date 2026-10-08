@@ -38,12 +38,9 @@ const emptyForm = {
 };
 
 const columns = [
-  { key: "nome", label: "Acomodação" },
-  { key: "tipo", label: "Tipo" },
-  { key: "localizacao", label: "Localização" },
-  { key: "capacidadeLabel", label: "Capacidade" },
-  { key: "valorDiariaLabel", label: "Valor da diária" },
-  { key: "statusBadge", label: "Status" },
+  { key: "nome", label: "Acomodação", width: "50%" },
+  { key: "tipo", label: "Tipo", width: "20%" },
+  { key: "statusBadge", label: "Status", width: "15%" },
 ];
 
 export default function Acomodacoes() {
@@ -51,7 +48,9 @@ export default function Acomodacoes() {
   const [statusFilter, setStatusFilter] = useState("");
   const [tipoFilter, setTipoFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [detailsAcomodacao, setDetailsAcomodacao] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -122,10 +121,20 @@ export default function Acomodacoes() {
     setIsModalOpen(true);
   }
 
+  function openDetailsModal(acomodacao) {
+    setDetailsAcomodacao(acomodacao);
+    setIsDetailsModalOpen(true);
+  }
+
   function closeModal() {
     setIsModalOpen(false);
     setEditingId(null);
     setForm(emptyForm);
+  }
+
+  function closeDetailsModal() {
+    setIsDetailsModalOpen(false);
+    setDetailsAcomodacao(null);
   }
 
   async function saveAccommodation(event) {
@@ -259,6 +268,13 @@ export default function Acomodacoes() {
             emptyMessage="Nenhuma acomodação encontrada."
             actions={(acomodacao) => (
               <div className="accommodations-actions">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => openDetailsModal(acomodacao)}
+                >
+                  Detalhes
+                </Button>
                 <Button
                   size="sm"
                   variant="outline"
@@ -419,6 +435,82 @@ export default function Acomodacoes() {
             onChange={handleChange}
           />
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={closeDetailsModal}
+        title="Detalhes da acomodação"
+        footer={
+          <Button variant="outline" onClick={closeDetailsModal}>
+            Fechar
+          </Button>
+        }
+      >
+        {detailsAcomodacao && (
+          <div className="details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Nome</span>
+              <span className="detail-value">{detailsAcomodacao.nome}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Tipo</span>
+              <span className="detail-value">{detailsAcomodacao.tipo}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Capacidade</span>
+              <span className="detail-value">
+                {pluralize(
+                  Number(detailsAcomodacao.capacidade) || 0,
+                  "hóspede",
+                  "hóspedes",
+                )}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Valor da diária</span>
+              <span className="detail-value">
+                {formatCurrency(detailsAcomodacao.valorDiaria)}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Andar</span>
+              <span className="detail-value">
+                {detailsAcomodacao.andar || "—"}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Status</span>
+              <span className="detail-value">
+                <StatusBadge status={detailsAcomodacao.status} />
+              </span>
+            </div>
+            {detailsAcomodacao.descricao && (
+              <div className="detail-item detail-full-width">
+                <span className="detail-label">Descrição</span>
+                <span className="detail-value">{detailsAcomodacao.descricao}</span>
+              </div>
+            )}
+            {detailsAcomodacao.endereco && (
+              <div className="detail-item detail-full-width">
+                <span className="detail-label">Endereço completo</span>
+                <span className="detail-value">
+                  {[
+                    detailsAcomodacao.endereco.rua,
+                    detailsAcomodacao.endereco.numero,
+                    detailsAcomodacao.endereco.complemento,
+                    detailsAcomodacao.endereco.bairro,
+                    detailsAcomodacao.endereco.cidade,
+                    detailsAcomodacao.endereco.estado,
+                    detailsAcomodacao.endereco.cep,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
     </>
   );

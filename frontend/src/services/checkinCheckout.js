@@ -22,6 +22,14 @@ export const checkinCheckoutService = {
   async disponibilidade(filters) {
     return request("/checkin-checkout/disponibilidade", { params: filters });
   },
+
+  async diasComMovimento(mes) {
+    return request("/checkin-checkout/dias-com-movimento", { params: { mes } });
+  },
+
+  async diasComDisponibilidade(mes, tipo) {
+    return request("/checkin-checkout/dias-com-disponibilidade", { params: { mes, tipo } });
+  },
 };
 
 export default checkinCheckoutService;

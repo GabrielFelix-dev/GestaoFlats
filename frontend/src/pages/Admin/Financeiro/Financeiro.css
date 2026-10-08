@@ -97,3 +97,40 @@
     justify-content: center;
   }
 }
+
+/* Modal de detalhes (Receitas e Despesas) */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: rgba(87, 118, 175, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(87, 118, 175, 0.1);
+}
+
+.detail-item.detail-full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5776af;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: #002366;
+  font-weight: 500;
+  word-break: break-word;
+}

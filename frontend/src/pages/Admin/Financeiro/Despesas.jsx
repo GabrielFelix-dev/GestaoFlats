@@ -35,19 +35,18 @@ const emptyForm = {
 };
 
 const columns = [
-  { key: "descricao", label: "Descrição" },
-  { key: "categoriaLabel", label: "Categoria" },
-  { key: "acomodacaoLabel", label: "Imóvel" },
-  { key: "valorLabel", label: "Valor" },
-  { key: "dataVencimentoLabel", label: "Vencimento" },
-  { key: "statusBadge", label: "Status" },
+  { key: "descricao", label: "Descrição", width: "50%" },
+  { key: "valorLabel", label: "Valor", width: "20%" },
+  { key: "statusBadge", label: "Status", width: "15%" },
 ];
 
 export default function Despesas({ compact = false }) {
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [detailsDespesa, setDetailsDespesa] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
   const { feedback, clear, run } = useFeedback();
@@ -101,10 +100,20 @@ export default function Despesas({ compact = false }) {
     setIsModalOpen(true);
   }
 
+  function openDetailsModal(despesa) {
+    setDetailsDespesa(despesa);
+    setIsDetailsModalOpen(true);
+  }
+
   function closeModal() {
     setIsModalOpen(false);
     setEditingId(null);
     setForm(emptyForm);
+  }
+
+  function closeDetailsModal() {
+    setIsDetailsModalOpen(false);
+    setDetailsDespesa(null);
   }
 
   async function saveDespesa(event) {
@@ -230,6 +239,13 @@ export default function Despesas({ compact = false }) {
                 <Button
                   size="sm"
                   variant="outline"
+                  onClick={() => openDetailsModal(despesa)}
+                >
+                  Detalhes
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={() => alternarStatus(despesa)}
                 >
                   {despesa.status === "Pago"
@@ -349,6 +365,52 @@ export default function Despesas({ compact = false }) {
             required
           />
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={closeDetailsModal}
+        title="Detalhes da despesa"
+        footer={
+          <Button variant="outline" onClick={closeDetailsModal}>
+            Fechar
+          </Button>
+        }
+      >
+        {detailsDespesa && (
+          <div className="details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Descrição</span>
+              <span className="detail-value">{detailsDespesa.descricao}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Valor</span>
+              <span className="detail-value">{formatCurrency(detailsDespesa.valor)}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Categoria</span>
+              <span className="detail-value">{categoriaLabel(detailsDespesa.categoria)}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Imóvel</span>
+              <span className="detail-value">{detailsDespesa.acomodacao?.nome || "Geral"}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Vencimento</span>
+              <span className="detail-value">{formatDate(detailsDespesa.dataVencimento)}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Pagamento</span>
+              <span className="detail-value">{detailsDespesa.dataPagamento ? formatDate(detailsDespesa.dataPagamento) : "—"}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Status</span>
+              <span className="detail-value">
+                <StatusBadge status={detailsDespesa.status} />
+              </span>
+            </div>
+          </div>
+        )}
       </Modal>
     </>
   );

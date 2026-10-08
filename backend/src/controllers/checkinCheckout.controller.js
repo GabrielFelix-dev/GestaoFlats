@@ -27,6 +27,18 @@ export const checkinCheckoutController = {
 
     res.status(200).json(resultado);
   }),
+
+  diasComMovimento: asyncHandler(async (req, res) => {
+    const resultado = await checkinCheckoutService.getDiasComMovimento(req.validatedQuery ?? {});
+
+    res.status(200).json(resultado);
+  }),
+
+  diasComDisponibilidade: asyncHandler(async (req, res) => {
+    const resultado = await checkinCheckoutService.getDiasComDisponibilidade(req.validatedQuery ?? {});
+
+    res.status(200).json(resultado);
+  }),
 };
 
 export default checkinCheckoutController;

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Mantém uma mensagem de sucesso ou erro para exibir em um <Alert> no topo da
@@ -7,12 +7,20 @@ import { useCallback, useState } from "react";
  */
 export function useFeedback() {
   const [feedback, setFeedback] = useState(null);
+  const timeoutRef = useRef(null);
 
-  const notify = useCallback((type, message) => {
-    setFeedback({ type, message });
+  const clear = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setFeedback(null);
   }, []);
 
-  const clear = useCallback(() => setFeedback(null), []);
+  const notify = useCallback((type, message, duration = 4000) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setFeedback({ type, message });
+    timeoutRef.current = setTimeout(() => {
+      setFeedback(null);
+    }, duration);
+  }, []);
 
   const run = useCallback(
     async (action, { successMessage, onSuccess } = {}) => {

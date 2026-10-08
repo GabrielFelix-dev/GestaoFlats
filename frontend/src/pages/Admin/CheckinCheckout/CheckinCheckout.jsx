@@ -1,10 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Alert from "../../../components/Alert/Alert";
 import Button from "../../../components/Button/Button";
 import Card from "../../../components/Card/Card";
 import Input from "../../../components/Input/Input";
 import StatusBadge from "../../../components/StatusBadge/StatusBadge";
 import Table from "../../../components/Table/Table";
+import CalendarPicker from "../../../components/CalendarPicker/CalendarPicker";
 import { checkinCheckoutService } from "../../../services";
 import { useApiResource } from "../../../hooks/useApiResource";
 import { useFeedback } from "../../../hooks/useFeedback";
@@ -41,7 +42,19 @@ function mapRow(hospedagem, situacao) {
 
 export default function CheckinCheckout() {
   const [data, setData] = useState(todayInputValue());
+  const [diasComCheckIn, setDiasComCheckIn] = useState([]);
+  const [diasComCheckOut, setDiasComCheckOut] = useState([]);
   const { feedback, clear, run } = useFeedback();
+
+  // Busca dias com movimento quando o mês da data selecionada muda
+  useEffect(() => {
+    if (!data) return;
+    const mes = data.slice(0, 7); // YYYY-MM
+    checkinCheckoutService.diasComMovimento(mes).then((res) => {
+      setDiasComCheckIn(res.diasComCheckIn ?? []);
+      setDiasComCheckOut(res.diasComCheckOut ?? []);
+    });
+  }, [data.slice(0, 7)]);
 
   // Carrega movimentações do dia selecionado; recarrega quando `data` muda.
   const load = useCallback(() => checkinCheckoutService.list({ data }), [data]);
@@ -134,12 +147,12 @@ export default function CheckinCheckout() {
 
       <Card title="Filtros">
         <div className="filter-grid">
-          <Input
+          <CalendarPicker
             label="Data"
-            type="date"
-            name="data"
             value={data}
-            onChange={(event) => setData(event.target.value)}
+            onChange={setData}
+            diasComCheckIn={diasComCheckIn}
+            diasComCheckOut={diasComCheckOut}
           />
 
           <div className="checkin-totais">
