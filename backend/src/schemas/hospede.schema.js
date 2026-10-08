@@ -2,9 +2,8 @@ import { z } from "zod";
 import { DOCUMENTO_TIPOS, STATUS_HOSPEDE } from "../utils/enums.js";
 import { emailString, nonEmptyUpdate, trimmed } from "./common.schema.js";
 
-// A pontuação de CPF e telefone é apenas de exibição no front-end. A API grava
-// só dígitos para que a busca e o índice único não dependam de como o valor foi
-// digitado.
+// A pontuação de CPF, RG e CNH é apenas de exibição no front-end. A API grava
+// só dígitos no campo `cpf`, que funciona como documento genérico do hóspede.
 const onlyDigits = (schema) =>
   z
     .string()
@@ -13,7 +12,7 @@ const onlyDigits = (schema) =>
 
 export const createHospedeSchema = z.object({
   nome: trimmed(3, 120),
-  cpf: onlyDigits(z.string().trim().length(11, "CPF deve ter 11 dígitos.")),
+  cpf: onlyDigits(z.string().trim().min(1)),
   telefone: onlyDigits(
     z.string().trim().min(8, "Telefone deve ter entre 8 e 11 dígitos.").max(11),
   ).optional(),

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import Alert from "../../../components/Alert/Alert";
 import Button from "../../../components/Button/Button";
 import Input from "../../../components/Input/Input";
@@ -12,6 +12,8 @@ import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import { useFeedback } from "../../../hooks/useFeedback";
 import {
   maskCpf,
+  maskRg,
+  maskCnh,
   maskTelefone,
   masks,
   normalizeSearchTerm,
@@ -27,7 +29,7 @@ import "./Hospedes.css";
 /** Estado inicial do formulário de hóspede (criação e edição). */
 const emptyForm = {
   nome: "",
-  cpf: "",
+  documento: "",
   telefone: "",
   email: "",
   documentoTipo: "CPF",
@@ -41,20 +43,34 @@ const emptyForm = {
  * evita quebra de layout quando a sidebar reduz a área de conteúdo.
  */
 const columns = [
-  { key: "nome", label: "Nome", width: "35%" },
-  { key: "cpf", label: "CPF", width: "18%" },
-  { key: "telefone", label: "Telefone", width: "18%" },
-  { key: "email", label: "E-mail", width: "20%" },
-  { key: "statusBadge", label: "Status", width: "9%" },
+  { key: "nome", label: "Nome", width: "50%" },
+  { key: "cpf", label: "Documento", width: "20%" },
+  { key: "statusBadge", label: "Status", width: "15%" },
 ];
 
 export default function Hospedes() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [detailsHospede, setDetailsHospede] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Quando o tipo de documento mudar, reformata o valor com a máscara correta.
+  const tipoAnteriorRef = useRef(form.documentoTipo);
+
+  useEffect(() => {
+    if (tipoAnteriorRef.current !== form.documentoTipo) {
+      tipoAnteriorRef.current = form.documentoTipo;
+      const mask = getDocumentMask();
+      setForm((current) => ({
+        ...current,
+        documento: mask(current.documento),
+      }));
+    }
+  }, [form.documentoTipo]);
 
   // Debounce no input de busca para não disparar request a cada tecla.
   const debouncedSearch = useDebouncedValue(search);
@@ -78,19 +94,33 @@ export default function Hospedes() {
 
   const hospedes = data ?? [];
 
-  /**
-   * Handler único para inputs do formulário.
-   * Aplica máscara (CPF/telefone) em tempo real via `masks[name]`.
-   */
-  function handleChange(event) {
-    const { name, value } = event.target;
-    const mask = masks[name];
+/**
+ * Handler único para inputs do formulário.
+ * Aplica máscara (documento/telefone) em tempo real via `masks[name]`
+ * ou conforme o tipo de documento selecionado para o campo `documento`.
+ */
+function getDocumentMask() {
+  const tipo = form.documentoTipo;
 
-    setForm((current) => ({
-      ...current,
-      [name]: mask ? mask(value) : value,
-    }));
+  if (tipo === "RG") return maskRg;
+  if (tipo === "CNH") return maskCnh;
+
+  return maskCpf;
+}
+
+function handleChange(event) {
+  const { name, value } = event.target;
+  let mask = masks[name];
+
+  if (name === "documento") {
+    mask = getDocumentMask();
   }
+
+  setForm((current) => ({
+    ...current,
+    [name]: mask ? mask(value) : value,
+  }));
+}
 
   function openCreateModal() {
     setEditingId(null);
@@ -99,29 +129,42 @@ export default function Hospedes() {
     setIsModalOpen(true);
   }
 
-  /**
-   * Preenche formulário com dados do hóspede para edição.
-   * Reaplica máscaras nos valores vindos da API (que vêm sem pontuação).
-   */
-  function openEditModal(hospede) {
-    setEditingId(hospede.id);
-    setForm({
-      nome: hospede.nome ?? "",
-      cpf: maskCpf(hospede.cpf),
-      telefone: maskTelefone(hospede.telefone),
-      email: hospede.email ?? "",
-      documentoTipo: hospede.documentoTipo ?? "CPF",
-      observacoes: hospede.observacoes ?? "",
-      status: hospede.status ?? "Ativo",
-    });
-    clear();
-    setIsModalOpen(true);
+/**
+ * Preenche formulário com dados do hóspede para edição.
+ * Reaplica máscaras nos valores vindos da API (que vêm sem pontuação).
+ */
+function openEditModal(hospede) {
+  const tipo = hospede.documentoTipo ?? "CPF";
+  const documento = tipo === "RG" ? maskRg(hospede.cpf) : tipo === "CNH" ? maskCnh(hospede.cpf) : maskCpf(hospede.cpf);
+
+  setEditingId(hospede.id);
+  setForm({
+    nome: hospede.nome ?? "",
+    documento,
+    telefone: maskTelefone(hospede.telefone),
+    email: hospede.email ?? "",
+    documentoTipo: tipo,
+    observacoes: hospede.observacoes ?? "",
+    status: hospede.status ?? "Ativo",
+  });
+  clear();
+  setIsModalOpen(true);
+}
+
+  function openDetailsModal(hospede) {
+    setDetailsHospede(hospede);
+    setIsDetailsModalOpen(true);
   }
 
   function closeModal() {
     setIsModalOpen(false);
     setEditingId(null);
     setForm(emptyForm);
+  }
+
+  function closeDetailsModal() {
+    setIsDetailsModalOpen(false);
+    setDetailsHospede(null);
   }
 
   /**
@@ -136,7 +179,7 @@ export default function Hospedes() {
 
     const payload = {
       nome: form.nome.trim(),
-      cpf: onlyDigits(form.cpf),
+      cpf: onlyDigits(form.documento),
       status: form.status,
     };
 
@@ -173,15 +216,25 @@ export default function Hospedes() {
 
   /**
    * Prepara linhas para a Table:
-   * - Aplica máscaras de exibição (CPF/telefone formatados)
+   * - Aplica máscaras de exibição (documento/telefone formatados)
    * - Adiciona badge de status como JSX
    */
-  const rows = hospedes.map((hospede) => ({
-    ...hospede,
-    cpf: maskCpf(hospede.cpf),
-    telefone: maskTelefone(hospede.telefone),
-    statusBadge: <StatusBadge status={hospede.status} />,
-  }));
+  const rows = hospedes.map((hospede) => {
+    const tipo = hospede.documentoTipo;
+    const documento =
+      tipo === "RG"
+        ? maskRg(hospede.cpf)
+        : tipo === "CNH"
+          ? maskCnh(hospede.cpf)
+          : maskCpf(hospede.cpf);
+
+    return {
+      ...hospede,
+      cpf: documento,
+      telefone: maskTelefone(hospede.telefone),
+      statusBadge: <StatusBadge status={hospede.status} />,
+    };
+  });
 
   return (
     <>
@@ -241,6 +294,13 @@ export default function Hospedes() {
                 <Button
                   size="sm"
                   variant="outline"
+                  onClick={() => openDetailsModal(hospede)}
+                >
+                  Detalhes
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={() => openEditModal(hospede)}
                 >
                   Editar
@@ -297,13 +357,19 @@ export default function Hospedes() {
           />
 
           <Input
-            label="CPF"
-            name="cpf"
-            value={form.cpf}
+            label={form.documentoTipo === "RG" ? "RG" : form.documentoTipo === "CNH" ? "CNH" : "CPF"}
+            name="documento"
+            value={form.documento}
             onChange={handleChange}
-            placeholder="000.000.000-00"
+            placeholder={
+              form.documentoTipo === "RG"
+                ? "00.000.000-0"
+                : form.documentoTipo === "CNH"
+                  ? "000.000.000-00"
+                  : "000.000.000-00"
+            }
             inputMode="numeric"
-            maxLength={14}
+            maxLength={form.documentoTipo === "RG" ? 12 : 14}
             required
           />
 
@@ -351,6 +417,66 @@ export default function Hospedes() {
             placeholder="Informações adicionais (opcional)"
           />
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={closeDetailsModal}
+        title="Detalhes do hóspede"
+        footer={
+          <Button variant="outline" onClick={closeDetailsModal}>
+            Fechar
+          </Button>
+        }
+      >
+        {detailsHospede && (
+          <div className="details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Nome completo</span>
+              <span className="detail-value">{detailsHospede.nome}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">
+                {detailsHospede.documentoTipo === "RG" ? "RG" : detailsHospede.documentoTipo === "CNH" ? "CNH" : "CPF"}
+              </span>
+              <span className="detail-value">
+                {detailsHospede.documentoTipo === "RG"
+                  ? maskRg(detailsHospede.cpf)
+                  : detailsHospede.documentoTipo === "CNH"
+                    ? maskCnh(detailsHospede.cpf)
+                    : maskCpf(detailsHospede.cpf)}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Telefone</span>
+              <span className="detail-value">
+                {detailsHospede.telefone ? maskTelefone(detailsHospede.telefone) : "—"}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">E-mail</span>
+              <span className="detail-value">
+                {detailsHospede.email || "—"}
+              </span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Documento</span>
+              <span className="detail-value">{detailsHospede.documentoTipo || "CPF"}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Status</span>
+              <span className="detail-value">
+                <StatusBadge status={detailsHospede.status} />
+              </span>
+            </div>
+            {detailsHospede.observacoes && (
+              <div className="detail-item detail-full-width">
+                <span className="detail-label">Observações</span>
+                <span className="detail-value">{detailsHospede.observacoes}</span>
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
     </>
   );

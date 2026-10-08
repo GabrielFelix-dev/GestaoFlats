@@ -8,7 +8,16 @@ import { acomodacoesService, hospedagensService, hospedesService } from "../../.
 import { useApiResource } from "../../../hooks/useApiResource";
 import { useFeedback } from "../../../hooks/useFeedback";
 import { countNights, formatCurrency, todayInputValue } from "../../../utils/format";
-import { maskCpf } from "../../../utils/mask";
+import { maskCpf, maskRg, maskCnh } from "../../../utils/mask";
+
+function formatDocumento(hospede) {
+  const tipo = hospede.documentoTipo;
+
+  if (tipo === "RG") return maskRg(hospede.cpf);
+  if (tipo === "CNH") return maskCnh(hospede.cpf);
+
+  return maskCpf(hospede.cpf);
+}
 import { HOSPEDAGEM_STATUS, statusLabel, toOptions } from "../../../utils/labels";
 import "./NovaHospedagem.css";
 
@@ -120,7 +129,7 @@ export default function NovaHospedagem({ onNavigate }) {
             required
             options={(hospedes.data ?? []).map((hospede) => ({
               value: hospede.id,
-              label: `${hospede.nome} · ${maskCpf(hospede.cpf)}`,
+              label: `${hospede.nome} · ${formatDocumento(hospede)}`,
             }))}
           />
 

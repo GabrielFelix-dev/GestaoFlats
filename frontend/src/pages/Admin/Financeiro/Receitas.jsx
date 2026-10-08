@@ -25,18 +25,18 @@ const emptyForm = {
 };
 
 const columns = [
-  { key: "descricao", label: "Descrição" },
-  { key: "origem", label: "Origem" },
-  { key: "valorLabel", label: "Valor" },
-  { key: "dataLabel", label: "Data" },
-  { key: "statusBadge", label: "Status" },
+  { key: "descricao", label: "Descrição", width: "50%" },
+  { key: "valorLabel", label: "Valor", width: "20%" },
+  { key: "statusBadge", label: "Status", width: "15%" },
 ];
 
 export default function Receitas({ compact = false }) {
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [detailsReceita, setDetailsReceita] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [isSaving, setIsSaving] = useState(false);
   const { feedback, clear, run } = useFeedback();
@@ -85,10 +85,20 @@ export default function Receitas({ compact = false }) {
     setIsModalOpen(true);
   }
 
+  function openDetailsModal(receita) {
+    setDetailsReceita(receita);
+    setIsDetailsModalOpen(true);
+  }
+
   function closeModal() {
     setIsModalOpen(false);
     setEditingId(null);
     setForm(emptyForm);
+  }
+
+  function closeDetailsModal() {
+    setIsDetailsModalOpen(false);
+    setDetailsReceita(null);
   }
 
   async function saveReceita(event) {
@@ -200,6 +210,13 @@ export default function Receitas({ compact = false }) {
                 <Button
                   size="sm"
                   variant="outline"
+                  onClick={() => openDetailsModal(receita)}
+                >
+                  Detalhes
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={() => alternarStatus(receita)}
                 >
                   {receita.status === "Recebido" ? "Marcar pendente" : "Receber"}
@@ -300,6 +317,48 @@ export default function Receitas({ compact = false }) {
             required
           />
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={closeDetailsModal}
+        title="Detalhes da receita"
+        footer={
+          <Button variant="outline" onClick={closeDetailsModal}>
+            Fechar
+          </Button>
+        }
+      >
+        {detailsReceita && (
+          <div className="details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Descrição</span>
+              <span className="detail-value">{detailsReceita.descricao}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Valor</span>
+              <span className="detail-value">{formatCurrency(detailsReceita.valor)}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Data</span>
+              <span className="detail-value">{formatDate(detailsReceita.data)}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Origem</span>
+              <span className="detail-value">{detailsReceita.origem || "—"}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Categoria</span>
+              <span className="detail-value">{detailsReceita.categoria || "—"}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Status</span>
+              <span className="detail-value">
+                <StatusBadge status={detailsReceita.status} />
+              </span>
+            </div>
+          </div>
+        )}
       </Modal>
     </>
   );

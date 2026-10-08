@@ -66,13 +66,43 @@ async function main() {
             endereco: { rua: "Rua José do Patrocínio", numero: "260", bairro: "Alto Branco", cidade: "Campina Grande", estado: "PB", cep: "58401-180" },
             descricao: "Imóvel fictício para validar o relatório financeiro.", status: "Disponivel",
         }),
+        // Novos tipos de acomodação (tipos válidos: Flat, Quarto, Studio, Apartamento)
+        upsertAccommodation({
+            nome: `${marker} Apartamento Loft`, tipo: "Apartamento", capacidade: 2, valorDiaria: 280,
+            endereco: { rua: "Rua da Modernidade", numero: "100", bairro: "Bairro Novo", cidade: "Campina Grande", estado: "PB", cep: "58405-000" },
+            descricao: "Apartamento estilo loft para validação de relatórios.", status: "Disponivel",
+        }),
+        upsertAccommodation({
+            nome: `${marker} Casa de Praia`, tipo: "Flat", capacidade: 6, valorDiaria: 450,
+            endereco: { rua: "Avenida Beira Mar", numero: "500", bairro: "Praia do Sol", cidade: "Campina Grande", estado: "PB", cep: "58408-000" },
+            descricao: "Casa de praia (tipo Flat) para testes de capacidade maior.", status: "Disponivel",
+        }),
+        upsertAccommodation({
+            nome: `${marker} Quarto da Serra`, tipo: "Quarto", capacidade: 4, valorDiaria: 320,
+            endereco: { rua: "Estrada da Serra", numero: "1000", bairro: "Serra Verde", cidade: "Campina Grande", estado: "PB", cep: "58409-000" },
+            descricao: "Quarto em chalé rústico para diversificar tipos.", status: "Manutencao",
+        }),
+        upsertAccommodation({
+            nome: `${marker} Quarto Estudante`, tipo: "Quarto", capacidade: 1, valorDiaria: 120,
+            endereco: { rua: "Rua Universitária", numero: "50", bairro: "Universitário", cidade: "Campina Grande", estado: "PB", cep: "58410-000" },
+            descricao: "Quarto econômico para testes.", status: "Inativa",
+        }),
     ]);
 
     const guests = await Promise.all([
-        upsertGuest({ nome: `${marker} Ana Souza`, cpf: `${demoCpfPrefix}001`, telefone: "83999990001", email: "demo.ana@example.test", observacoes: marker, status: "Ativo" }),
-        upsertGuest({ nome: `${marker} Bruno Lima`, cpf: `${demoCpfPrefix}002`, telefone: "83999990002", email: "demo.bruno@example.test", observacoes: marker, status: "Ativo" }),
-        upsertGuest({ nome: `${marker} Carla Alves`, cpf: `${demoCpfPrefix}003`, telefone: "83999990003", email: "demo.carla@example.test", observacoes: marker, status: "Ativo" }),
-        upsertGuest({ nome: `${marker} Diego Nunes`, cpf: `${demoCpfPrefix}004`, telefone: "83999990004", email: "demo.diego@example.test", observacoes: marker, status: "Ativo" }),
+        upsertGuest({ nome: `${marker} Ana Souza`, cpf: `${demoCpfPrefix}001`, telefone: "83999990001", email: "demo.ana@example.test", observacoes: marker, status: "Ativo", documentoTipo: "CPF" }),
+        upsertGuest({ nome: `${marker} Bruno Lima`, cpf: `${demoCpfPrefix}002`, telefone: "83999990002", email: "demo.bruno@example.test", observacoes: marker, status: "Ativo", documentoTipo: "CPF" }),
+        upsertGuest({ nome: `${marker} Carla Alves`, cpf: `${demoCpfPrefix}003`, telefone: "83999990003", email: "demo.carla@example.test", observacoes: marker, status: "Ativo", documentoTipo: "CPF" }),
+        upsertGuest({ nome: `${marker} Diego Nunes`, cpf: `${demoCpfPrefix}004`, telefone: "83999990004", email: "demo.diego@example.test", observacoes: marker, status: "Ativo", documentoTipo: "CPF" }),
+        // Hóspedes com RG
+        upsertGuest({ nome: `${marker} Eduardo Costa`, cpf: `${demoCpfPrefix}005`, telefone: "83999990005", email: "demo.eduardo@example.test", observacoes: marker, status: "Ativo", documentoTipo: "RG" }),
+        upsertGuest({ nome: `${marker} Fernanda Rocha`, cpf: `${demoCpfPrefix}006`, telefone: "83999990006", email: "demo.fernanda@example.test", observacoes: marker, status: "Ativo", documentoTipo: "RG" }),
+        // Hóspedes com CNH
+        upsertGuest({ nome: `${marker} Gustavo Mendes`, cpf: `${demoCpfPrefix}007`, telefone: "83999990007", email: "demo.gustavo@example.test", observacoes: marker, status: "Ativo", documentoTipo: "CNH" }),
+        upsertGuest({ nome: `${marker} Helena Dias`, cpf: `${demoCpfPrefix}008`, telefone: "83999990008", email: "demo.helena@example.test", observacoes: marker, status: "Ativo", documentoTipo: "CNH" }),
+        // Hóspedes inativos
+        upsertGuest({ nome: `${marker} Igor Pinto`, cpf: `${demoCpfPrefix}009`, telefone: "83999990009", email: "demo.igor@example.test", observacoes: marker, status: "Inativo", documentoTipo: "CPF" }),
+        upsertGuest({ nome: `${marker} Julia Martins`, cpf: `${demoCpfPrefix}010`, telefone: "83999990010", email: "demo.julia@example.test", observacoes: marker, status: "Inativo", documentoTipo: "RG" }),
     ]);
 
     const staySpecs = [
@@ -83,6 +113,16 @@ async function main() {
         { key: "centro-01", property: 2, guest: 0, checkIn: 8, nights: 2, status: "Cancelada", dailyPrice: 190 },
         { key: "centro-02", property: 2, guest: 1, checkIn: 23, nights: 3, status: "Confirmada", dailyPrice: 175 },
         { key: "alto-branco-01", property: 3, guest: 2, checkIn: 1, nights: 2, status: "Concluida", dailyPrice: 230 },
+        // Novas hospedagens com mais status e combinações
+        { key: "loft-01", property: 4, guest: 4, checkIn: 3, nights: 5, status: "Concluida", dailyPrice: 280 },
+        { key: "loft-02", property: 4, guest: 5, checkIn: 15, nights: 2, status: "Confirmada", dailyPrice: 260 },
+        { key: "casa-praia-01", property: 5, guest: 6, checkIn: 5, nights: 7, status: "Concluida", dailyPrice: 450 },
+        { key: "casa-praia-02", property: 5, guest: 7, checkIn: 20, nights: 4, status: "Confirmada", dailyPrice: 420 },
+        { key: "chale-01", property: 6, guest: 8, checkIn: 10, nights: 3, status: "Cancelada", dailyPrice: 320 },
+        { key: "kitnet-01", property: 7, guest: 9, checkIn: 1, nights: 10, status: "Concluida", dailyPrice: 120 },
+        { key: "kitnet-02", property: 7, guest: 0, checkIn: 18, nights: 2, status: "Confirmada", dailyPrice: 110 },
+        { key: "catole-03", property: 0, guest: 2, checkIn: 25, nights: 2, status: "Confirmada", dailyPrice: 240 },
+        { key: "mirante-03", property: 1, guest: 3, checkIn: 28, nights: 1, status: "Concluida", dailyPrice: 300 },
     ];
 
     const stays = [];
@@ -143,6 +183,16 @@ async function main() {
         { key: "alto-branco-condominio", property: 3, category: "Condominio", amount: 390, day: 9 },
         { key: "geral-contabilidade", property: null, category: "Outros", amount: 300, day: 4 },
         { key: "geral-software", property: null, category: "Marketing", amount: 120, day: 20 },
+        // Novas despesas com mais categorias
+        { key: "loft-agua", property: 4, category: "Agua", amount: 85, day: 11 },
+        { key: "loft-internet", property: 4, category: "Internet", amount: 120, day: 12 },
+        { key: "casa-praia-condominio", property: 5, category: "Condominio", amount: 650, day: 7 },
+        { key: "casa-praia-limpeza", property: 5, category: "Limpeza", amount: 200, day: 8 },
+        { key: "chale-manutencao", property: 6, category: "Manutencao", amount: 350, day: 15 },
+        { key: "kitnet-energia", property: 7, category: "Energia", amount: 75, day: 2 },
+        { key: "geral-seguro", property: null, category: "Seguro", amount: 450, day: 22 },
+        { key: "geral-impostos", property: null, category: "Impostos", amount: 800, day: 25 },
+        { key: "geral-marketing2", property: null, category: "Marketing", amount: 200, day: 18 },
     ];
 
     const expenses = await Promise.all(expenseSpecs.map((spec) => {

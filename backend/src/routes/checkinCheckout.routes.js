@@ -5,6 +5,8 @@ import { validate, validateObjectId } from "../middlewares/validate.middleware.j
 import {
   checkinCheckoutQuerySchema,
   disponibilidadeQuerySchema,
+  diasComMovimentoQuerySchema,
+  diasComDisponibilidadeQuerySchema,
 } from "../schemas/hospedagem.schema.js";
 
 const router = Router();
@@ -18,6 +20,16 @@ router.get(
   "/disponibilidade",
   validate(disponibilidadeQuerySchema, "query"),
   checkinCheckoutController.disponibilidade,
+);
+router.get(
+  "/dias-com-movimento",
+  validate(diasComMovimentoQuerySchema, "query"),
+  checkinCheckoutController.diasComMovimento,
+);
+router.get(
+  "/dias-com-disponibilidade",
+  validate(diasComDisponibilidadeQuerySchema, "query"),
+  checkinCheckoutController.diasComDisponibilidade,
 );
 
 export default router;

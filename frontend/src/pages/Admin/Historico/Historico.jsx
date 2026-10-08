@@ -19,13 +19,13 @@ const statusOptions = [
 ];
 
 const columns = [
-  { key: "hospede", label: "Hóspede" },
-  { key: "acomodacao", label: "Acomodação" },
-  { key: "checkin", label: "Check-in" },
-  { key: "checkout", label: "Check-out" },
-  { key: "diariasLabel", label: "Diárias" },
-  { key: "valorTotalLabel", label: "Valor total" },
-  { key: "statusBadge", label: "Status" },
+  { key: "hospede", label: "Hóspede", width: "28%" },
+  { key: "acomodacao", label: "Acomodação", width: "22%" },
+  { key: "checkin", label: "Check-in", width: "10%" },
+  { key: "checkout", label: "Check-out", width: "10%" },
+  { key: "diariasLabel", label: "Diárias", width: "8%" },
+  { key: "valorTotalLabel", label: "Valor total", width: "12%" },
+  { key: "statusBadge", label: "Status", width: "10%" },
 ];
 
 export default function Historico() {

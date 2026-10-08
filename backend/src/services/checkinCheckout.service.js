@@ -87,6 +87,102 @@ export const checkinCheckoutService = {
     return hospedagemService.changeStatus(id, "Concluida");
   },
 
+  async getDiasComMovimento({ mes }) {
+    const [ano, mesNum] = mes.split("-").map(Number);
+    const inicio = new Date(Date.UTC(ano, mesNum - 1, 1));
+    const fim = new Date(Date.UTC(ano, mesNum, 1));
+
+    const hospedagens = await Hospedagem.find({
+      status: { $in: ["Confirmada", "Ativa"] },
+      dataCheckIn: { $lt: fim },
+      dataCheckOut: { $gt: inicio },
+    }).select("dataCheckIn dataCheckOut").lean();
+
+    const diasComCheckIn = new Set();
+    const diasComCheckOut = new Set();
+
+    for (const h of hospedagens) {
+      const checkInDate = new Date(h.dataCheckIn).toISOString().slice(0, 10);
+      const checkOutDate = new Date(h.dataCheckOut).toISOString().slice(0, 10);
+
+      if (checkInDate >= mes + "-01" && checkInDate < new Date(fim).toISOString().slice(0, 10)) {
+        diasComCheckIn.add(checkInDate);
+      }
+      if (checkOutDate >= mes + "-01" && checkOutDate < new Date(fim).toISOString().slice(0, 10)) {
+        diasComCheckOut.add(checkOutDate);
+      }
+    }
+
+    return {
+      mes,
+      diasComCheckIn: Array.from(diasComCheckIn).sort(),
+      diasComCheckOut: Array.from(diasComCheckOut).sort(),
+    };
+  },
+
+  async getDiasComDisponibilidade({ mes, tipo }) {
+    const [ano, mesNum] = mes.split("-").map(Number);
+    const inicioMes = `${ano}-${String(mesNum).padStart(2, "0")}-01`;
+    const fimMes = new Date(Date.UTC(ano, mesNum, 1)).toISOString().slice(0, 10);
+
+    const filtroAcomodacao = { status: { $nin: ["Inativa", "Manutencao"] } };
+    if (tipo) {
+      filtroAcomodacao.tipo = tipo;
+    }
+
+    const [acomodacoes, reservas] = await Promise.all([
+      Acomodacao.find(filtroAcomodacao).select("_id").lean(),
+      Hospedagem.find({
+        status: { $in: ["Confirmada", "Ativa"] },
+        dataCheckIn: { $lt: new Date(fimMes) },
+        dataCheckOut: { $gt: new Date(inicioMes) },
+      }).select("dataCheckIn dataCheckOut acomodacao").lean(),
+    ]);
+
+    const acomodacaoIds = new Set(acomodacoes.map((a) => String(a._id)));
+    const totalAcomodacoes = acomodacaoIds.size;
+
+    const intervalos = reservas.map((r) => ({
+      checkIn: new Date(r.dataCheckIn).toISOString().slice(0, 10),
+      checkOut: new Date(r.dataCheckOut).toISOString().slice(0, 10),
+      acomodacaoId: String(r.acomodacao),
+    }));
+
+    const diasLivres = new Set();
+    const diasParciais = new Set();
+    const diasLotados = new Set();
+
+    const diasNoMes = new Date(Date.UTC(ano, mesNum, 0)).getUTCDate();
+    for (let d = 1; d <= diasNoMes; d++) {
+      const dataISO = `${ano}-${String(mesNum).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+      let acomodacoesOcupadas = 0;
+      for (const r of intervalos) {
+        if (dataISO >= r.checkIn && dataISO < r.checkOut) {
+          if (acomodacaoIds.has(r.acomodacaoId)) {
+            acomodacoesOcupadas++;
+          }
+        }
+      }
+
+      if (acomodacoesOcupadas === 0) {
+        diasLivres.add(dataISO);
+      } else if (acomodacoesOcupadas < totalAcomodacoes) {
+        diasParciais.add(dataISO);
+      } else {
+        diasLotados.add(dataISO);
+      }
+    }
+
+    return {
+      mes,
+      totalAcomodacoes,
+      diasLivres: Array.from(diasLivres).sort(),
+      diasParciais: Array.from(diasParciais).sort(),
+      diasLotados: Array.from(diasLotados).sort(),
+    };
+  },
+
   async calcularDisponibilidade({ dataInicial, dataFinal, tipo }) {
     const inicio = inicioDoDia(dataInicial);
     const fim = inicioDoDia(dataFinal);

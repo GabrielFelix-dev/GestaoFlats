@@ -15,12 +15,12 @@ import { HOSPEDAGEM_STATUS, toOptions } from "../../../utils/labels";
 import "./Hospedagens.css";
 
 const columns = [
-  { key: "hospede", label: "Hóspede" },
-  { key: "acomodacao", label: "Acomodação" },
-  { key: "dataCheckIn", label: "Check-in" },
-  { key: "dataCheckOut", label: "Check-out" },
-  { key: "valorTotal", label: "Valor total" },
-  { key: "statusBadge", label: "Status" },
+  { key: "hospede", label: "Hóspede", width: "30%" },
+  { key: "acomodacao", label: "Acomodação", width: "25%" },
+  { key: "dataCheckIn", label: "Check-in", width: "12%" },
+  { key: "dataCheckOut", label: "Check-out", width: "12%" },
+  { key: "valorTotal", label: "Valor total", width: "12%" },
+  { key: "statusBadge", label: "Status", width: "9%" },
 ];
 
 export default function Hospedagens({ onNavigate, onSelectHospedagem }) {

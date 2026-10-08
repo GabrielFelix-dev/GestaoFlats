@@ -55,6 +55,15 @@ export const disponibilidadeQuerySchema = z
     path: ["dataFinal"],
   });
 
+export const diasComMovimentoQuerySchema = z.object({
+  mes: z.string().regex(/^\d{4}-\d{2}$/, "Formato de mês inválido (YYYY-MM)."),
+});
+
+export const diasComDisponibilidadeQuerySchema = z.object({
+  mes: z.string().regex(/^\d{4}-\d{2}$/, "Formato de mês inválido (YYYY-MM)."),
+  tipo: z.enum(TIPO_ACOMODACAO).optional(),
+});
+
 export default {
   createHospedagemSchema,
   updateHospedagemSchema,
