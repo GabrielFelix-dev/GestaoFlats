@@ -80,8 +80,8 @@ GestaoFlats/
 │   │   ├── utils/
 │   │   ├── app.js
 │   │   └── server.js
-│   ├── scripts/
-│   │   └── smoke-test.js       # Teste de fumaça da API
+│   |
+│   |
 │   ├── .env
 │   ├── .env.example
 │   ├── .gitignore
