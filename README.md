@@ -2,7 +2,7 @@
 
 Sistema web para administração de flats, hospedagens e operações financeiras. O projeto é dividido em dois módulos independentes: uma aplicação front-end em React e uma API REST com persistência em banco de dados.
 
-![Identidade visual do Gestão Flats](docs/foto-gestaoflats-readme.png)
+<img src="docs/foto-gestaoflats-readme.png" alt="Identidade visual do Gestão Flats" width="300">
 
 ## Sumário
 
