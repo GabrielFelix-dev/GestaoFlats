@@ -15,3 +15,6 @@ Thumbs.db
 # Variáveis de ambiente locais
 .env
 .env.local
+
+# Kilo local config
+.kilo/
