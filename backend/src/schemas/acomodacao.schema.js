@@ -3,11 +3,11 @@ import { STATUS_ACOMODACAO, TIPO_ACOMODACAO } from "../utils/enums.js";
 import { nonEmptyUpdate, trimmed } from "./common.schema.js";
 
 const enderecoSchema = z.object({
-  rua: z.string().trim().max(120).optional(),
+  rua: z.string().trim().min(1, "Rua é obrigatória.").max(120),
   numero: z.string().trim().max(20).optional(),
   complemento: z.string().trim().max(80).optional(),
   bairro: z.string().trim().max(80).optional(),
-  cidade: z.string().trim().max(80).optional(),
+  cidade: z.string().trim().min(1, "Cidade é obrigatória.").max(80),
   estado: z.string().trim().max(2).optional(),
   cep: z.string().trim().max(9).optional(),
 });
@@ -17,7 +17,7 @@ export const createAcomodacaoSchema = z.object({
   tipo: z.enum(TIPO_ACOMODACAO),
   capacidade: z.coerce.number().int().min(1).max(20),
   valorDiaria: z.coerce.number().min(0, "Valor da diária inválido."),
-  endereco: enderecoSchema.optional().nullable(),
+  endereco: enderecoSchema,
   andar: z.string().trim().max(20).optional(),
   descricao: z.string().trim().max(500).optional(),
   status: z.enum(STATUS_ACOMODACAO).optional(),

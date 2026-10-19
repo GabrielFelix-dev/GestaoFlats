@@ -156,7 +156,14 @@ export default function Acomodacoes() {
         .map(([key, value]) => [key, value.trim()])
         .filter(([, value]) => value),
     );
-    payload.endereco = Object.keys(endereco).length ? endereco : null;
+
+    if (!endereco.rua || !endereco.cidade) {
+      run(() => Promise.reject(new Error("Informe pelo menos a rua e a cidade do endereço.")));
+      setIsSaving(false);
+      return;
+    }
+
+    payload.endereco = endereco;
 
     const result = await run(
       () =>
@@ -396,6 +403,7 @@ export default function Acomodacoes() {
             name="endereco.rua"
             value={form.endereco.rua}
             onChange={handleChange}
+            required
           />
           <Input
             label="Número"
@@ -420,6 +428,7 @@ export default function Acomodacoes() {
             name="endereco.cidade"
             value={form.endereco.cidade}
             onChange={handleChange}
+            required
           />
           <Input
             label="Estado"
