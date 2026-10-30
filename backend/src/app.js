@@ -6,6 +6,7 @@ import env from "./config/env.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import acomodacoesRoutes from "./routes/acomodacoes.routes.js";
+import cepRoutes from "./routes/cep.routes.js";
 import checkinCheckoutRoutes from "./routes/checkinCheckout.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import despesasRoutes from "./routes/despesas.routes.js";
@@ -38,6 +39,7 @@ export function createApp() {
   app.use("/api/auth", authRoutes);
   app.use("/api/hospedes", hospedesRoutes);
   app.use("/api/acomodacoes", acomodacoesRoutes);
+  app.use("/api/cep", cepRoutes);
   app.use("/api/hospedagens", hospedagensRoutes);
   app.use("/api/checkin-checkout", checkinCheckoutRoutes);
   app.use("/api/receitas", receitasRoutes);

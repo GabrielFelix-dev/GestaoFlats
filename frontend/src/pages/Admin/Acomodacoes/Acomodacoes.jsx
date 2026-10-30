@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Alert from "../../../components/Alert/Alert";
 import Button from "../../../components/Button/Button";
 import Input from "../../../components/Input/Input";
@@ -10,6 +10,7 @@ import { acomodacoesService } from "../../../services";
 import { useApiResource } from "../../../hooks/useApiResource";
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import { useFeedback } from "../../../hooks/useFeedback";
+import { useCep } from "../../../hooks/useCep";
 import { formatCurrency, pluralize } from "../../../utils/format";
 import {
   ACOMODACAO_STATUS,
@@ -56,6 +57,28 @@ export default function Acomodacoes() {
 
   const debouncedSearch = useDebouncedValue(search);
   const { feedback, clear, run } = useFeedback();
+  const { fetchCep, loading: cepLoading, error: cepError } = useCep();
+
+  // Busca endereço via Google Maps quando o CEP for completo
+  useEffect(() => {
+    const cep = form.endereco.cep;
+    if (cep.replace(/\D/g, "").length === 8) {
+      fetchCep(cep).then((data) => {
+        if (data) {
+          setForm((current) => ({
+            ...current,
+            endereco: {
+              ...current.endereco,
+              rua: data.rua,
+              bairro: data.bairro,
+              cidade: data.cidade,
+              estado: data.estado,
+            },
+          }));
+        }
+      });
+    }
+  }, [form.endereco.cep, fetchCep]);
 
   const load = useCallback(
     () =>
@@ -437,12 +460,15 @@ export default function Acomodacoes() {
             value={form.endereco.estado}
             onChange={handleChange}
           />
-          <Input
+<Input
             label="CEP"
-            name="endereco.cep"
+            name="ENDERECO.CEP"
             value={form.endereco.cep}
             onChange={handleChange}
+            disabled={cepLoading}
           />
+          {cepLoading && <span className="cep-loading">Buscando endereço...</span>}
+          {cepError && <span className="cep-error">{cepError}</span>}
         </form>
       </Modal>
 

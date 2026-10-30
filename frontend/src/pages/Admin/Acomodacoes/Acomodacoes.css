@@ -123,3 +123,17 @@
   word-break: break-word;
 }
 
+.cep-loading {
+  display: block;
+  font-size: 0.75rem;
+  color: #5776af;
+  margin-top: 0.25rem;
+}
+
+.cep-error {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-error);
+  margin-top: 0.25rem;
+}
+
