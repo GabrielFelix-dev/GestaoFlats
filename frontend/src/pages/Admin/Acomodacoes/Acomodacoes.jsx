@@ -462,7 +462,7 @@ export default function Acomodacoes() {
           />
 <Input
             label="CEP"
-            name="ENDERECO.CEP"
+            name="endereco.cep"
             value={form.endereco.cep}
             onChange={handleChange}
             disabled={cepLoading}
