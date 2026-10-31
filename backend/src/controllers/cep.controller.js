@@ -22,12 +22,13 @@ export const cepController = asyncHandler(async (req, res) => {
 
     res.json({
       cep: data.cep,
-      rua: data.logagem,
+      rua: data.logradouro,
       bairro: data.bairro,
       cidade: data.localidade,
       estado: data.uf,
     });
   } catch (error) {
+    console.error("Erro ViaCEP:", error);
     res.status(500).json({ erro: "Erro ao buscar CEP." });
   }
 });
