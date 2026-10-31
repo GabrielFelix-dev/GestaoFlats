@@ -14,7 +14,11 @@ export const cepController = asyncHandler(async (req, res) => {
   }
 
   try {
-    const response = await fetch(`https://viacep.com.br/api/cep/${cleanCep}/json/`);
+    const response = await fetch(`https://viacep.com.br/api/cep/${cleanCep}/json/`, {
+      headers: {
+        "User-Agent": "GestaoFlats/1.0",
+      },
+    });
     const data = await response.json();
 
     if (data.erro) {
